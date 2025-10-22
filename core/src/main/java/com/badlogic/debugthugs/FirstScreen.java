@@ -33,6 +33,7 @@ public class FirstScreen implements Screen {
     @Override
     public void show() {
         // Prepare your screen here.
+        //hi
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
