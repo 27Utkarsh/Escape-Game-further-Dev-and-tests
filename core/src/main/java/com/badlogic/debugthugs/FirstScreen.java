@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -29,11 +30,15 @@ public class FirstScreen implements Screen {
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
+    SpriteBatch timeBatch;
+    BitmapFont font;
+    float timePassed = 260f;
+    int mins;
+    int seconds;
 
     @Override
     public void show() {
         // Prepare your screen here.
-        //hi
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
@@ -49,6 +54,9 @@ public class FirstScreen implements Screen {
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
+        timeBatch = new SpriteBatch();
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
     }
 
     @Override
@@ -56,6 +64,14 @@ public class FirstScreen implements Screen {
         input();
         logic();
         draw();
+
+        timePassed -= delta;
+        mins =(int) timePassed / 60;
+        seconds = (int) timePassed - mins * 60;
+        timeBatch.begin();
+        String time = String.format("%d.%02d", mins, seconds);
+        font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
+        timeBatch.end();
         // Draw your screen here. "delta" is the time since last render in seconds.
     }
 
