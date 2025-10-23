@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class FirstScreen implements Screen {
     float dropTimer;
     Texture backgroundTexture;
+    Sprite backgroundSprite;
     Texture bucketTexture;
     Sprite bucketSprite;
     Texture dropTexture;
@@ -32,7 +33,7 @@ public class FirstScreen implements Screen {
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
-    float timePassed = 260f;
+    float timePassed = 300f;
     int mins;
     int seconds;
 
@@ -42,6 +43,8 @@ public class FirstScreen implements Screen {
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(20, 20);
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1,1);
@@ -57,6 +60,15 @@ public class FirstScreen implements Screen {
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
+
+        backgroundSprite.setPosition(0, 0);
+
+        /*float screenWidth = viewport.getWorldWidth();
+        float screenHeight = viewport.getWorldHeight();
+        float backgroundWidth = backgroundTexture.getWidth();
+        float backgroundHeight = backgroundTexture.getHeight();*/
+
+        //backgroundSprite.setPosition((screenWidth - backgroundWidth) / 2f,(screenHeight - backgroundHeight) / 2f);
     }
 
     @Override
@@ -78,10 +90,15 @@ public class FirstScreen implements Screen {
     private void input() {
         float speed = 4f;
         float delta = Gdx.graphics.getDeltaTime();
+
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            bucketSprite.translateX(speed * delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            bucketSprite.translateX(-speed * delta);
+            backgroundSprite.translateX(-speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            backgroundSprite.translateX(speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            backgroundSprite.translateY(-speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            backgroundSprite.translateY(speed * delta);
         }
 
     }
@@ -91,8 +108,14 @@ public class FirstScreen implements Screen {
         float worldHeight = viewport.getWorldHeight();
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
+        float backgroundWidth = backgroundSprite.getWidth();
+        float backgroundHeight = backgroundSprite.getHeight();
+        float ybound = backgroundHeight - worldHeight;
+        float xbound = backgroundWidth - worldWidth;
 
         bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
+        backgroundSprite.setX(MathUtils.clamp(backgroundSprite.getX(), 0 - xbound, 0));
+        backgroundSprite.setY(MathUtils.clamp(backgroundSprite.getY(), 0 - ybound, 0));
 
         float delta = Gdx.graphics.getDeltaTime();
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
@@ -126,6 +149,7 @@ public class FirstScreen implements Screen {
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
+        backgroundSprite.draw(spriteBatch);
         bucketSprite.draw(spriteBatch);
 
         for(Sprite dropSprite : dropSprites) {
