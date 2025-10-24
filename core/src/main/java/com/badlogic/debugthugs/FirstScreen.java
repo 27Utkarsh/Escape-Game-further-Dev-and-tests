@@ -23,7 +23,6 @@ public class FirstScreen implements Screen {
     Sprite backgroundSprite;
     Texture bucketTexture;
     Sprite bucketSprite;
-    Texture dropTexture;
     Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
@@ -45,11 +44,10 @@ public class FirstScreen implements Screen {
         backgroundTexture = new Texture("background.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(20, 20);
+        backgroundSprite.setPosition(0, 0);
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1,1);
-        dropTexture = new Texture("drop.png");
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         dropSprites = new Array<>();
         bucketRectangle = new Rectangle();
@@ -60,15 +58,6 @@ public class FirstScreen implements Screen {
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
-
-        backgroundSprite.setPosition(0, 0);
-
-        /*float screenWidth = viewport.getWorldWidth();
-        float screenHeight = viewport.getWorldHeight();
-        float backgroundWidth = backgroundTexture.getWidth();
-        float backgroundHeight = backgroundTexture.getHeight();*/
-
-        //backgroundSprite.setPosition((screenWidth - backgroundWidth) / 2f,(screenHeight - backgroundHeight) / 2f);
     }
 
     @Override
@@ -126,19 +115,12 @@ public class FirstScreen implements Screen {
 
             dropSprite.translateY(-2f * delta);
             dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
-            // if the top of the drop goes below the bottom of the view, remove it
             if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
             else if (bucketRectangle.overlaps(dropRectangle)) {
                 dropSprites.removeIndex(i);
                 dropSound.play();
             }
         }
-        dropTimer += delta;
-        if (dropTimer > 1f) {
-            dropTimer = 0;
-            createDroplet();
-        }
-
     }
 
     private void draw() {
@@ -152,25 +134,9 @@ public class FirstScreen implements Screen {
         backgroundSprite.draw(spriteBatch);
         bucketSprite.draw(spriteBatch);
 
-        for(Sprite dropSprite : dropSprites) {
-            dropSprite.draw(spriteBatch);
-        }
-
         spriteBatch.end();
     }
 
-    private void createDroplet() {
-        float dropWidth = 1;
-        float dropHeight = 1;
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
-        Sprite dropSprite = new Sprite(dropTexture);
-        dropSprite.setSize(dropWidth, dropHeight);
-        dropSprite.setX(MathUtils.random(0f, worldWidth - dropWidth));
-        dropSprite.setY(worldHeight);
-        dropSprites.add(dropSprite);
-    }
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
