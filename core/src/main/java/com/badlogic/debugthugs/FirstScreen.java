@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -19,9 +20,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class FirstScreen implements Screen {
     float dropTimer;
     Texture backgroundTexture;
+    Sprite backgroundSprite;
     Texture bucketTexture;
     Sprite bucketSprite;
-    Texture dropTexture;
     Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
@@ -29,6 +30,11 @@ public class FirstScreen implements Screen {
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
+    SpriteBatch timeBatch;
+    BitmapFont font;
+    float timePassed = 300f;
+    int mins;
+    int seconds;
 
     @Override
     public void show() {
@@ -36,11 +42,12 @@ public class FirstScreen implements Screen {
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
         backgroundTexture = new Texture("background.png");
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(20, 20);
+        backgroundSprite.setPosition(0, 0);
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1,1);
-        dropTexture = new Texture("drop.png");
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         dropSprites = new Array<>();
         bucketRectangle = new Rectangle();
@@ -48,6 +55,9 @@ public class FirstScreen implements Screen {
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
+        timeBatch = new SpriteBatch();
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
     }
 
     @Override
@@ -55,16 +65,29 @@ public class FirstScreen implements Screen {
         input();
         logic();
         draw();
+
+        timePassed -= delta;
+        mins =(int) timePassed / 60;
+        seconds = (int) timePassed - mins * 60;
+        timeBatch.begin();
+        String time = String.format("%d.%02d", mins, seconds);
+        font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
+        timeBatch.end();
         // Draw your screen here. "delta" is the time since last render in seconds.
     }
 
     private void input() {
         float speed = 4f;
         float delta = Gdx.graphics.getDeltaTime();
+
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            bucketSprite.translateX(speed * delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            bucketSprite.translateX(-speed * delta);
+            backgroundSprite.translateX(-speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            backgroundSprite.translateX(speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            backgroundSprite.translateY(-speed * delta);
+        } if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            backgroundSprite.translateY(speed * delta);
         }
 
     }
@@ -74,8 +97,14 @@ public class FirstScreen implements Screen {
         float worldHeight = viewport.getWorldHeight();
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
+        float backgroundWidth = backgroundSprite.getWidth();
+        float backgroundHeight = backgroundSprite.getHeight();
+        float ybound = backgroundHeight - worldHeight;
+        float xbound = backgroundWidth - worldWidth;
 
         bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
+        backgroundSprite.setX(MathUtils.clamp(backgroundSprite.getX(), 0 - xbound, 0));
+        backgroundSprite.setY(MathUtils.clamp(backgroundSprite.getY(), 0 - ybound, 0));
 
         float delta = Gdx.graphics.getDeltaTime();
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
@@ -86,19 +115,12 @@ public class FirstScreen implements Screen {
 
             dropSprite.translateY(-2f * delta);
             dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
-            // if the top of the drop goes below the bottom of the view, remove it
             if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
             else if (bucketRectangle.overlaps(dropRectangle)) {
                 dropSprites.removeIndex(i);
                 dropSound.play();
             }
         }
-        dropTimer += delta;
-        if (dropTimer > 1f) {
-            dropTimer = 0;
-            createDroplet();
-        }
-
     }
 
     private void draw() {
@@ -109,27 +131,12 @@ public class FirstScreen implements Screen {
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
+        backgroundSprite.draw(spriteBatch);
         bucketSprite.draw(spriteBatch);
-
-        for(Sprite dropSprite : dropSprites) {
-            dropSprite.draw(spriteBatch);
-        }
 
         spriteBatch.end();
     }
 
-    private void createDroplet() {
-        float dropWidth = 1;
-        float dropHeight = 1;
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
-        Sprite dropSprite = new Sprite(dropTexture);
-        dropSprite.setSize(dropWidth, dropHeight);
-        dropSprite.setX(MathUtils.random(0f, worldWidth - dropWidth));
-        dropSprite.setY(worldHeight);
-        dropSprites.add(dropSprite);
-    }
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
