@@ -15,10 +15,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
     float dropTimer;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer renderer;
+    private OrthographicCamera camera;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     Texture bucketTexture;
@@ -58,6 +66,12 @@ public class FirstScreen implements Screen {
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
+        map = new TmxMapLoader().load("maps/maze_map.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map);
+
+        // Set up camera
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 600);
     }
 
     @Override
@@ -73,6 +87,20 @@ public class FirstScreen implements Screen {
         String time = String.format("%d.%02d", mins, seconds);
         font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
         timeBatch.end();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Simple camera movement
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  camera.position.x -= 200 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) camera.position.x += 200 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))    camera.position.y += 200 * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))  camera.position.y -= 200 * delta;
+
+        camera.update();
+
+        // Render the map
+        renderer.setView(camera);
+        renderer.render();
         // Draw your screen here. "delta" is the time since last render in seconds.
     }
 
