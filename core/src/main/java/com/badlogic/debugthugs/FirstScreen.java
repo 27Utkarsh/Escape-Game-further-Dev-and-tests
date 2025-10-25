@@ -1,5 +1,6 @@
 package com.badlogic.debugthugs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
-    float dropTimer;
+    Game game;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     Texture bucketTexture;
@@ -35,6 +36,10 @@ public class FirstScreen implements Screen {
     float timePassed = 300f;
     int mins;
     int seconds;
+
+    public FirstScreen(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -67,6 +72,9 @@ public class FirstScreen implements Screen {
         draw();
 
         timePassed -= delta;
+        if(timePassed <= 0){
+            game.setScreen(new LoseScreen(game));
+        }
         mins =(int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
         timeBatch.begin();
