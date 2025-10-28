@@ -16,6 +16,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
@@ -27,7 +32,6 @@ public class FirstScreen implements Screen {
     Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
-    SpriteBatch spriteBatch;
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
@@ -43,16 +47,21 @@ public class FirstScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
-        spriteBatch = new SpriteBatch();
-        viewport = new FitViewport(8, 5);
-        backgroundTexture = new Texture("background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(20, 20);
-        backgroundSprite.setPosition(0, 0);
+        viewport = new FitViewport(800, 600);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 600);
+        map = new TmxMapLoader().load("maps/maze_map.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map);
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(1,1);
+        bucketSprite.setSize(32,32);
+        bucketSprite.setPosition(64, 64);
+        camera.position.set(
+            bucketSprite.getX() + bucketSprite.getWidth() / 2f,
+            bucketSprite.getY() + bucketSprite.getHeight() / 2f,
+            0
+        );
+        camera.update();
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         dropSprites = new Array<>();
         bucketRectangle = new Rectangle();
@@ -69,7 +78,21 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         input();
         logic();
+        camera.position.set(
+            bucketSprite.getX() + bucketSprite.getWidth() / 2f,
+            bucketSprite.getY() + bucketSprite.getHeight() / 2f,
+            0
+        );
+        camera.update();
+
         draw();
+
+        renderer.setView(camera);
+        renderer.render();
+
+        renderer.getBatch().begin();
+        bucketSprite.draw(renderer.getBatch());
+        renderer.getBatch().end();
 
         timePassed -= delta;
         if(timePassed <= 0){
@@ -81,97 +104,60 @@ public class FirstScreen implements Screen {
         String time = String.format("%d.%02d", mins, seconds);
         font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
         timeBatch.end();
-        // Draw your screen here. "delta" is the time since last render in seconds.
+
     }
 
     private void input() {
-        float speed = 4f;
+        float speed = 128f;
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            backgroundSprite.translateX(-speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            backgroundSprite.translateX(speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            backgroundSprite.translateY(-speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            backgroundSprite.translateY(speed * delta);
+            bucketSprite.translateX(speed * delta);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            bucketSprite.translateX(-speed * delta);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            bucketSprite.translateY(speed * delta);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            bucketSprite.translateY(-speed * delta);
         }
 
     }
 
     private void logic() {
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
+        float delta = Gdx.graphics.getDeltaTime();
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
-        float backgroundWidth = backgroundSprite.getWidth();
-        float backgroundHeight = backgroundSprite.getHeight();
-        float ybound = backgroundHeight - worldHeight;
-        float xbound = backgroundWidth - worldWidth;
 
-        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
-        backgroundSprite.setX(MathUtils.clamp(backgroundSprite.getX(), 0 - xbound, 0));
-        backgroundSprite.setY(MathUtils.clamp(backgroundSprite.getY(), 0 - ybound, 0));
-
-        float delta = Gdx.graphics.getDeltaTime();
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
-        for (int i = dropSprites.size - 1; i >= 0; i--) {
-            Sprite dropSprite = dropSprites.get(i); // Get the sprite from the list
-            float dropWidth = dropSprite.getWidth();
-            float dropHeight = dropSprite.getHeight();
-
-            dropSprite.translateY(-2f * delta);
-            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
-            if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
-            else if (bucketRectangle.overlaps(dropRectangle)) {
-                dropSprites.removeIndex(i);
-                dropSound.play();
-            }
-        }
     }
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-        spriteBatch.begin();
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-        spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-        backgroundSprite.draw(spriteBatch);
-        bucketSprite.draw(spriteBatch);
-
-        spriteBatch.end();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        // If the window is minimized on a desktop (LWJGL3) platform, width and height are 0, which causes problems.
-        // In that case, we don't resize anything, and wait for the window to be a normal size before updating.
         if(width <= 0 || height <= 0) return;
-
-        // Resize your screen here. The parameters represent the new window size.
     }
 
     @Override
     public void pause() {
-        // Invoked when your application is paused.
     }
 
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
     }
 
     @Override
     public void hide() {
-        // This method is called when another screen replaces this one.
     }
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
     }
 }
