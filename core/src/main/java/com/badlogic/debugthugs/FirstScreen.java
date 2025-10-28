@@ -40,7 +40,7 @@ public class FirstScreen implements Screen {
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
-    float timePassed = 300f;
+    float timePassed = 3f;
     int mins;
     int seconds;
     OrthographicCamera camera;
@@ -130,6 +130,7 @@ public class FirstScreen implements Screen {
         //timer stuff
         timePassed -= delta;
         if(timePassed <= 0){
+            music.stop();
             game.setScreen(new LoseScreen(game));
         }
         mins =(int) timePassed / 60;

@@ -3,6 +3,7 @@ package com.badlogic.debugthugs;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +21,7 @@ public class LoseScreen implements Screen {
     Game game;
     Stage stage;
     Skin skin;
+    Music music;
 
     public LoseScreen(Game game) {
         this.game = game;
@@ -31,6 +33,11 @@ public class LoseScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
+        music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         TextButton againButton = new TextButton("Try Again", skin);
@@ -40,6 +47,7 @@ public class LoseScreen implements Screen {
         againButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                music.stop();
                 game.setScreen(new MenuScreen(game));
             }
         });
