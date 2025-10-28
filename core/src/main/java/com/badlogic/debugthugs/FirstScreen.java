@@ -1,5 +1,6 @@
 package com.badlogic.debugthugs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -23,10 +24,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
-    float dropTimer;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
-    private OrthographicCamera camera;
+    Game game;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     Texture bucketTexture;
@@ -42,6 +40,10 @@ public class FirstScreen implements Screen {
     float timePassed = 300f;
     int mins;
     int seconds;
+
+    public FirstScreen(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -93,6 +95,9 @@ public class FirstScreen implements Screen {
         renderer.getBatch().end();
 
         timePassed -= delta;
+        if(timePassed <= 0){
+            game.setScreen(new LoseScreen(game));
+        }
         mins =(int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
         timeBatch.begin();
