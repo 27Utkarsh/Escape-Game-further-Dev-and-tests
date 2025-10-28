@@ -40,6 +40,9 @@ public class FirstScreen implements Screen {
     float timePassed = 300f;
     int mins;
     int seconds;
+    OrthographicCamera camera;
+    TiledMap map;
+    OrthogonalTiledMapRenderer renderer;
 
     public FirstScreen(Game game) {
         this.game = game;
@@ -100,9 +103,10 @@ public class FirstScreen implements Screen {
         }
         mins =(int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
+        timeBatch.setProjectionMatrix(viewport.getCamera().combined);
         timeBatch.begin();
         String time = String.format("%d.%02d", mins, seconds);
-        font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
+        font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
 
     }
