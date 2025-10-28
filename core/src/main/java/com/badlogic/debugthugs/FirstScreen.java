@@ -8,9 +8,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,6 +22,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
+    private static final int FRAME_COLS = 6, FRAME_ROWS = 8;
+    Animation<TextureRegion> walkCycle;
+    Texture walkSheet;
+    SpriteBatch spriteBatch;
+    float stateTime;
     Game game;
     Texture backgroundTexture;
     Sprite backgroundSprite;
@@ -41,9 +44,13 @@ public class FirstScreen implements Screen {
     int mins;
     int seconds;
     OrthographicCamera camera;
-    TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
     OrthogonalTiledMapRenderer renderer;
     private TiledMapTileLayer collisionLayer;
+
+    float playerX = 710;
+    float playerY = 1730;
+    float playerWidth = 24;
+    float playerHeight = 24;
 
     public FirstScreen(Game game) {
         this.game = game;
@@ -56,6 +63,8 @@ public class FirstScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 600);
         camera.zoom = 0.6f;
+
+        TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
@@ -77,28 +86,46 @@ public class FirstScreen implements Screen {
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
+
+        //animation set up
+        walkSheet = new Texture("AnimationSheet.png");
+        TextureRegion[][] temp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
+
+        TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
+        for (int col = 0; col < FRAME_COLS; col++) {
+            for (int j = 0; j < FRAME_ROWS; j++) {
+                walkFrames[col] = temp[col][1];
+            }
+        }
+        walkCycle = new Animation<TextureRegion>(0.025f, walkFrames);
+        spriteBatch = new SpriteBatch();
+        stateTime = 0f;
     }
 
     @Override
     public void render(float delta) {
+        stateTime += Gdx.graphics.getDeltaTime();
         input();
         logic();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
-            bucketSprite.getX() + bucketSprite.getWidth() / 2f,
-            bucketSprite.getY() + bucketSprite.getHeight() / 2f,
+            playerX + playerWidth / 2f,
+            playerY+ playerHeight / 2f,
             0
         );
         camera.update();
 
         draw();
 
+
         renderer.setView(camera);
         renderer.render();
 
-        renderer.getBatch().begin();
-        bucketSprite.draw(renderer.getBatch());
-        renderer.getBatch().end();
+        TextureRegion currentFrame = walkCycle.getKeyFrame(stateTime, true);
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        spriteBatch.draw(currentFrame, playerX, playerY);
+        spriteBatch.end();
 
         //timer stuff
         timePassed -= delta;
@@ -122,27 +149,27 @@ public class FirstScreen implements Screen {
         float moveAmount = speed * delta;
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            bucketSprite.translateX(moveAmount);
+            playerX += moveAmount;
             if (collision()) {
-                bucketSprite.translateX(-moveAmount);
+                playerX -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            bucketSprite.translateX(-moveAmount);
+            playerX -= moveAmount;
             if (collision()) {
-                bucketSprite.translateX(moveAmount);
+                playerX += moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            bucketSprite.translateY(moveAmount);
+            playerY += moveAmount;
             if (collision()) {
-                bucketSprite.translateY(-moveAmount);
+                playerY -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            bucketSprite.translateY(-moveAmount);
+            playerY -= moveAmount;
             if (collision()) {
-                bucketSprite.translateY(moveAmount);
+                playerY += moveAmount;
             }
         }
 
@@ -157,13 +184,13 @@ public class FirstScreen implements Screen {
         //checks 3 corners of the sprite to see if it's colliding with a wall.
         //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
         //The last check allows for the player to be walking in front of the wall we're facing slightly
-        if (check_wall(x, y)) {
+        if (check_wall(playerX, playerY)) {
             return true;
         }
-        if (check_wall(x + (width), y)) {
+        if (check_wall(playerX + playerWidth, playerY)) {
             return true;
         }
-        if (check_wall(x + width, y + (height/2))) {
+        if (check_wall(playerX + playerWidth, playerY + (playerHeight/2))) {
             return true;
         }
         return false;
