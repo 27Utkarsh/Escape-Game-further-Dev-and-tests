@@ -11,11 +11,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
@@ -27,7 +32,6 @@ public class FirstScreen implements Screen {
     Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
-    SpriteBatch spriteBatch;
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
@@ -36,6 +40,10 @@ public class FirstScreen implements Screen {
     float timePassed = 3f;
     int mins;
     int seconds;
+    OrthographicCamera camera;
+    TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
+    OrthogonalTiledMapRenderer renderer;
+    private TiledMapTileLayer collisionLayer;
 
     public FirstScreen(Game game) {
         this.game = game;
@@ -43,23 +51,29 @@ public class FirstScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
-        spriteBatch = new SpriteBatch();
-        viewport = new FitViewport(8, 5);
-        backgroundTexture = new Texture("background.png");
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(20, 20);
-        backgroundSprite.setPosition(0, 0);
+        viewport = new FitViewport(800, 600);
+        //made a separate camera rather than using the viewport so that the timer stays in the top corner
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 600);
+        camera.zoom = 0.6f;
+        MapLayer wallsLayer = map.getLayers().get("Walls");
+        collisionLayer = (TiledMapTileLayer) wallsLayer;
+        renderer = new OrthogonalTiledMapRenderer(map);
+
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(1,1);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+        bucketSprite.setSize(30,30);
+        bucketSprite.setPosition(710, 1730);
+
         dropSprites = new Array<>();
         bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
+        //music stuff
+        music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
+        //timer stuff
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -69,8 +83,24 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         input();
         logic();
+        //sets the camera to position the sprite in the middle of the screen
+        camera.position.set(
+            bucketSprite.getX() + bucketSprite.getWidth() / 2f,
+            bucketSprite.getY() + bucketSprite.getHeight() / 2f,
+            0
+        );
+        camera.update();
+
         draw();
 
+        renderer.setView(camera);
+        renderer.render();
+
+        renderer.getBatch().begin();
+        bucketSprite.draw(renderer.getBatch());
+        renderer.getBatch().end();
+
+        //timer stuff
         timePassed -= delta;
         if(timePassed <= 0){
             music.stop();
@@ -78,101 +108,115 @@ public class FirstScreen implements Screen {
         }
         mins =(int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
+        timeBatch.setProjectionMatrix(viewport.getCamera().combined);
         timeBatch.begin();
         String time = String.format("%d.%02d", mins, seconds);
-        font.draw(timeBatch, time, 10, viewport.getWorldHeight() + 460);
+        font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
-        // Draw your screen here. "delta" is the time since last render in seconds.
+
     }
 
     private void input() {
-        float speed = 4f;
+        float speed = 128f;
         float delta = Gdx.graphics.getDeltaTime();
+        float moveAmount = speed * delta;
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            backgroundSprite.translateX(-speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            backgroundSprite.translateX(speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            backgroundSprite.translateY(-speed * delta);
-        } if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            backgroundSprite.translateY(speed * delta);
+            bucketSprite.translateX(moveAmount);
+            if (collision()) {
+                bucketSprite.translateX(-moveAmount);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            bucketSprite.translateX(-moveAmount);
+            if (collision()) {
+                bucketSprite.translateX(moveAmount);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            bucketSprite.translateY(moveAmount);
+            if (collision()) {
+                bucketSprite.translateY(-moveAmount);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            bucketSprite.translateY(-moveAmount);
+            if (collision()) {
+                bucketSprite.translateY(moveAmount);
+            }
         }
 
+    }
+
+    private boolean collision() {
+        float x = bucketSprite.getX();
+        float y = bucketSprite.getY();
+        float width = bucketSprite.getWidth();
+        float height = bucketSprite.getHeight();
+
+        //checks 3 corners of the sprite to see if it's colliding with a wall.
+        //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
+        //The last check allows for the player to be walking in front of the wall we're facing slightly
+        if (check_wall(x, y)) {
+            return true;
+        }
+        if (check_wall(x + (width), y)) {
+            return true;
+        }
+        if (check_wall(x + width, y + (height/2))) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean check_wall(float x, float y) {
+        //Figures out the x and y coordinate of the tile the sprite is on
+        int tileX = (int) (x / 32);
+        int tileY = (int) (y / 32);
+
+        //checks the tile at position (x,y)
+        //if there is no tile there, return null
+        //its checking the wall layer of the map, meaning if there isnt a tile in that location theres nothing to collide with
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        if (cell == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void logic() {
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
+        float delta = Gdx.graphics.getDeltaTime();
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
-        float backgroundWidth = backgroundSprite.getWidth();
-        float backgroundHeight = backgroundSprite.getHeight();
-        float ybound = backgroundHeight - worldHeight;
-        float xbound = backgroundWidth - worldWidth;
 
-        bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth - bucketWidth));
-        backgroundSprite.setX(MathUtils.clamp(backgroundSprite.getX(), 0 - xbound, 0));
-        backgroundSprite.setY(MathUtils.clamp(backgroundSprite.getY(), 0 - ybound, 0));
-
-        float delta = Gdx.graphics.getDeltaTime();
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
-        for (int i = dropSprites.size - 1; i >= 0; i--) {
-            Sprite dropSprite = dropSprites.get(i); // Get the sprite from the list
-            float dropWidth = dropSprite.getWidth();
-            float dropHeight = dropSprite.getHeight();
-
-            dropSprite.translateY(-2f * delta);
-            dropRectangle.set(dropSprite.getX(), dropSprite.getY(), dropWidth, dropHeight);
-            if (dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
-            else if (bucketRectangle.overlaps(dropRectangle)) {
-                dropSprites.removeIndex(i);
-                dropSound.play();
-            }
-        }
     }
 
     private void draw() {
-        ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(220/255f, 157/255f, 126/255f, 1);
         viewport.apply();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-        spriteBatch.begin();
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-        spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-        backgroundSprite.draw(spriteBatch);
-        bucketSprite.draw(spriteBatch);
-
-        spriteBatch.end();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        // If the window is minimized on a desktop (LWJGL3) platform, width and height are 0, which causes problems.
-        // In that case, we don't resize anything, and wait for the window to be a normal size before updating.
         if(width <= 0 || height <= 0) return;
-
-        // Resize your screen here. The parameters represent the new window size.
     }
 
     @Override
     public void pause() {
-        // Invoked when your application is paused.
     }
 
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
     }
 
     @Override
     public void hide() {
-        // This method is called when another screen replaces this one.
     }
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
     }
 }
