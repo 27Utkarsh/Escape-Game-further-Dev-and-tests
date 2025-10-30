@@ -1,6 +1,7 @@
 package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +21,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
     BitmapFont font;
     Skin buttonSkin;
     Texture background;
+    Music music;
 
     public MenuScreen(Game game) {
         this.game = game;
@@ -30,6 +32,11 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         background = new Texture("Menu.png");
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("Menu_music.ogg"));
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
 
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -44,6 +51,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                music.stop();
                 game.setScreen(new FirstScreen(game));
             }
         });
@@ -93,5 +101,6 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         font.dispose();
         stage.dispose();
         buttonSkin.dispose();
+        music.dispose();
     }
 }
