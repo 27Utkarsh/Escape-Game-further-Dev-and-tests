@@ -20,9 +20,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+import static com.badlogic.gdx.math.Rectangle.tmp;
+
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
-    private static final int FRAME_COLS = 6, FRAME_ROWS = 8;
+    private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
     Animation<TextureRegion> walkCycle;
     Texture walkSheet;
     SpriteBatch spriteBatch;
@@ -40,12 +42,18 @@ public class FirstScreen implements Screen {
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
-    float timePassed = 3f;
+    float timePassed = 300f;
     int mins;
     int seconds;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
-    private TiledMapTileLayer collisionLayer;
+    TiledMapTileLayer collisionLayer;
+    TiledMapTileLayer doorLayer;
+    int FRAME_WIDTH = 32;
+    int FRAME_HEIGHT = 32;
+    boolean isMoving = false;
+    boolean open = false;
+
 
     float playerX = 710;
     float playerY = 1730;
@@ -66,12 +74,14 @@ public class FirstScreen implements Screen {
 
         TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
+        MapLayer doorsLayer = map.getLayers().get("Doors");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
+        doorLayer = (TiledMapTileLayer) doorsLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(30,30);
+        bucketSprite.setSize(32,32);
         bucketSprite.setPosition(710, 1730);
 
         dropSprites = new Array<>();
@@ -88,14 +98,12 @@ public class FirstScreen implements Screen {
         font.setColor(Color.WHITE);
 
         //animation set up
-        walkSheet = new Texture("AnimationSheet.png");
-        TextureRegion[][] temp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
+        walkSheet = new Texture("walkfixed.png");
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, 32, 32);
 
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
         for (int col = 0; col < FRAME_COLS; col++) {
-            for (int j = 0; j < FRAME_ROWS; j++) {
-                walkFrames[col] = temp[col][1];
-            }
+            walkFrames[col] = tmp[1][col];
         }
         walkCycle = new Animation<TextureRegion>(0.025f, walkFrames);
         spriteBatch = new SpriteBatch();
@@ -104,7 +112,12 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        stateTime += Gdx.graphics.getDeltaTime();
+        float animSpeed = 0.5f;
+        if (isMoving) {
+            stateTime += Gdx.graphics.getDeltaTime() * animSpeed;
+        } else {
+            stateTime = 0;
+        }
         input();
         logic();
         //sets the camera to position the sprite in the middle of the screen
@@ -147,44 +160,57 @@ public class FirstScreen implements Screen {
         float speed = 128f;
         float delta = Gdx.graphics.getDeltaTime();
         float moveAmount = speed * delta;
-
+        isMoving = false;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            isMoving = true;
             playerX += moveAmount;
-            if (collision()) {
+            if (collision() || door()) {
                 playerX -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            isMoving = true;
             playerX -= moveAmount;
-            if (collision()) {
+            if (collision() || door()) {
                 playerX += moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            isMoving = true;
             playerY += moveAmount;
-            if (collision()) {
+            if (collision() || door()) {
                 playerY -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            isMoving = true;
             playerY -= moveAmount;
-            if (collision()) {
+            if (collision() || door()) {
                 playerY += moveAmount;
             }
         }
 
     }
 
+    private boolean door() {
+        if (check_door(playerX + 10, playerY)) {
+            return true;
+        }
+        if (check_door(playerX + playerWidth, playerY)) {
+            return true;
+        }
+        if (check_door(playerX + playerWidth, playerY + (playerHeight/2))) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean collision() {
-        float x = bucketSprite.getX();
-        float y = bucketSprite.getY();
-        float width = bucketSprite.getWidth();
-        float height = bucketSprite.getHeight();
 
         //checks 3 corners of the sprite to see if it's colliding with a wall.
         //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
         //The last check allows for the player to be walking in front of the wall we're facing slightly
-        if (check_wall(playerX, playerY)) {
+        if (check_wall(playerX + 10, playerY)) {
             return true;
         }
         if (check_wall(playerX + playerWidth, playerY)) {
@@ -195,7 +221,19 @@ public class FirstScreen implements Screen {
         }
         return false;
     }
-
+    private boolean check_door(float x, float y) {
+        int tileX = (int) (x / 32);
+        int tileY = (int) (y / 32);
+        TiledMapTileLayer.Cell cell = doorLayer.getCell(tileX, tileY);
+        if (cell == null) {
+            return false;
+        } else {
+            if (open) {
+                return false;
+            }
+            return true;
+        }
+    }
     private boolean check_wall(float x, float y) {
         //Figures out the x and y coordinate of the tile the sprite is on
         int tileX = (int) (x / 32);
