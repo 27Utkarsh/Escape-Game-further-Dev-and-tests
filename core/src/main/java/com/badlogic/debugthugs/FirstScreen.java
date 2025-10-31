@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -40,7 +41,7 @@ public class FirstScreen implements Screen {
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
-    float timePassed = 3f;
+    float timePassed = 500f;
     int mins;
     int seconds;
     OrthographicCamera camera;
@@ -51,6 +52,9 @@ public class FirstScreen implements Screen {
     float playerY = 1730;
     float playerWidth = 24;
     float playerHeight = 24;
+
+    Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
+    Rectangle player = new Rectangle(playerX, playerY, playerWidth, playerHeight);
 
     public FirstScreen(Game game) {
         this.game = game;
@@ -117,7 +121,6 @@ public class FirstScreen implements Screen {
 
         draw();
 
-
         renderer.setView(camera);
         renderer.render();
 
@@ -140,6 +143,18 @@ public class FirstScreen implements Screen {
         String time = String.format("%d.%02d", mins, seconds);
         font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
+
+        //Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        //camera.unproject(mousePos);
+        //System.out.println(mousePos.x + ", " +  mousePos.y);
+
+        player.setX(playerX);
+        player.setY(playerY);
+
+        if (player.overlaps(exitArea)) {
+            music.stop();
+            game.setScreen(new WinScreen(game));
+        }
 
     }
 

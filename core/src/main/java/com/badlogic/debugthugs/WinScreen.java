@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class LoseScreen implements Screen {
+public class WinScreen implements Screen {
     Texture backgroundTexture;
     SpriteBatch batch;
     Game game;
@@ -23,13 +23,13 @@ public class LoseScreen implements Screen {
     Skin skin;
     Music music;
 
-    public LoseScreen(Game game) {
+    public WinScreen(Game game) {
         this.game = game;
     }
     @Override
     public void show() {
         batch = new SpriteBatch();
-        backgroundTexture = new Texture("Game_Over_image.png");
+        backgroundTexture = new Texture("Win.png");
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
