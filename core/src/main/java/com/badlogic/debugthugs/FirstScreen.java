@@ -41,7 +41,7 @@ public class FirstScreen implements Screen {
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
-    float timePassed = 500f;
+    float timePassed = 300f;
     int mins;
     int seconds;
     OrthographicCamera camera;
@@ -144,6 +144,7 @@ public class FirstScreen implements Screen {
         font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
 
+        //This code will display your mouse x,y coordinates
         //Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         //camera.unproject(mousePos);
         //System.out.println(mousePos.x + ", " +  mousePos.y);
