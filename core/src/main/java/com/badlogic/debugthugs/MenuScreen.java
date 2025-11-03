@@ -12,9 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MenuScreen extends ScreenAdapter implements Screen {
+    FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     Stage stage;
     Game game;
     SpriteBatch batch;
@@ -61,9 +63,11 @@ public class MenuScreen extends ScreenAdapter implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.DARK_GRAY);
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         font.draw(batch, "University Escape [WIP Title]", 20, 400);
         batch.end();
 
@@ -77,7 +81,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height, true);
     }
 
     @Override
