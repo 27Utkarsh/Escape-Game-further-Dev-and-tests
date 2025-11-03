@@ -37,7 +37,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Menu_music.ogg"));
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(SettingsScreen.getNoise());
         music.play();
 
         batch = new SpriteBatch();
@@ -47,8 +47,11 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
         buttonSkin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton startButton = new TextButton("Start", buttonSkin);
+        TextButton settingsButton = new TextButton("Settings", buttonSkin);
         startButton.setPosition(20,300);
         startButton.setSize(200,60);
+        settingsButton.setPosition(20,235);
+        settingsButton.setSize(200,60);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -58,7 +61,16 @@ public class MenuScreen extends ScreenAdapter implements Screen {
             }
         });
 
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new SettingsScreen(game));
+            }
+        });
+
         stage.addActor(startButton);
+        stage.addActor(settingsButton);
     }
     @Override
     public void render(float delta) {
