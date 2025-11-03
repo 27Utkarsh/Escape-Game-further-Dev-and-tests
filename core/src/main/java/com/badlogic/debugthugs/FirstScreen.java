@@ -95,7 +95,7 @@ public class FirstScreen implements Screen {
         //music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(SettingsScreen.getNoise());
         music.play();
         //timer stuff
         timeBatch = new SpriteBatch();

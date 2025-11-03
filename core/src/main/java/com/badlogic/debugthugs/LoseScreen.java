@@ -35,7 +35,7 @@ public class LoseScreen implements Screen {
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(SettingsScreen.getNoise());
         music.play();
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
