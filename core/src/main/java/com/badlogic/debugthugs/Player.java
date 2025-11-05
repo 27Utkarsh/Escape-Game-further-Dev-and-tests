@@ -35,6 +35,7 @@ public class Player {
         this.walkCycle = walkCycle;
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
+        //hi
 
         TextureRegion first = walkCycle.getKeyFrame(0);
         this.playerWidth = 24;
