@@ -31,11 +31,8 @@ public class FirstScreen implements Screen {
     SpriteBatch spriteBatch;
     float stateTime;
     Game game;
-    Texture backgroundTexture;
-    Sprite backgroundSprite;
     Texture bucketTexture;
     Sprite bucketSprite;
-    Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
     FitViewport viewport;
@@ -50,8 +47,7 @@ public class FirstScreen implements Screen {
     OrthogonalTiledMapRenderer renderer;
     TiledMapTileLayer collisionLayer;
     TiledMapTileLayer doorLayer;
-    int FRAME_WIDTH = 32;
-    int FRAME_HEIGHT = 32;
+    TiledMapTileLayer bookLayer;
     boolean isMoving = false;
     boolean open = false;
     boolean doorInfront = true;
@@ -80,8 +76,10 @@ public class FirstScreen implements Screen {
         TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
         MapLayer doorsLayer = map.getLayers().get("Doors");
+        MapLayer booksLayer = map.getLayers().get("Books");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
         doorLayer = (TiledMapTileLayer) doorsLayer;
+        bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
         bucketTexture = new Texture("bucket.png");
@@ -258,6 +256,16 @@ public class FirstScreen implements Screen {
                 doorLayer.setCell(tileX, tileY, null);
                 return false;
             }
+            return true;
+        }
+    }
+    private boolean check_book(float x, float y) {
+        int tileX = (int) (x / 32);
+        int tileY = (int) (y / 32);
+        TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
+        if (cell == null) {
+            return false;
+        } else {
             return true;
         }
     }
