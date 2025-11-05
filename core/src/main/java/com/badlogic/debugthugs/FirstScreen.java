@@ -45,18 +45,22 @@ public class FirstScreen implements Screen {
     int seconds;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
-    TiledMapTileLayer collisionLayer;
-    TiledMapTileLayer doorLayer;
+
+    static TiledMapTileLayer collisionLayer;
+    static TiledMapTileLayer doorLayer;
+    int FRAME_WIDTH = 32;
+    int FRAME_HEIGHT = 32;
     TiledMapTileLayer bookLayer;
+
     boolean isMoving = false;
-    boolean open = false;
-    boolean doorInfront = true;
+    static boolean open = false;
+    static boolean doorInfront = true;
 
 
-    float playerX = 710;
-    float playerY = 1730;
-    float playerWidth = 24;
-    float playerHeight = 24;
+    static float playerX = 710;
+    static float playerY = 1730;
+    static float playerWidth = 24;
+    static float playerHeight = 24;
 
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
     Rectangle player = new Rectangle(playerX, playerY, playerWidth, playerHeight);
@@ -184,80 +188,34 @@ public class FirstScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             isMoving = true;
             playerX += moveAmount;
-            if (collision() || door()) {
+            if (Collision.collisionCheck() || Collision.door()) {
                 playerX -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             isMoving = true;
             playerX -= moveAmount;
-            if (collision() || door()) {
+            if (Collision.collisionCheck() || Collision.door()) {
                 playerX += moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             isMoving = true;
             playerY += moveAmount;
-            if (collision() || door()) {
+            if (Collision.collisionCheck() || Collision.door()) {
                 playerY -= moveAmount;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             isMoving = true;
             playerY -= moveAmount;
-            if (collision() || door()) {
+            if (Collision.collisionCheck() || Collision.door()) {
                 playerY += moveAmount;
             }
         }
 
     }
 
-    private boolean door() {
-        doorInfront = false;
-        if (check_door(playerX + 10, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY + (playerHeight/2))) {
-            doorInfront = true;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean collision() {
-
-        //checks 3 corners of the sprite to see if it's colliding with a wall.
-        //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
-        //The last check allows for the player to be walking in front of the wall we're facing slightly
-        if (check_wall(playerX + 10, playerY)) {
-            return true;
-        }
-        if (check_wall(playerX + playerWidth, playerY)) {
-            return true;
-        }
-        if (check_wall(playerX + playerWidth, playerY + (playerHeight/2))) {
-            return true;
-        }
-        return false;
-    }
-    private boolean check_door(float x, float y) {
-        int tileX = (int) (x / 32);
-        int tileY = (int) (y / 32);
-        TiledMapTileLayer.Cell cell = doorLayer.getCell(tileX, tileY);
-        if (cell == null) {
-            return false;
-        } else {
-            if (open) {
-                doorLayer.setCell(tileX, tileY, null);
-                return false;
-            }
-            return true;
-        }
     }
     private boolean check_book(float x, float y) {
         int tileX = (int) (x / 32);
@@ -268,22 +226,7 @@ public class FirstScreen implements Screen {
         } else {
             return true;
         }
-    }
-    private boolean check_wall(float x, float y) {
-        //Figures out the x and y coordinate of the tile the sprite is on
-        int tileX = (int) (x / 32);
-        int tileY = (int) (y / 32);
-
-        //checks the tile at position (x,y)
-        //if there is no tile there, return null
-        //its checking the wall layer of the map, meaning if there isnt a tile in that location theres nothing to collide with
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
-        if (cell == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    } main
 
     private void logic() {
         float delta = Gdx.graphics.getDeltaTime();
