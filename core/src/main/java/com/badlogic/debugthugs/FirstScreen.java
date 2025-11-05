@@ -31,11 +31,8 @@ public class FirstScreen implements Screen {
     SpriteBatch spriteBatch;
     float stateTime;
     Game game;
-    Texture backgroundTexture;
-    Sprite backgroundSprite;
     Texture bucketTexture;
     Sprite bucketSprite;
-    Sound dropSound;
     Music music;
     Array<Sprite> dropSprites;
     FitViewport viewport;
@@ -48,10 +45,13 @@ public class FirstScreen implements Screen {
     int seconds;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
+
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
     int FRAME_WIDTH = 32;
     int FRAME_HEIGHT = 32;
+    TiledMapTileLayer bookLayer;
+
     boolean isMoving = false;
     static boolean open = false;
     static boolean doorInfront = true;
@@ -80,8 +80,10 @@ public class FirstScreen implements Screen {
         TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
         MapLayer doorsLayer = map.getLayers().get("Doors");
+        MapLayer booksLayer = map.getLayers().get("Books");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
         doorLayer = (TiledMapTileLayer) doorsLayer;
+        bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
         bucketTexture = new Texture("bucket.png");
@@ -214,37 +216,17 @@ public class FirstScreen implements Screen {
 
     }
 
-    /*private boolean door() {
-        doorInfront = false;
-        if (check_door(playerX + 10, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY + (playerHeight/2))) {
-            doorInfront = true;
-            return true;
-        }
-        return false;
     }
-
-    private boolean check_door(float x, float y) {
+    private boolean check_book(float x, float y) {
         int tileX = (int) (x / 32);
         int tileY = (int) (y / 32);
-        TiledMapTileLayer.Cell cell = doorLayer.getCell(tileX, tileY);
+        TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
         if (cell == null) {
             return false;
         } else {
-            if (open) {
-                doorLayer.setCell(tileX, tileY, null);
-                return false;
-            }
             return true;
         }
-    }*/
+    } main
 
     private void logic() {
         float delta = Gdx.graphics.getDeltaTime();
