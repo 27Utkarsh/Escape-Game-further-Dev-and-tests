@@ -54,6 +54,7 @@ public class FirstScreen implements Screen {
     int FRAME_HEIGHT = 32;
     boolean isMoving = false;
     boolean open = false;
+    boolean doorInfront = true;
 
 
     float playerX = 710;
@@ -177,6 +178,11 @@ public class FirstScreen implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
         float moveAmount = speed * delta;
         isMoving = false;
+        if (doorInfront) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                open = true;
+            }
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             isMoving = true;
             playerX += moveAmount;
@@ -209,13 +215,17 @@ public class FirstScreen implements Screen {
     }
 
     private boolean door() {
+        doorInfront = false;
         if (check_door(playerX + 10, playerY)) {
+            doorInfront = true;
             return true;
         }
         if (check_door(playerX + playerWidth, playerY)) {
+            doorInfront = true;
             return true;
         }
         if (check_door(playerX + playerWidth, playerY + (playerHeight/2))) {
+            doorInfront = true;
             return true;
         }
         return false;
@@ -245,6 +255,7 @@ public class FirstScreen implements Screen {
             return false;
         } else {
             if (open) {
+                doorLayer.setCell(tileX, tileY, null);
                 return false;
             }
             return true;

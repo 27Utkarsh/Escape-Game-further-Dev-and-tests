@@ -32,7 +32,7 @@
  </layer>
  <layer id="7" name="Doors" width="75" height="75">
   <data encoding="base64" compression="zlib">
-   eJzt1TEJAAAIAEFH+2c1gIMFBDe5g8/wEQAAAAAAAMBF5QQAX3gbAAAAAAAAAAAAAAAAwF4D1OQD8Q==
+   eJztwyERAAAIBLCX9M9KAAQCSYHtbgkAAAAAAAAAAJyuDQAAAAAAAAAAAAAAAMBvANVrAfk=
   </data>
  </layer>
  <objectgroup id="6" name="Collisions">
