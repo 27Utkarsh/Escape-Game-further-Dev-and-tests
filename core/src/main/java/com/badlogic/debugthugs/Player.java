@@ -11,19 +11,21 @@ import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
 
 public class Player {
 
-    public float playerX, playerY;
-    public float playerWidth, playerHeight;
+    public float playerX;
+    public float playerY;
+    public float playerWidth;
+    public float playerHeight;
 
     private float stateTime = 0f;
-    private boolean isMoving = false;
+    boolean isMoving = false;
 
-    private Animation<TextureRegion> walkCycle;
+    Animation<TextureRegion> walkCycle;
 
-    private TiledMapTileLayer wallLayer;
-    private TiledMapTileLayer doorLayer;
+    TiledMapTileLayer wallLayer;
+    static TiledMapTileLayer doorLayer;
 
-    public boolean doorInfront = false;
-    public boolean open = false; // door opened
+    public static boolean doorInfront = false;
+    public static boolean open = false; // door opened
 
     public Player(float startX, float startY,
                   Animation<TextureRegion> walkCycle,
@@ -42,7 +44,7 @@ public class Player {
         this.playerHeight = 24;
     }
 
-    public void update(float delta) {
+    /*public void update(float delta) {
         isMoving = false;
         float speed = 128f;
         float moveAmount = speed * delta;
@@ -87,9 +89,9 @@ public class Player {
                 open = true;
             }
         }
-    }
+    }*/
 
-    private boolean collision() {
+    /*private boolean collision() {
         if (check_wall(playerX + 10, playerY)) {
             return true;
         }
@@ -139,7 +141,7 @@ public class Player {
             }
             return true;
         }
-    }
+    }*/
 
     public void render(SpriteBatch batch) {
         TextureRegion frame = walkCycle.getKeyFrame(stateTime, true);
