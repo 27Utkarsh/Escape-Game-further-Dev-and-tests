@@ -32,6 +32,7 @@ public class FirstScreen implements Screen {
     float stateTime;
     Game game;
     Texture bucketTexture;
+    Texture keyTexture;
     Sprite bucketSprite;
     Music music;
     Array<Sprite> dropSprites;
@@ -46,6 +47,7 @@ public class FirstScreen implements Screen {
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
+    Key key;
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -76,6 +78,9 @@ public class FirstScreen implements Screen {
         doorLayer = (TiledMapTileLayer) doorsLayer;
         bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
+
+        keyTexture = new Texture("key.png");
+        key = new Key(keyTexture, 1180, 1700);
 
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
@@ -118,7 +123,7 @@ public class FirstScreen implements Screen {
         } else {
             stateTime = 0;
         }
-        playerChar.input();
+        playerChar.input(key);
         logic();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
@@ -137,6 +142,8 @@ public class FirstScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
+        key.checkCollected(playerChar);
+        key.render(spriteBatch);
         spriteBatch.end();
 
         //timer stuff
@@ -154,9 +161,9 @@ public class FirstScreen implements Screen {
         timeBatch.end();
 
         //This code will display your mouse x,y coordinates
-        //Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        //camera.unproject(mousePos);
-        //System.out.println(mousePos.x + ", " +  mousePos.y);
+        Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos);
+        System.out.println(mousePos.x + ", " +  mousePos.y);
 
         player.setX(playerChar.playerX);
         player.setY(playerChar.playerY);
