@@ -26,7 +26,7 @@ import static com.badlogic.gdx.math.Rectangle.tmp;
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
-    Animation<TextureRegion> walkCycle;
+    //Animation<TextureRegion> walkCycle;
     Texture walkSheet;
     SpriteBatch spriteBatch;
     float stateTime;
@@ -45,21 +45,16 @@ public class FirstScreen implements Screen {
     int seconds;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
-    TiledMapTileLayer collisionLayer;
-    TiledMapTileLayer doorLayer;
+    Player playerChar;
+
+    static TiledMapTileLayer collisionLayer;
+    static TiledMapTileLayer doorLayer;
+    int FRAME_WIDTH = 32;
+    int FRAME_HEIGHT = 32;
     TiledMapTileLayer bookLayer;
-    boolean isMoving = false;
-    boolean open = false;
-    boolean doorInfront = true;
-
-
-    float playerX = 710;
-    float playerY = 1730;
-    float playerWidth = 24;
-    float playerHeight = 24;
 
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
-    Rectangle player = new Rectangle(playerX, playerY, playerWidth, playerHeight);
+    Rectangle player;
 
     public FirstScreen(Game game) {
         this.game = game;
@@ -84,7 +79,7 @@ public class FirstScreen implements Screen {
 
         bucketTexture = new Texture("bucket.png");
         bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(32,32);
+        bucketSprite.setSize(32, 32);
         bucketSprite.setPosition(710, 1730);
 
         dropSprites = new Array<>();
@@ -108,7 +103,9 @@ public class FirstScreen implements Screen {
         for (int col = 0; col < FRAME_COLS; col++) {
             walkFrames[col] = tmp[1][col];
         }
-        walkCycle = new Animation<TextureRegion>(0.025f, walkFrames);
+        //walkCycle = new Animation<TextureRegion>(0.025f, walkFrames);
+        playerChar = new Player(710, 1730, new Animation<TextureRegion>(0.025f, walkFrames), collisionLayer, doorLayer);
+        player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
     }
@@ -116,17 +113,17 @@ public class FirstScreen implements Screen {
     @Override
     public void render(float delta) {
         float animSpeed = 0.5f;
-        if (isMoving) {
+        if (playerChar.isMoving) {
             stateTime += Gdx.graphics.getDeltaTime() * animSpeed;
         } else {
             stateTime = 0;
         }
-        input();
+        playerChar.input();
         logic();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
-            playerX + playerWidth / 2f,
-            playerY+ playerHeight / 2f,
+            playerChar.playerX + playerChar.playerWidth / 2f,
+            playerChar.playerY + playerChar.playerHeight / 2f,
             0
         );
         camera.update();
@@ -136,19 +133,19 @@ public class FirstScreen implements Screen {
         renderer.setView(camera);
         renderer.render();
 
-        TextureRegion currentFrame = walkCycle.getKeyFrame(stateTime, true);
+        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        spriteBatch.draw(currentFrame, playerX, playerY);
+        spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
         spriteBatch.end();
 
         //timer stuff
         timePassed -= delta;
-        if(timePassed <= 0){
+        if (timePassed <= 0) {
             music.stop();
             game.setScreen(new LoseScreen(game));
         }
-        mins =(int) timePassed / 60;
+        mins = (int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
         timeBatch.setProjectionMatrix(viewport.getCamera().combined);
         timeBatch.begin();
@@ -161,8 +158,8 @@ public class FirstScreen implements Screen {
         //camera.unproject(mousePos);
         //System.out.println(mousePos.x + ", " +  mousePos.y);
 
-        player.setX(playerX);
-        player.setY(playerY);
+        player.setX(playerChar.playerX);
+        player.setY(playerChar.playerY);
 
         if (player.overlaps(exitArea)) {
             music.stop();
@@ -172,112 +169,13 @@ public class FirstScreen implements Screen {
     }
 
     private void input() {
-        float speed = 128f;
-        float delta = Gdx.graphics.getDeltaTime();
-        float moveAmount = speed * delta;
-        isMoving = false;
-        if (doorInfront) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                open = true;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            isMoving = true;
-            playerX += moveAmount;
-            if (collision() || door()) {
-                playerX -= moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            isMoving = true;
-            playerX -= moveAmount;
-            if (collision() || door()) {
-                playerX += moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            isMoving = true;
-            playerY += moveAmount;
-            if (collision() || door()) {
-                playerY -= moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            isMoving = true;
-            playerY -= moveAmount;
-            if (collision() || door()) {
-                playerY += moveAmount;
-            }
-        }
 
     }
 
-    private boolean door() {
-        doorInfront = false;
-        if (check_door(playerX + 10, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY)) {
-            doorInfront = true;
-            return true;
-        }
-        if (check_door(playerX + playerWidth, playerY + (playerHeight/2))) {
-            doorInfront = true;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean collision() {
-
-        //checks 3 corners of the sprite to see if it's colliding with a wall.
-        //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
-        //The last check allows for the player to be walking in front of the wall we're facing slightly
-        if (check_wall(playerX + 10, playerY)) {
-            return true;
-        }
-        if (check_wall(playerX + playerWidth, playerY)) {
-            return true;
-        }
-        if (check_wall(playerX + playerWidth, playerY + (playerHeight/2))) {
-            return true;
-        }
-        return false;
-    }
-    private boolean check_door(float x, float y) {
-        int tileX = (int) (x / 32);
-        int tileY = (int) (y / 32);
-        TiledMapTileLayer.Cell cell = doorLayer.getCell(tileX, tileY);
-        if (cell == null) {
-            return false;
-        } else {
-            if (open) {
-                doorLayer.setCell(tileX, tileY, null);
-                return false;
-            }
-            return true;
-        }
-    }
     private boolean check_book(float x, float y) {
         int tileX = (int) (x / 32);
         int tileY = (int) (y / 32);
         TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
-        if (cell == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    private boolean check_wall(float x, float y) {
-        //Figures out the x and y coordinate of the tile the sprite is on
-        int tileX = (int) (x / 32);
-        int tileY = (int) (y / 32);
-
-        //checks the tile at position (x,y)
-        //if there is no tile there, return null
-        //its checking the wall layer of the map, meaning if there isnt a tile in that location theres nothing to collide with
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
         if (cell == null) {
             return false;
         } else {
@@ -294,14 +192,14 @@ public class FirstScreen implements Screen {
     }
 
     private void draw() {
-        ScreenUtils.clear(220/255f, 157/255f, 126/255f, 1);
+        ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
         viewport.apply();
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        if(width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0) return;
     }
 
     @Override
