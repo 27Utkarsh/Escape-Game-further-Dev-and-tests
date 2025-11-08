@@ -53,18 +53,6 @@ public class FirstScreen implements Screen {
     int FRAME_HEIGHT = 32;
     TiledMapTileLayer bookLayer;
 
-    //boolean isMoving = false;
-    //static boolean open = false;
-    //static boolean doorInfront = true;
-
-
-    //static float playerX = 710;
-    //static float playerY = 1730;
-    //static float playerWidth = 24;
-    //static float playerHeight = 24;
-
-    //Player playerChar = new Player(playerX, playerY, walkCycle, collisionLayer, doorLayer);
-
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
     Rectangle player;
 
@@ -130,7 +118,7 @@ public class FirstScreen implements Screen {
         } else {
             stateTime = 0;
         }
-        input();
+        playerChar.input();
         logic();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
@@ -181,43 +169,6 @@ public class FirstScreen implements Screen {
     }
 
     private void input() {
-        float speed = 128f;
-        float delta = Gdx.graphics.getDeltaTime();
-        float moveAmount = speed * delta;
-        playerChar.isMoving = false;
-        if (playerChar.doorInfront) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                playerChar.open = true;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            playerChar.isMoving = true;
-            playerChar.playerX += moveAmount;
-            if (Collision.collisionCheck(playerChar) || Collision.door(playerChar)) {
-                playerChar.playerX -= moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            playerChar.isMoving = true;
-            playerChar.playerX -= moveAmount;
-            if (Collision.collisionCheck(playerChar) || Collision.door(playerChar)) {
-                playerChar.playerX += moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            playerChar.isMoving = true;
-            playerChar.playerY += moveAmount;
-            if (Collision.collisionCheck(playerChar) || Collision.door(playerChar)) {
-                playerChar.playerY -= moveAmount;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            playerChar.isMoving = true;
-            playerChar.playerY -= moveAmount;
-            if (Collision.collisionCheck(playerChar) || Collision.door(playerChar)) {
-                playerChar.playerY += moveAmount;
-            }
-        }
 
     }
 
