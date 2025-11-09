@@ -91,7 +91,7 @@ public class FirstScreen implements Screen {
         for (int col = 0; col < FRAME_COLS; col++) {
             walkFrames[col] = tmp[1][col];
         }
-        //walkCycle = new Animation<TextureRegion>(0.025f, walkFrames);
+
         playerChar = new Player(710, 1730, new Animation<TextureRegion>(0.025f, walkFrames), collisionLayer, doorLayer);
         player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
         spriteBatch = new SpriteBatch();
