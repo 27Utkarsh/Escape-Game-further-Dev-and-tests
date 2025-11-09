@@ -12,9 +12,12 @@ public class Enemy {
     public boolean caughtPlayer = false;
     Texture enemyTexture;
     float x, y;
-    float speed = 180f;
+    float speed = 90f;
+    float cooldown = 0f;
+    float interval = 2f;
 
     public Enemy(Texture texture, float x, float y) {
+        this.enemyTexture  = texture;
         enemySprite = new Sprite(texture);
         this.x = x;
         this.y = y;
@@ -30,17 +33,35 @@ public class Enemy {
         float nx = distX / distance;
         float ny = distY / distance;
 
-        x += nx * speed * delta;
-        y += ny * speed * delta;
+        float nextX = x + nx * speed * delta;
+        float nextY = y + ny * speed * delta;
+
+        Player tempPlayer = new Player(nextX, nextY, player.walkCycle, player.wallLayer, player.doorLayer);
+
+        if(Collision.collisionCheck(tempPlayer) == false) {
+            x = nextX;
+            y = nextY;
+            enemySprite.setPosition(x, y);
+            bounds.setPosition(x, y);
+        }
+
+        if (cooldown > 0) {
+            cooldown -= Gdx.graphics.getDeltaTime();
+        }
     }
 
     public void render(SpriteBatch sb) {
-        sb.draw(enemyTexture, x, y);
+        enemySprite.draw(sb);
     }
 
-    public void checkCollected(Player player) {
-        if (caughtPlayer == false && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
-            caughtPlayer = true;
+    public boolean checkCollided(Player player) {
+        if (bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+            if (cooldown <= 0f) {
+                cooldown = interval;
+                player.badEvent += 1;
+                return true;
+            }
         }
+        return false;
     }
 }

@@ -35,6 +35,7 @@ public class FirstScreen implements Screen {
     Texture keyTexture;
     Texture energyTexture;
     Texture pauseTexture;
+    Texture enemyTexture;
     Music music;
     FitViewport viewport;
     Stage pauseStage;
@@ -51,6 +52,7 @@ public class FirstScreen implements Screen {
     Player playerChar;
     Key key;
     EnergyDrink energyDrink;
+    Enemy enemy;
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -94,6 +96,9 @@ public class FirstScreen implements Screen {
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
+
+        enemyTexture = new Texture("Enemy.png");
+        enemy = new Enemy(enemyTexture, 1340,1860);
         //music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
@@ -158,6 +163,7 @@ public class FirstScreen implements Screen {
         if (paused == false) {
             playerChar.playerInput(key, energyDrink);
             logic();
+            enemy.update(playerChar);
         }
         input();
         //sets the camera to position the sprite in the middle of the screen
@@ -183,7 +189,13 @@ public class FirstScreen implements Screen {
         energyDrink.checkDrank(playerChar);
         energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
+        enemy.render(spriteBatch);
+        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
         spriteBatch.end();
+
+        if (enemy.checkCollided(playerChar)) {
+            timePassed -= 30;
+        }
 
         if (playerChar.needsKeyMessage) {
             spriteBatch.begin();
