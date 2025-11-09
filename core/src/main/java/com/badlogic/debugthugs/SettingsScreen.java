@@ -21,10 +21,18 @@ public class SettingsScreen implements Screen {
     Skin skin;
     SpriteBatch batch;
 
+    /**
+     * Creates a SettingsScreen instance.
+     * @param game Reference to the main game class to allow screen switching.
+     */
     public SettingsScreen(Game game) {
         this.game = game;
     }
 
+    /**
+     * the volume level is set to the default value of 0.5f if it has not been changed
+     * @return the volume level
+     */
     public static float getNoise() {
         if (volume == 0) {
             return 0.5f;
@@ -38,6 +46,10 @@ public class SettingsScreen implements Screen {
         this.volume = volume;
     }
 
+    /**
+     * Initializes the settings screen
+     * Creates UI elements including volume slider and menu button
+     */
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -84,6 +96,10 @@ public class SettingsScreen implements Screen {
         stage.addActor(table);
     }
 
+    /**
+     * Renders the screen every frame - clears screen and draws UI elements
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
@@ -110,7 +126,10 @@ public class SettingsScreen implements Screen {
     public void hide() {
 
     }
-
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override
     public void dispose() {
         stage.dispose();
