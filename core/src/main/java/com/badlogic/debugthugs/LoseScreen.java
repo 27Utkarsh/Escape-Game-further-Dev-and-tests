@@ -22,14 +22,22 @@ public class LoseScreen implements Screen {
     Stage stage;
     Skin skin;
     Music music;
-
+    /**
+     * Creates a new LoseScreen.
+     * @param game reference to the main game instance for screen switching
+     */
     public LoseScreen(Game game) {
+
         this.game = game;
     }
+    /**
+     * Called when the lose screen becomes the current screen
+     * initialises the game over image, music and waits for the player to press the try again button
+     */
     @Override
     public void show() {
         batch = new SpriteBatch();
-        backgroundTexture = new Texture("Game_Over_image.png");
+        backgroundTexture = new Texture("Game_Over_Image.png");
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -55,6 +63,10 @@ public class LoseScreen implements Screen {
         stage.addActor(againButton);
     }
 
+    /**
+     * Renders the screen every frame.
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.RED);
@@ -86,7 +98,10 @@ public class LoseScreen implements Screen {
     public void hide() {
 
     }
-
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override
     public void dispose() {
         batch.dispose();

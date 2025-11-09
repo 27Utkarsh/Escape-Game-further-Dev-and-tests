@@ -2,10 +2,8 @@ package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -26,12 +24,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-import static com.badlogic.gdx.math.Rectangle.tmp;
-
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
-    //Animation<TextureRegion> walkCycle;
     Texture walkSheet;
     SpriteBatch spriteBatch;
     float stateTime;
@@ -41,7 +36,6 @@ public class FirstScreen implements Screen {
     Texture pauseTexture;
     Sprite bucketSprite;
     Music music;
-    Array<Sprite> dropSprites;
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
@@ -61,17 +55,24 @@ public class FirstScreen implements Screen {
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
-    int FRAME_WIDTH = 32;
-    int FRAME_HEIGHT = 32;
     TiledMapTileLayer bookLayer;
 
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
     Rectangle player;
 
+    /**
+     * Creates a new FirstScreen instance for the game
+     * @param game the main LibGDX Game object used to manage screens and shared resources
+     */
     public FirstScreen(Game game) {
         this.game = game;
     }
 
+    /**
+     * Sets up the camera and viewport. loads the tiled map and its collision layers,
+     * prepares the player's animation and starting position, initializes rendering
+     * tools (SpriteBatch, map renderer), starts background music, prepares font and timer rendering for the HUD.
+     */
     @Override
     public void show() {
         viewport = new FitViewport(800, 600);
@@ -105,6 +106,7 @@ public class FirstScreen implements Screen {
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
+
         //timer stuff
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
@@ -144,6 +146,14 @@ public class FirstScreen implements Screen {
         pauseStage.addActor(menuButton);
     }
 
+    /**
+     * Updates and renders the game state for the current frame.
+     * Handles player movement and animation timing, updates the camera to follow the player,
+     * renders the tile map and player sprite, updates and displays the countdown timer, checks if the player has won or lost.
+     * Player loses if the time runs out and wins if they overlap the exit area
+     *
+     * @param delta time passed since the last frame (used for animation timing when it comes to frames and also the timer)
+     */
     @Override
     public void render(float delta) {
         float animSpeed = 0.5f;
@@ -157,6 +167,7 @@ public class FirstScreen implements Screen {
             logic();
         }
         input();
+        playerChar.input();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
@@ -170,12 +181,12 @@ public class FirstScreen implements Screen {
         renderer.setView(camera);
         renderer.render();
 
-        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
         key.checkCollected(playerChar);
         key.render(spriteBatch);
+        playerChar.render(spriteBatch, stateTime);
         spriteBatch.end();
 
         if (paused) {
@@ -255,11 +266,22 @@ public class FirstScreen implements Screen {
         bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
     }
 
+    /**
+     * Clears the screen.
+     * Uses a specific colour that blends in with the tilemap rather than making empty spaces completely black
+     */
     private void draw() {
         ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
         viewport.apply();
     }
 
+    /**
+     * Handles resizing of the game window or viewport
+     * Makes the game more compatible over different devices
+     *
+     * @param width  the new window width in pixels
+     * @param height the new window height in pixels
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
@@ -277,7 +299,10 @@ public class FirstScreen implements Screen {
     @Override
     public void hide() {
     }
-
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override
     public void dispose() {
     }

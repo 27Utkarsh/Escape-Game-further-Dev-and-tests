@@ -25,10 +25,17 @@ public class MenuScreen extends ScreenAdapter implements Screen {
     Texture background;
     Music music;
 
+    /**
+     * Creates the main menu screen.
+     * @param game reference to the main game instance for screen switching
+     */
     public MenuScreen(Game game) {
         this.game = game;
     }
-
+    /**
+     * Called when the main menu screen becomes the current screen (ie when the player first starts playing)
+     * handles buttons, background image, music, and input processing (player needs to interact with buttons)
+     */
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
@@ -72,6 +79,11 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         stage.addActor(startButton);
         stage.addActor(settingsButton);
     }
+
+    /**
+     * Renders the menu screen each frame
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.DARK_GRAY);
@@ -90,7 +102,11 @@ public class MenuScreen extends ScreenAdapter implements Screen {
             game.setScreen(new FirstScreen(game));
         }
     }
-
+    /**
+     * Called when the screen size changes
+     * @param width  new width of the screen
+     * @param height new height of the screen
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
@@ -111,6 +127,10 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
     }
 
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override
     public void dispose() {
         batch.dispose();

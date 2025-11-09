@@ -16,7 +16,6 @@ public class Player {
     public float playerWidth;
     public float playerHeight;
 
-    private float stateTime = 0f;
     boolean isMoving = false;
 
     Animation<TextureRegion> walkCycle;
@@ -27,6 +26,14 @@ public class Player {
     public static boolean doorInfront = false;
     public static boolean open = false; // door opened
 
+    /**
+     * Constructs the player entity in the game
+     * @param startX X-coordinate for where the player starts
+     * @param startY Y-coordinate for where the player starts
+     * @param walkCycle Animation object holding frames to create a walk cycle
+     * @param wallLayer Layer on the tilemap where collide-able walls are
+     * @param doorLayer Layer on the tilemap where doors are
+     */
     public Player(float startX, float startY,
                   Animation<TextureRegion> walkCycle,
                   TiledMapTileLayer wallLayer,
@@ -44,12 +51,23 @@ public class Player {
         this.playerHeight = 24;
     }
 
-    public void render(SpriteBatch batch) {
+    /**
+     * Renders the player's current animation frame
+     * Retrieves the correct frame from the walking animation using state time
+     * and draws it at the player's current X and Y position using the SpriteBatch
+     * @param batch the SpriteBatch used to draw the frame to the screen
+     */
+    public void render(SpriteBatch batch, float stateTime) {
         TextureRegion frame = walkCycle.getKeyFrame(stateTime, true);
         batch.draw(frame, playerX, playerY);
     }
 
     public void playerInput(Key key) {
+    /**
+     * Handles user input
+     * Specifically movement and the player interacting with doors
+     */
+    public void input() {
         float speed = 128f;
         float delta = Gdx.graphics.getDeltaTime();
         float distance = speed * delta;
