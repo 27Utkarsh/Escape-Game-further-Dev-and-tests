@@ -31,12 +31,9 @@ public class FirstScreen implements Screen {
     SpriteBatch spriteBatch;
     float stateTime;
     Game game;
-    Texture bucketTexture;
-    Sprite bucketSprite;
     Music music;
     Array<Sprite> dropSprites;
     FitViewport viewport;
-    Rectangle bucketRectangle;
     Rectangle dropRectangle;
     SpriteBatch timeBatch;
     BitmapFont font;
@@ -77,13 +74,7 @@ public class FirstScreen implements Screen {
         bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        bucketTexture = new Texture("bucket.png");
-        bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(32, 32);
-        bucketSprite.setPosition(710, 1730);
-
         dropSprites = new Array<>();
-        bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
         //music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
@@ -119,7 +110,6 @@ public class FirstScreen implements Screen {
             stateTime = 0;
         }
         playerChar.input();
-        logic();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
@@ -182,13 +172,6 @@ public class FirstScreen implements Screen {
         }
     }
 
-    private void logic() {
-        float delta = Gdx.graphics.getDeltaTime();
-        float bucketWidth = bucketSprite.getWidth();
-        float bucketHeight = bucketSprite.getHeight();
-
-        bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
-    }
 
     private void draw() {
         ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
