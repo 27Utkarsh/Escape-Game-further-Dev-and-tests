@@ -133,10 +133,9 @@ public class FirstScreen implements Screen {
         renderer.setView(camera);
         renderer.render();
 
-        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
+        playerChar.render(spriteBatch, stateTime);
         spriteBatch.end();
 
         //timer stuff
