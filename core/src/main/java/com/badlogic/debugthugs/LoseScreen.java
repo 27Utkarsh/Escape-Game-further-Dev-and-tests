@@ -24,6 +24,7 @@ public class LoseScreen implements Screen {
     Music music;
 
     public LoseScreen(Game game) {
+
         this.game = game;
     }
     @Override
