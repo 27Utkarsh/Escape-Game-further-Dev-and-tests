@@ -50,6 +50,12 @@ public class Collision {
         }
     }
 
+    /**
+     * Checks whether the player is colliding with a door tile
+     *
+     * @param player The player whose collision boundaries are being checked
+     * @return true if the player collides with a door tile at any of the checked points, false otherwise
+     */
     public static boolean door(Player player) {
         Player.doorInfront = false;
         if (check_door(player,player.playerX + 10, player.playerY)) {
@@ -67,13 +73,26 @@ public class Collision {
         return false;
     }
 
+    /**
+     * Checks whether there is a door tile in the doorLayer at the player's coordinates, using the fact that the tiles are 32x32 pixels
+     * if this function returns true, it indicates that there is a door tile and the player should collide with it
+     * if the player has previously opened the door by interacting with it, the door will disappear and the player can walk through
+     * @param player Player whose doorLayer is referenced
+     * @param x The X-Coordinate thats being checked for a door tile
+     * @param y The Y-Coordinate thats being checked for a door tile
+     * @return true if the tile at the given coordinates contains a door tile, false otherwise
+     */
     private static boolean check_door(Player player, float x, float y) {
         int tileX = (int) (x / 32);
         int tileY = (int) (y / 32);
+        // Look up the tile at (tileX, tileY) in the door layer of the map
+        // getCell() returns a tile cell if one exists here, otherwise it returns null
         TiledMapTileLayer.Cell cell = player.doorLayer.getCell(tileX, tileY);
+        //if there is no door tile, return false
         if (cell == null) {
             return false;
         } else {
+            //if player opens the door, remove the door tile at those coordinates
             if (player.open) {
                 player.doorLayer.setCell(tileX, tileY, null);
                 return false;
