@@ -17,6 +17,8 @@ public class Player {
     public float playerHeight;
 
     boolean isMoving = false;
+    boolean needsKeyMessage = false;
+    boolean needsInteractMessage = false;
 
     Animation<TextureRegion> walkCycle;
 
@@ -66,16 +68,30 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key) {
+    public void playerInput(Key key, EnergyDrink energyDrink) {
         float speed = 128f;
+        if (energyDrink.drank) {
+            speed = 160f;
+        }
         float delta = Gdx.graphics.getDeltaTime();
         float distance = speed * delta;
         isMoving = false;
 
-        if (key.collected == true) {
+        if (key.collected) {
+            needsInteractMessage = true;
+            needsKeyMessage = false;
             if (doorInfront && Gdx.input.isKeyPressed(Input.Keys.E)) {
                 open = true;
             }
+        } else if (key.collected == false) {
+            if (doorInfront) {
+                needsKeyMessage = true;
+                needsInteractMessage = false;
+            }
+        }
+        if (!doorInfront) {
+            needsKeyMessage = false;
+            needsInteractMessage = false;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
