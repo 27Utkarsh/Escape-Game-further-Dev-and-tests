@@ -25,6 +25,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
     Texture background;
     Music music;
 
+
     public MenuScreen(Game game) {
         this.game = game;
     }
