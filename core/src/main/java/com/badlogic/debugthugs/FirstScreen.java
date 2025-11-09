@@ -2,6 +2,7 @@ package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -98,7 +99,6 @@ public class FirstScreen implements Screen {
         bucketSprite.setSize(32, 32);
         bucketSprite.setPosition(710, 1730);
 
-        dropSprites = new Array<>();
         bucketRectangle = new Rectangle();
         dropRectangle = new Rectangle();
         //music stuff
@@ -167,7 +167,6 @@ public class FirstScreen implements Screen {
             logic();
         }
         input();
-        playerChar.input();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
@@ -176,7 +175,9 @@ public class FirstScreen implements Screen {
         );
         camera.update();
 
-        draw();
+        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
+
+        draw();;
 
         renderer.setView(camera);
         renderer.render();
