@@ -2,6 +2,7 @@ package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -10,6 +11,13 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,16 +32,27 @@ public class FirstScreen implements Screen {
     SpriteBatch spriteBatch;
     float stateTime;
     Game game;
+    Texture bucketTexture;
+    Texture keyTexture;
+    Texture pauseTexture;
+    Sprite bucketSprite;
     Music music;
     FitViewport viewport;
+    Rectangle bucketRectangle;
+    Rectangle dropRectangle;
+    Stage pauseStage;
+    Skin skin;
+    TextButton menuButton;
     SpriteBatch timeBatch;
     BitmapFont font;
     float timePassed = 300f;
     int mins;
     int seconds;
+    boolean paused;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
+    Key key;
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -72,6 +91,16 @@ public class FirstScreen implements Screen {
         bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
+        keyTexture = new Texture("key.png");
+        key = new Key(keyTexture, 1180, 1700);
+
+        bucketTexture = new Texture("bucket.png");
+        bucketSprite = new Sprite(bucketTexture);
+        bucketSprite.setSize(32, 32);
+        bucketSprite.setPosition(710, 1730);
+
+        bucketRectangle = new Rectangle();
+        dropRectangle = new Rectangle();
         //music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
@@ -96,6 +125,25 @@ public class FirstScreen implements Screen {
         player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
+
+        pauseStage = new Stage(viewport);
+        Gdx.input.setInputProcessor(pauseStage);
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        paused = false;
+        pauseTexture = new Texture("white3.png");
+
+        menuButton = new TextButton("Main Menu", skin);
+        menuButton.setPosition(playerChar.playerX, playerChar.playerY);
+        menuButton.setSize(100, 40);
+        menuButton.setVisible(false);
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        pauseStage.addActor(menuButton);
     }
 
     /**
@@ -114,7 +162,11 @@ public class FirstScreen implements Screen {
         } else {
             stateTime = 0;
         }
-        playerChar.input();
+        if (paused == false) {
+            playerChar.playerInput(key);
+            logic();
+        }
+        input();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
@@ -123,18 +175,40 @@ public class FirstScreen implements Screen {
         );
         camera.update();
 
-        draw();
+        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
+
+        draw();;
 
         renderer.setView(camera);
         renderer.render();
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
+        spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
+        key.checkCollected(playerChar);
+        key.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         spriteBatch.end();
 
+        if (paused) {
+            spriteBatch.begin();
+            spriteBatch.setColor(0, 0, 0, 0.5f);
+            spriteBatch.draw(pauseTexture, playerChar.playerX - 400, playerChar.playerY - 300, 800, 800);
+            spriteBatch.setColor(Color.WHITE);
+            font.draw(spriteBatch, "Paused", playerChar.playerX, playerChar.playerY + 150);
+            spriteBatch.end();
+            pauseStage.act(delta);
+            pauseStage.draw();
+        }
+
+        Vector3 screenPos = camera.project(new Vector3(playerChar.playerX, playerChar.playerY, 0));
+        menuButton.setPosition(screenPos.x - 280, screenPos.y - 200);
+        menuButton.setVisible(paused);
+
         //timer stuff
-        timePassed -= delta;
+        if (paused == false) {
+            timePassed -= delta;
+        }
         if (timePassed <= 0) {
             music.stop();
             game.setScreen(new LoseScreen(game));
@@ -148,9 +222,9 @@ public class FirstScreen implements Screen {
         timeBatch.end();
 
         //This code will display your mouse x,y coordinates
-        //Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        //camera.unproject(mousePos);
-        //System.out.println(mousePos.x + ", " +  mousePos.y);
+        Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos);
+        System.out.println(mousePos.x + ", " +  mousePos.y);
 
         player.setX(playerChar.playerX);
         player.setY(playerChar.playerY);
@@ -160,6 +234,37 @@ public class FirstScreen implements Screen {
             game.setScreen(new WinScreen(game));
         }
 
+    }
+
+    private void input() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            paused = !paused;
+            if (paused) {
+                Gdx.input.setInputProcessor(pauseStage);
+            }
+            else {
+                Gdx.input.setInputProcessor(null);
+            }
+        }
+    }
+
+    private boolean check_book(float x, float y) {
+        int tileX = (int) (x / 32);
+        int tileY = (int) (y / 32);
+        TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
+        if (cell == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void logic() {
+        float delta = Gdx.graphics.getDeltaTime();
+        float bucketWidth = bucketSprite.getWidth();
+        float bucketHeight = bucketSprite.getHeight();
+
+        bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
     }
 
     /**
