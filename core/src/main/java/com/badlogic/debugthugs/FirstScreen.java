@@ -13,6 +13,11 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -33,17 +38,22 @@ public class FirstScreen implements Screen {
     Game game;
     Texture bucketTexture;
     Texture keyTexture;
+    Texture pauseTexture;
     Sprite bucketSprite;
     Music music;
     Array<Sprite> dropSprites;
     FitViewport viewport;
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
+    Stage pauseStage;
+    Skin skin;
+    TextButton menuButton;
     SpriteBatch timeBatch;
     BitmapFont font;
     float timePassed = 300f;
     int mins;
     int seconds;
+    boolean paused;
     OrthographicCamera camera;
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
@@ -113,6 +123,25 @@ public class FirstScreen implements Screen {
         player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
+
+        pauseStage = new Stage(viewport);
+        Gdx.input.setInputProcessor(pauseStage);
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        paused = false;
+        pauseTexture = new Texture("white3.png");
+
+        menuButton = new TextButton("Main Menu", skin);
+        menuButton.setPosition(playerChar.playerX, playerChar.playerY);
+        menuButton.setSize(100, 40);
+        menuButton.setVisible(false);
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        pauseStage.addActor(menuButton);
     }
 
     @Override
@@ -123,8 +152,11 @@ public class FirstScreen implements Screen {
         } else {
             stateTime = 0;
         }
-        playerChar.input(key);
-        logic();
+        if (paused == false) {
+            playerChar.playerInput(key);
+            logic();
+        }
+        input();
         //sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
@@ -146,8 +178,25 @@ public class FirstScreen implements Screen {
         key.render(spriteBatch);
         spriteBatch.end();
 
+        if (paused) {
+            spriteBatch.begin();
+            spriteBatch.setColor(0, 0, 0, 0.5f);
+            spriteBatch.draw(pauseTexture, playerChar.playerX - 400, playerChar.playerY - 300, 800, 800);
+            spriteBatch.setColor(Color.WHITE);
+            font.draw(spriteBatch, "Paused", playerChar.playerX, playerChar.playerY + 150);
+            spriteBatch.end();
+            pauseStage.act(delta);
+            pauseStage.draw();
+        }
+
+        Vector3 screenPos = camera.project(new Vector3(playerChar.playerX, playerChar.playerY, 0));
+        menuButton.setPosition(screenPos.x - 280, screenPos.y - 200);
+        menuButton.setVisible(paused);
+
         //timer stuff
-        timePassed -= delta;
+        if (paused == false) {
+            timePassed -= delta;
+        }
         if (timePassed <= 0) {
             music.stop();
             game.setScreen(new LoseScreen(game));
@@ -176,7 +225,15 @@ public class FirstScreen implements Screen {
     }
 
     private void input() {
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            paused = !paused;
+            if (paused) {
+                Gdx.input.setInputProcessor(pauseStage);
+            }
+            else {
+                Gdx.input.setInputProcessor(null);
+            }
+        }
     }
 
     private boolean check_book(float x, float y) {

@@ -49,7 +49,7 @@ public class Player {
         batch.draw(frame, playerX, playerY);
     }
 
-    public void input(Key key) {
+    public void playerInput(Key key) {
         float speed = 128f;
         float delta = Gdx.graphics.getDeltaTime();
         float distance = speed * delta;
