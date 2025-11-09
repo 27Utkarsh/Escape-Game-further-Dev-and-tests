@@ -32,14 +32,11 @@ public class FirstScreen implements Screen {
     SpriteBatch spriteBatch;
     float stateTime;
     Game game;
-    Texture bucketTexture;
     Texture keyTexture;
+    Texture energyTexture;
     Texture pauseTexture;
-    Sprite bucketSprite;
     Music music;
     FitViewport viewport;
-    Rectangle bucketRectangle;
-    Rectangle dropRectangle;
     Stage pauseStage;
     Skin skin;
     TextButton menuButton;
@@ -53,6 +50,7 @@ public class FirstScreen implements Screen {
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
     Key key;
+    EnergyDrink energyDrink;
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -94,13 +92,8 @@ public class FirstScreen implements Screen {
         keyTexture = new Texture("key.png");
         key = new Key(keyTexture, 1180, 1700);
 
-        bucketTexture = new Texture("bucket.png");
-        bucketSprite = new Sprite(bucketTexture);
-        bucketSprite.setSize(32, 32);
-        bucketSprite.setPosition(710, 1730);
-
-        bucketRectangle = new Rectangle();
-        dropRectangle = new Rectangle();
+        energyTexture = new Texture("energyDrink.png");
+        energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
         //music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
@@ -163,7 +156,7 @@ public class FirstScreen implements Screen {
             stateTime = 0;
         }
         if (paused == false) {
-            playerChar.playerInput(key);
+            playerChar.playerInput(key, energyDrink);
             logic();
         }
         input();
@@ -187,8 +180,21 @@ public class FirstScreen implements Screen {
         spriteBatch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
         key.checkCollected(playerChar);
         key.render(spriteBatch);
+        energyDrink.checkDrank(playerChar);
+        energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         spriteBatch.end();
+
+        if (playerChar.needsKeyMessage) {
+            spriteBatch.begin();
+            font.draw(spriteBatch, "You need to find the key first", playerChar.playerX - 20, playerChar.playerY + 50);
+            spriteBatch.end();
+        }
+        if (playerChar.needsInteractMessage) {
+            spriteBatch.begin();
+            font.draw(spriteBatch, "Press 'E' to open the door", playerChar.playerX - 20, playerChar.playerY + 50);
+            spriteBatch.end();
+        }
 
         if (paused) {
             spriteBatch.begin();
@@ -220,6 +226,7 @@ public class FirstScreen implements Screen {
         String time = String.format("%d.%02d", mins, seconds);
         font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
+
 
         //This code will display your mouse x,y coordinates
         Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -261,10 +268,6 @@ public class FirstScreen implements Screen {
 
     private void logic() {
         float delta = Gdx.graphics.getDeltaTime();
-        float bucketWidth = bucketSprite.getWidth();
-        float bucketHeight = bucketSprite.getHeight();
-
-        bucketRectangle.set(bucketSprite.getX(), bucketSprite.getY(), bucketWidth, bucketHeight);
     }
 
     /**
