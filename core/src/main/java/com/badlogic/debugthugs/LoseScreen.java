@@ -37,7 +37,7 @@ public class LoseScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        backgroundTexture = new Texture("Game_Over_image.png");
+        backgroundTexture = new Texture("Game_Over_Image.png");
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -65,7 +65,7 @@ public class LoseScreen implements Screen {
 
     /**
      * Renders the screen every frame.
-     * @param delta time elapsed since last frame
+     * @param delta The time in seconds since the last render.
      */
     @Override
     public void render(float delta) {
@@ -99,7 +99,8 @@ public class LoseScreen implements Screen {
 
     }
     /**
-     * Releases assets and resources used by this screen.
+     * Releases assets and resources used by this screen
+     * helps free memory
      */
     @Override
     public void dispose() {

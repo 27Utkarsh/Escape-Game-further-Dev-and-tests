@@ -15,6 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * The WinScreen class is displayed when the player gets to the end of the maze
+ * shows a victory image, plays music, and provides a button to return to the main menu to try again
+ */
 public class WinScreen implements Screen {
     Texture backgroundTexture;
     SpriteBatch batch;
@@ -23,9 +27,18 @@ public class WinScreen implements Screen {
     Skin skin;
     Music music;
 
+    /**
+     * Creates a WinScreen instance.
+     * @param game Reference to the main game class to allow screen switching.
+     */
     public WinScreen(Game game) {
         this.game = game;
     }
+
+    /**
+     * Called when the screen becomes visible
+     * Initializes buttons, loads textures (background image) and music
+     */
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -46,6 +59,10 @@ public class WinScreen implements Screen {
 
         againButton.addListener(new ClickListener() {
             @Override
+            /**
+             * Handles when the player clicks the "Play Again" button.
+             * Stops music and returns to the menu screen if button is clicked
+             */
             public void clicked(InputEvent event, float x, float y) {
                 music.stop();
                 game.setScreen(new MenuScreen(game));
@@ -54,7 +71,10 @@ public class WinScreen implements Screen {
 
         stage.addActor(againButton);
     }
-
+    /**
+     * Called every frame to render the screen
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.RED);
@@ -86,7 +106,10 @@ public class WinScreen implements Screen {
     public void hide() {
 
     }
-
+    /**
+     * Releases assets and resources used by this screen.
+     * helps free memory
+     */
     @Override
     public void dispose() {
         batch.dispose();

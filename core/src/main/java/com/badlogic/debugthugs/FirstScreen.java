@@ -195,7 +195,10 @@ public class FirstScreen implements Screen {
     @Override
     public void hide() {
     }
-
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override
     public void dispose() {
     }

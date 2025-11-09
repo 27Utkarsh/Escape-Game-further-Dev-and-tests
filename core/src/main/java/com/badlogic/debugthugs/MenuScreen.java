@@ -82,7 +82,7 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
     /**
      * Renders the menu screen each frame
-     * @param delta time elapsed since last frame
+     * @param delta The time in seconds since the last render.
      */
     @Override
     public void render(float delta) {
@@ -128,7 +128,8 @@ public class MenuScreen extends ScreenAdapter implements Screen {
     }
 
     /**
-     * Releases assets and resources used by this screen.
+     * Releases assets and resources used by this screen
+     * helps free memory
      */
     @Override
     public void dispose() {
