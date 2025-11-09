@@ -16,6 +16,10 @@ public class Player {
     public float playerWidth;
     public float playerHeight;
 
+    public int goodEvent = 0;
+    public int badEvent = 0;
+    public int hiddenEvent = 0;
+
     boolean isMoving = false;
     boolean needsKeyMessage = false;
     boolean needsInteractMessage = false;

@@ -26,6 +26,7 @@ public class Key {
 
     public void checkCollected(Player player) {
         if (collected == false && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+            player.hiddenEvent += 1;
             collected = true;
         }
     }

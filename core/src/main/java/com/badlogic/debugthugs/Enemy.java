@@ -58,6 +58,7 @@ public class Enemy {
         if (bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             if (cooldown <= 0f) {
                 cooldown = interval;
+                player.badEvent += 1;
                 return true;
             }
         }

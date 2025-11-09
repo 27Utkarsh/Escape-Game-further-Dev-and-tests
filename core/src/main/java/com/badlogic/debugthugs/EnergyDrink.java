@@ -25,6 +25,7 @@ public class EnergyDrink{
 
     public void checkDrank(Player player) {
         if (!drank && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+            player.goodEvent += 1;
             drank = true;
         }
     }

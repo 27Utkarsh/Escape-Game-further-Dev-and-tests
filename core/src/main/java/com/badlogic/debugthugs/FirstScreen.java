@@ -190,6 +190,7 @@ public class FirstScreen implements Screen {
         energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
+        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
         spriteBatch.end();
 
         if (enemy.checkCollided(playerChar)) {
