@@ -1,6 +1,9 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,20 +11,25 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class MenuScreen extends ScreenAdapter implements Screen {
-    FitViewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    Stage stage;
+public class MenuScreen extends ScreenAdapter {
+    private static final int VIEWPORT_WIDTH = 1280;
+    private static final int VIEWPORT_HEIGHT = 720;
+
     Game game;
+    FitViewport viewport;
     SpriteBatch batch;
+    Stage stage;
+
     BitmapFont font;
-    Skin buttonSkin;
+    Skin skin;
     Texture background;
     Music music;
 
@@ -38,8 +46,10 @@ public class MenuScreen extends ScreenAdapter implements Screen {
      */
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
+        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
+
         background = new Texture("Menu.png");
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Menu_music.ogg"));
@@ -50,15 +60,24 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.getData().setScale(2f);
-        font.setColor(Color.WHITE);
 
-        buttonSkin = new Skin(Gdx.files.internal("uiskin.json"));
-        TextButton startButton = new TextButton("Start", buttonSkin);
-        TextButton settingsButton = new TextButton("Settings", buttonSkin);
-        startButton.setPosition(20,300);
-        startButton.setSize(200,60);
-        settingsButton.setPosition(20,235);
-        settingsButton.setSize(200,60);
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
+        Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label titleLabel = new Label("University Escape [WIP Title]", titleStyle);
+
+        TextButton startButton = new TextButton("Start", skin);
+        TextButton settingsButton = new TextButton("Settings", skin);
+
+        rootTable.add(titleLabel).padBottom(80f);
+        rootTable.row();
+        rootTable.add(startButton).width(300).height(80).padBottom(40);
+        rootTable.row();
+        rootTable.add(settingsButton).width(300).height(80);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -75,9 +94,6 @@ public class MenuScreen extends ScreenAdapter implements Screen {
                 game.setScreen(new SettingsScreen(game));
             }
         });
-
-        stage.addActor(startButton);
-        stage.addActor(settingsButton);
     }
 
     /**
@@ -92,7 +108,6 @@ public class MenuScreen extends ScreenAdapter implements Screen {
 
         batch.begin();
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.draw(batch, "University Escape [WIP Title]", 20, 400);
         batch.end();
 
         stage.act(delta);
@@ -103,13 +118,14 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         }
     }
     /**
-     * Called when the screen size changes
+     * Updates the viewport and stage sizes when the screen changes size.
      * @param width  new width of the screen
      * @param height new height of the screen
      */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -136,7 +152,8 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         batch.dispose();
         font.dispose();
         stage.dispose();
-        buttonSkin.dispose();
+        background.dispose();
+        skin.dispose();
         music.dispose();
     }
 }
