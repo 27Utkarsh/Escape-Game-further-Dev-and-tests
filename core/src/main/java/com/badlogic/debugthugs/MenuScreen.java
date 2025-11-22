@@ -55,10 +55,15 @@ public class MenuScreen extends ScreenAdapter implements Screen {
         buttonSkin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton startButton = new TextButton("Start", buttonSkin);
         TextButton settingsButton = new TextButton("Settings", buttonSkin);
+        TextButton leaderBoardButton = new TextButton("Leaderboard", buttonSkin);
         startButton.setPosition(20,300);
         startButton.setSize(200,60);
+
         settingsButton.setPosition(20,235);
         settingsButton.setSize(200,60);
+
+        leaderBoardButton.setPosition(20,170);
+        leaderBoardButton.setSize(200,60);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -76,8 +81,17 @@ public class MenuScreen extends ScreenAdapter implements Screen {
             }
         });
 
+        leaderBoardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new LeaderBoardScreen(game));
+            }
+        });
+
         stage.addActor(startButton);
         stage.addActor(settingsButton);
+        stage.addActor(leaderBoardButton);
     }
 
     /**
