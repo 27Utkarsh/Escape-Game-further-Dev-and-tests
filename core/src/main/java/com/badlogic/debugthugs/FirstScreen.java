@@ -253,7 +253,7 @@ public class FirstScreen implements Screen {
 
         if (player.overlaps(exitArea)) {
             music.stop();
-            game.setScreen(new WinScreen(game));
+            game.setScreen(new WinScreen(game, timePassed));
         }
 
     }
