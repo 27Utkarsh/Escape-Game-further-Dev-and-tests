@@ -56,7 +56,7 @@ public class FirstScreen implements Screen {
     EnergyDrink energyDrink;
     Enemy enemy;
     HelperCharacter helper;
-
+//
 
 
     static TiledMapTileLayer collisionLayer;
