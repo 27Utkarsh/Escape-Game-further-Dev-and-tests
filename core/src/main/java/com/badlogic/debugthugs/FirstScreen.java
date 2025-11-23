@@ -55,6 +55,9 @@ public class FirstScreen implements Screen {
     Key key;
     EnergyDrink energyDrink;
     Enemy enemy;
+    HelperCharacter helper;
+
+
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -95,6 +98,13 @@ public class FirstScreen implements Screen {
 
         keyTexture = new Texture("key.png");
         key = new Key(keyTexture, 1180, 1700);
+
+        Texture helperTexture = new Texture("Enemy.png");
+        helper = new HelperCharacter(helperTexture, 715, 1734);
+
+
+
+
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
@@ -193,6 +203,8 @@ public class FirstScreen implements Screen {
         energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
+        helper.render(spriteBatch);
+
         font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
         spriteBatch.end();
 
