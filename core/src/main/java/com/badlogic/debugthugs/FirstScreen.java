@@ -100,7 +100,7 @@ public class FirstScreen implements Screen {
         key = new Key(keyTexture, 1180, 1700);
 
         Texture helperTexture = new Texture("Enemy.png");
-        helper = new HelperCharacter(helperTexture, 715, 1734);
+        helper = new HelperCharacter(helperTexture, 785, 1800);
 
 
 
@@ -205,12 +205,21 @@ public class FirstScreen implements Screen {
         enemy.render(spriteBatch);
         helper.render(spriteBatch);
 
+
         font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
         spriteBatch.end();
 
         if (enemy.checkCollided(playerChar)) {
             timePassed -= 30;
         }
+        if (helper.checkCollided(playerChar)) {
+            timePassed += 20; // add 20 seconds
+            System.out.println("✨ You met a helper! +20 seconds! ✨");
+        }
+
+
+
+
 
         if (playerChar.needsKeyMessage) {
             spriteBatch.begin();
