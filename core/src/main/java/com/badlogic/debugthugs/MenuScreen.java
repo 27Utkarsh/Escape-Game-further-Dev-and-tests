@@ -100,8 +100,13 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
 
-        stage.addActor(startButton);
-        stage.addActor(settingsButton);
+        leaderBoardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new LeaderBoardScreen(game));
+            }
+        });
     }
 
     /**

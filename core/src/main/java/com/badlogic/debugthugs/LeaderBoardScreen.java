@@ -26,11 +26,12 @@ public class LeaderBoardScreen extends ScreenAdapter {
     SpriteBatch batch;
     BitmapFont font;
     Skin skin;
-    int first;
-    int second;
-    int third;
-    int fourth;
-    int fifth;
+
+    private int first;
+    private int second;
+    private int third;
+    private int fourth;
+    private int fifth;
 
     public LeaderBoardScreen(Game game) { this.game = game; }
 
@@ -38,17 +39,27 @@ public class LeaderBoardScreen extends ScreenAdapter {
     public void show() {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+
         font = new BitmapFont();
         font.getData().setScale(2f);
-        font.setColor(Color.WHITE);
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+        Gdx.input.setInputProcessor(stage);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label l1 = new Label("Top 5 players score: ", labelStyle);
         TextButton exit = new TextButton("Exit", skin);
-        exit.setPosition(480,20);
-        exit.setSize(150,40);
+
+        table.add(l1).padBottom(80f);
+        table.row();
+        table.add(exit).width(150).height(40);
+        table.row();
 
         exit.addListener(new ClickListener() {
             @Override
@@ -57,7 +68,6 @@ public class LeaderBoardScreen extends ScreenAdapter {
             }
         });
 
-        stage.addActor(exit);
     }
 
     @Override
@@ -66,10 +76,6 @@ public class LeaderBoardScreen extends ScreenAdapter {
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        batch.begin();
-        font.draw(batch, "Top 5 Players Scores: ", 20, 450);
-        batch.end();
-
         stage.act(delta);
         stage.draw();
     }
@@ -77,6 +83,7 @@ public class LeaderBoardScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -84,5 +91,6 @@ public class LeaderBoardScreen extends ScreenAdapter {
         stage.dispose();
         batch.dispose();
         font.dispose();
+        skin.dispose();
     }
 }
