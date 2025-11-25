@@ -1,9 +1,6 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import org.w3c.dom.Text;
 
 public class MenuScreen extends ScreenAdapter {
     private static final int VIEWPORT_WIDTH = 1280;
@@ -72,12 +70,16 @@ public class MenuScreen extends ScreenAdapter {
 
         TextButton startButton = new TextButton("Start", skin);
         TextButton settingsButton = new TextButton("Settings", skin);
+        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
 
         rootTable.add(titleLabel).padBottom(80f);
         rootTable.row();
         rootTable.add(startButton).width(300).height(80).padBottom(40);
         rootTable.row();
-        rootTable.add(settingsButton).width(300).height(80);
+        rootTable.add(settingsButton).width(300).height(80).padBottom(40);
+        rootTable.row();
+        rootTable.add(leaderBoardButton).width(300).height(80);
+
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -92,6 +94,14 @@ public class MenuScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 music.stop();
                 game.setScreen(new SettingsScreen(game));
+            }
+        });
+
+        leaderBoardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new LeaderBoardScreen(game));
             }
         });
     }
