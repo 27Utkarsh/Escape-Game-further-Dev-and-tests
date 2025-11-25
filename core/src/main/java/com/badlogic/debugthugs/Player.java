@@ -2,12 +2,10 @@ package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-
-import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
 
 public class Player {
 
@@ -86,6 +84,7 @@ public class Player {
             needsKeyMessage = false;
             if (doorInfront && Gdx.input.isKeyPressed(Input.Keys.E)) {
                 open = true;
+                AchievementManager.get().unlock("UNLOCKED_DOOR");
             }
         } else if (key.collected == false) {
             if (doorInfront) {

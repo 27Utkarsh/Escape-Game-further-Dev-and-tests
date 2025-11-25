@@ -286,6 +286,8 @@ public class FirstScreen implements Screen {
         if (player.overlaps(exitArea)) {
             music.stop();
             game.setScreen(new WinScreen(game, timePassed));
+            AchievementManager.get().unlock("ESCAPED");
+            if (playerChar.badEvent == 0) AchievementManager.get().unlock("FLAWLESS_RUN");
         }
 
 

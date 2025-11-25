@@ -38,6 +38,7 @@ public class WinScreen implements Screen {
     Preferences prefs;
     float finalTime;
     float score;
+    AchievementManager achievementManager;
 
     /**
      * Creates a WinScreen instance.
@@ -130,6 +131,8 @@ public class WinScreen implements Screen {
 
         stage.addActor(againButton);
         stage.addActor(userInput);
+
+        achievementManager = AchievementManager.get();
     }
     /**
      * Called every frame to render the screen
@@ -147,6 +150,9 @@ public class WinScreen implements Screen {
 
         stage.act(delta);
         stage.draw();
+        
+        achievementManager.update(delta);
+        achievementManager.render(batch, viewport.getScreenWidth() / 2, viewport.getScreenHeight() * 0.3f);
     }
 
     @Override

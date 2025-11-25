@@ -28,6 +28,7 @@ public class Key {
         if (collected == false && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.hiddenEvent += 1;
             collected = true;
+            AchievementManager.get().unlock("FOUND_KEY");
         }
     }
 }
