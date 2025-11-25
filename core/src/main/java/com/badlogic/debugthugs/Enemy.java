@@ -52,12 +52,12 @@ public class Enemy {
         }
         else if (path == null)
         {
-            System.out.println("Path is null");
+            //System.out.println("Path is null");
             moveDirect(player, delta);
         }
         else if (pathIndex >= path.size())
         {
-            System.out.println("Path index >= path.size()");
+            //System.out.println("Path index >= path.size()");
             moveDirect(player, delta);
         }
 
@@ -139,6 +139,7 @@ public class Enemy {
             if (cooldown <= 0f) {
                 cooldown = interval;
                 player.badEvent += 1;
+                AchievementManager.get().unlock("ENCOUTERED_DEAN");
                 return true;
             }
         }

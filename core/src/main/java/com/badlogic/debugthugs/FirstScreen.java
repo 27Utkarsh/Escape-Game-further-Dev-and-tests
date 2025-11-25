@@ -63,6 +63,8 @@ public class FirstScreen implements Screen {
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
     Rectangle player;
 
+    AchievementManager achievements;
+
     /**
      * Creates a new FirstScreen instance for the game
      * @param game the main LibGDX Game object used to manage screens and shared resources
@@ -145,6 +147,9 @@ public class FirstScreen implements Screen {
             }
         });
         pauseStage.addActor(menuButton);
+
+        achievements = AchievementManager.get();
+        achievements.resetAll(); // TODO: This is only for testing purposes - delete before submitting project
     }
 
     /**
@@ -177,9 +182,11 @@ public class FirstScreen implements Screen {
         );
         camera.update();
 
+        
+
         TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
 
-        draw();;
+        draw();
 
         renderer.setView(camera);
         renderer.render();
@@ -194,6 +201,7 @@ public class FirstScreen implements Screen {
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
         font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
+
         spriteBatch.end();
 
         if (enemy.checkCollided(playerChar)) {
@@ -251,10 +259,14 @@ public class FirstScreen implements Screen {
         player.setX(playerChar.playerX);
         player.setY(playerChar.playerY);
 
+        achievements.update(delta);
+        achievements.render(spriteBatch, playerChar.playerX, playerChar.playerY - 150);
+
         if (player.overlaps(exitArea)) {
             music.stop();
             game.setScreen(new WinScreen(game));
         }
+
 
     }
 
