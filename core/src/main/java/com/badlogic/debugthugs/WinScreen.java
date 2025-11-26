@@ -150,9 +150,6 @@ public class WinScreen implements Screen {
 
         stage.act(delta);
         stage.draw();
-        
-        achievementManager.update(delta);
-        achievementManager.render(batch, viewport.getScreenWidth() / 2, viewport.getScreenHeight() * 0.3f);
     }
 
     @Override

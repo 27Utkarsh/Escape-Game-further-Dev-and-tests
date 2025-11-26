@@ -55,7 +55,6 @@ public class FirstScreen implements Screen {
     Key key;
     EnergyDrink energyDrink;
     Enemy enemy;
-    HelperCharacter helper;
 //
 
 
@@ -100,13 +99,6 @@ public class FirstScreen implements Screen {
 
         keyTexture = new Texture("key.png");
         key = new Key(keyTexture, 1180, 1700);
-
-        Texture helperTexture = new Texture("Enemy.png");
-        helper = new HelperCharacter(helperTexture, 785, 1800);
-
-
-
-
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
@@ -192,7 +184,7 @@ public class FirstScreen implements Screen {
         );
         camera.update();
 
-        
+
 
         TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
 
@@ -210,8 +202,6 @@ public class FirstScreen implements Screen {
         energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
-        helper.render(spriteBatch);
-
 
         font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
 
@@ -220,14 +210,6 @@ public class FirstScreen implements Screen {
         if (enemy.checkCollided(playerChar)) {
             timePassed -= 30;
         }
-        if (helper.checkCollided(playerChar)) {
-            timePassed += 20; // add 20 seconds
-            System.out.println("✨ You met a helper! +20 seconds! ✨");
-        }
-
-
-
-
 
         if (playerChar.needsKeyMessage) {
             spriteBatch.begin();
@@ -289,8 +271,6 @@ public class FirstScreen implements Screen {
             AchievementManager.get().unlock("ESCAPED");
             if (playerChar.badEvent == 0) AchievementManager.get().unlock("FLAWLESS_RUN");
         }
-
-
     }
 
     private void input() {
