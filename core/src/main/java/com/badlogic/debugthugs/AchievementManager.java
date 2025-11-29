@@ -30,7 +30,7 @@ public class AchievementManager {
         "FLAWLESS_RUN"
     };
 
-    private final Queue<String> popupQueue = new ArrayDeque<>();
+    private Queue<String> popupQueue = new ArrayDeque<>();
     private float popupTimer = 0f;
     private String currentPopup = null;
     private final BitmapFont popupFont = new BitmapFont();
@@ -136,7 +136,20 @@ public class AchievementManager {
             prefs.putBoolean(key, false);
         }
         prefs.flush();
+
+        currentPopup = null;
+        popupQueue = new ArrayDeque<>();
     }
+
+    public Queue<String> getPopupQueue() {
+        return popupQueue;
+    }
+
+    public String getCurrentPopup()
+    {
+        return currentPopup;
+    }
+
 
     /**
      * Updates the achievement pop-up system every frame.
