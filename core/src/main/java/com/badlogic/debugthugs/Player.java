@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Player {
 
@@ -70,7 +71,7 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink) {
+    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal) {
         float speed = 128f;
         if (energyDrink.drank) {
             speed = 160f;
@@ -126,6 +127,37 @@ public class Player {
             playerY -= distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerY += distance;
+            }
+        }
+    }
+
+    /**
+     * Teleports the player to a random position on the map
+     * 
+     * @param randomX X-coordinate for where the player teleports to
+     * @param randomY Y-coordinate for where the player teleports to
+     */
+    private void teleport() {
+        boolean validPosition = false;
+        while (!validPosition) {
+            // random teleport on the map
+            float randomX = com.badlogic.gdx.math.MathUtils.random(0, 2000);
+            float randomY = com.badlogic.gdx.math.MathUtils.random(0, 2000);
+
+            randomX = (int) (randomX / 32) * 32;
+            randomY = (int) (randomY / 32) * 32;
+
+            float oldX = playerX;
+            float oldY = playerY;
+
+            playerX = randomX;
+            playerY = randomY;
+
+            if (!Collision.collisionCheck(this) && !Collision.door(this)) {
+                validPosition = true;
+            } else {
+                playerX = oldX;
+                playerY = oldY;
             }
         }
     }

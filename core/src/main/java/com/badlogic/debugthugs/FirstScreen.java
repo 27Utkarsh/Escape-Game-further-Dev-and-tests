@@ -36,6 +36,7 @@ public class FirstScreen implements Screen {
     Game game;
     Texture keyTexture;
     Texture energyTexture;
+    Texture portalTexture;
     Texture pauseTexture;
     Texture enemyTexture;
     Music music;
@@ -54,6 +55,7 @@ public class FirstScreen implements Screen {
     Player playerChar;
     Key key;
     EnergyDrink energyDrink;
+    Portal portal;
     Enemy enemy;
 //
 
@@ -102,6 +104,9 @@ public class FirstScreen implements Screen {
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
+
+        portalTexture = new Texture("portal.png");
+        portal = new Portal(portalTexture, 608, 512);
 
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
@@ -161,6 +166,8 @@ public class FirstScreen implements Screen {
      * Player loses if the time runs out and wins if they overlap the exit area
      *
      * @param delta time passed since the last frame (used for animation timing when it comes to frames and also the timer)
+     * @param delta time passed since the last frame (used for animation timing when
+     *              it comes to frames and also the timer)
      */
     @Override
     public void render(float delta) {
@@ -171,12 +178,12 @@ public class FirstScreen implements Screen {
             stateTime = 0;
         }
         if (paused == false) {
-            playerChar.playerInput(key, energyDrink);
             logic();
             enemy.update(playerChar);
         }
         input();
         //sets the camera to position the sprite in the middle of the screen
+        // sets the camera to position the sprite in the middle of the screen
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
             playerChar.playerY + playerChar.playerHeight / 2f,
@@ -200,6 +207,7 @@ public class FirstScreen implements Screen {
         key.render(spriteBatch);
         energyDrink.checkDrank(playerChar);
         energyDrink.render(spriteBatch);
+        portal.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
 
