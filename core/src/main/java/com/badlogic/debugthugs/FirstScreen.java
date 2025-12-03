@@ -162,7 +162,10 @@ public class FirstScreen implements Screen {
     /**
      * Updates and renders the game state for the current frame.
      * Handles player movement and animation timing, updates the camera to follow the player,
-     * renders the tile map and player sprite, updates and displays the countdown timer, checks if the player has won or lost.
+     * Handles player movement and animation timing, updates the camera to follow
+     * the player,
+     * renders the tile map and player sprite, updates and displays the countdown
+     * timer, checks if the player has won or lost.
      * Player loses if the time runs out and wins if they overlap the exit area
      *
      * @param delta time passed since the last frame (used for animation timing when it comes to frames and also the timer)

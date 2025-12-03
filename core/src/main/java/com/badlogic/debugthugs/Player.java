@@ -93,7 +93,18 @@ public class Player {
                 needsInteractMessage = false;
             }
         }
-        if (!doorInfront) {
+
+        // Portal Interaction
+        if (!portal.used && portal.bounds.overlaps(new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
+            needsInteractMessage = true;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                teleport();
+                portal.used = true;
+            }
+        }
+
+        if (!doorInfront && (!portal.bounds.overlaps(new Rectangle(playerX, playerY, playerWidth, playerHeight))
+                || portal.used)) {
             needsKeyMessage = false;
             needsInteractMessage = false;
         }
