@@ -33,23 +33,24 @@ public class Player {
 
     /**
      * Constructs the player entity in the game
-     * @param startX X-coordinate for where the player starts
-     * @param startY Y-coordinate for where the player starts
+     * 
+     * @param startX    X-coordinate for where the player starts
+     * @param startY    Y-coordinate for where the player starts
      * @param walkCycle Animation object holding frames to create a walk cycle
      * @param wallLayer Layer on the tilemap where collide-able walls are
      * @param doorLayer Layer on the tilemap where doors are
      */
     public Player(float startX, float startY,
-                  Animation<TextureRegion> walkCycle,
-                  TiledMapTileLayer wallLayer,
-                  TiledMapTileLayer doorLayer) {
+            Animation<TextureRegion> walkCycle,
+            TiledMapTileLayer wallLayer,
+            TiledMapTileLayer doorLayer) {
 
         this.playerX = startX;
         this.playerY = startY;
         this.walkCycle = walkCycle;
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
-        //hi
+        // hi
 
         TextureRegion first = walkCycle.getKeyFrame(0);
         this.playerWidth = 24;
@@ -60,6 +61,7 @@ public class Player {
      * Renders the player's current animation frame
      * Retrieves the correct frame from the walking animation using state time
      * and draws it at the player's current X and Y position using the SpriteBatch
+     * 
      * @param batch the SpriteBatch used to draw the frame to the screen
      */
     public void render(SpriteBatch batch, float stateTime) {

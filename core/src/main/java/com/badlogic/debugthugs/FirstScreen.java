@@ -27,7 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** First screen of the application. Displayed after the application is created. */
+/**
+ * First screen of the application. Displayed after the application is created.
+ */
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
     Texture walkSheet;
@@ -57,8 +59,7 @@ public class FirstScreen implements Screen {
     EnergyDrink energyDrink;
     Portal portal;
     Enemy enemy;
-//
-
+    //
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -71,21 +72,26 @@ public class FirstScreen implements Screen {
 
     /**
      * Creates a new FirstScreen instance for the game
-     * @param game the main LibGDX Game object used to manage screens and shared resources
+     * 
+     * @param game the main LibGDX Game object used to manage screens and shared
+     *             resources
      */
     public FirstScreen(Game game) {
         this.game = game;
     }
 
     /**
-     * Sets up the camera and viewport. loads the tiled map and its collision layers,
+     * Sets up the camera and viewport. loads the tiled map and its collision
+     * layers,
      * prepares the player's animation and starting position, initializes rendering
-     * tools (SpriteBatch, map renderer), starts background music, prepares font and timer rendering for the HUD.
+     * tools (SpriteBatch, map renderer), starts background music, prepares font and
+     * timer rendering for the HUD.
      */
     @Override
     public void show() {
         viewport = new FitViewport(800, 600);
-        //made a separate camera rather than using the viewport so that the timer stays in the top corner
+        // made a separate camera rather than using the viewport so that the timer stays
+        // in the top corner
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 600);
         camera.zoom = 0.6f;
@@ -110,19 +116,19 @@ public class FirstScreen implements Screen {
 
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
-        enemy = new Enemy(enemyTexture, 1340,1860, pathfinder);
-        //music stuff
+        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+        // music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
 
-        //timer stuff
+        // timer stuff
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
 
-        //animation set up
+        // animation set up
         walkSheet = new Texture("walkfixed.png");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, 32, 32);
 
@@ -161,14 +167,12 @@ public class FirstScreen implements Screen {
 
     /**
      * Updates and renders the game state for the current frame.
-     * Handles player movement and animation timing, updates the camera to follow the player,
      * Handles player movement and animation timing, updates the camera to follow
      * the player,
      * renders the tile map and player sprite, updates and displays the countdown
      * timer, checks if the player has won or lost.
      * Player loses if the time runs out and wins if they overlap the exit area
      *
-     * @param delta time passed since the last frame (used for animation timing when it comes to frames and also the timer)
      * @param delta time passed since the last frame (used for animation timing when
      *              it comes to frames and also the timer)
      */
@@ -181,20 +185,17 @@ public class FirstScreen implements Screen {
             stateTime = 0;
         }
         if (paused == false) {
+            playerChar.playerInput(key, energyDrink, portal);
             logic();
             enemy.update(playerChar);
         }
         input();
-        //sets the camera to position the sprite in the middle of the screen
         // sets the camera to position the sprite in the middle of the screen
         camera.position.set(
-            playerChar.playerX + playerChar.playerWidth / 2f,
-            playerChar.playerY + playerChar.playerHeight / 2f,
-            0
-        );
+                playerChar.playerX + playerChar.playerWidth / 2f,
+                playerChar.playerY + playerChar.playerHeight / 2f,
+                0);
         camera.update();
-
-
 
         TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
 
@@ -214,7 +215,8 @@ public class FirstScreen implements Screen {
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
 
-        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
+        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
+                + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
 
         spriteBatch.end();
 
@@ -248,7 +250,7 @@ public class FirstScreen implements Screen {
         menuButton.setPosition(screenPos.x - 280, screenPos.y - 200);
         menuButton.setVisible(paused);
 
-        //timer stuff
+        // timer stuff
         if (paused == false) {
             timePassed -= delta;
         }
@@ -264,11 +266,10 @@ public class FirstScreen implements Screen {
         font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
 
-
-        //This code will display your mouse x,y coordinates
+        // This code will display your mouse x,y coordinates
         Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePos);
-        //System.out.println(mousePos.x + ", " +  mousePos.y);
+        // System.out.println(mousePos.x + ", " + mousePos.y);
 
         player.setX(playerChar.playerX);
         player.setY(playerChar.playerY);
@@ -280,7 +281,8 @@ public class FirstScreen implements Screen {
             music.stop();
             game.setScreen(new WinScreen(game, timePassed));
             AchievementManager.get().unlock("ESCAPED");
-            if (playerChar.badEvent == 0) AchievementManager.get().unlock("FLAWLESS_RUN");
+            if (playerChar.badEvent == 0)
+                AchievementManager.get().unlock("FLAWLESS_RUN");
         }
     }
 
@@ -289,8 +291,7 @@ public class FirstScreen implements Screen {
             paused = !paused;
             if (paused) {
                 Gdx.input.setInputProcessor(pauseStage);
-            }
-            else {
+            } else {
                 Gdx.input.setInputProcessor(null);
             }
         }
@@ -313,7 +314,8 @@ public class FirstScreen implements Screen {
 
     /**
      * Clears the screen.
-     * Uses a specific colour that blends in with the tilemap rather than making empty spaces completely black
+     * Uses a specific colour that blends in with the tilemap rather than making
+     * empty spaces completely black
      */
     private void draw() {
         ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
@@ -330,7 +332,8 @@ public class FirstScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        if (width <= 0 || height <= 0) return;
+        if (width <= 0 || height <= 0)
+            return;
     }
 
     @Override
@@ -344,6 +347,7 @@ public class FirstScreen implements Screen {
     @Override
     public void hide() {
     }
+
     /**
      * Releases assets and resources used by this screen
      * helps free memory
