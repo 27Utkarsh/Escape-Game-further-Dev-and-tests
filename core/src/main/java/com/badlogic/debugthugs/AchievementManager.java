@@ -27,7 +27,9 @@ public class AchievementManager {
         "FOUND_KEY",
         "UNLOCKED_DOOR",
         "ENERGISED",
-        "FLAWLESS_RUN"
+        "FLAWLESS_RUN",
+        "TELEPORTED",
+        "DUO_AUTHENTICATED"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();
