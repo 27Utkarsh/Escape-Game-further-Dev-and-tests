@@ -41,6 +41,7 @@ public class FirstScreen implements Screen {
     Texture portalTexture;
     Texture pauseTexture;
     Texture enemyTexture;
+    Texture duoTexture;
     Music music;
     FitViewport viewport;
     Stage pauseStage;
@@ -59,6 +60,7 @@ public class FirstScreen implements Screen {
     EnergyDrink energyDrink;
     Portal portal;
     Enemy enemy;
+    DuoAuth duoAuth;
     //
 
     static TiledMapTileLayer collisionLayer;
@@ -117,6 +119,9 @@ public class FirstScreen implements Screen {
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
         enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+
+        duoTexture = new Texture("DuoAuth.png");
+        duoAuth = new DuoAuth(duoTexture, 1536f, 704f);
         // music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
@@ -185,9 +190,11 @@ public class FirstScreen implements Screen {
             stateTime = 0;
         }
         if (paused == false) {
-            playerChar.playerInput(key, energyDrink, portal);
+            playerChar.playerInput(key, energyDrink, portal, duoAuth);
             logic();
             enemy.update(playerChar);
+            duoAuth.checkTriggered(playerChar);
+            duoAuth.update(delta);
         }
         input();
         // sets the camera to position the sprite in the middle of the screen
@@ -214,6 +221,7 @@ public class FirstScreen implements Screen {
         portal.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
+        duoAuth.render(spriteBatch);
 
         font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
                 + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
@@ -232,6 +240,13 @@ public class FirstScreen implements Screen {
         if (playerChar.needsInteractMessage) {
             spriteBatch.begin();
             font.draw(spriteBatch, "Press 'E' to open the door", playerChar.playerX - 20, playerChar.playerY + 50);
+            spriteBatch.end();
+        }
+
+        if (duoAuth.active) {
+            spriteBatch.begin();
+            font.draw(spriteBatch, "Authenticating duo, Paused for 10s", playerChar.playerX - 50,
+                    playerChar.playerY + 50);
             spriteBatch.end();
         }
 

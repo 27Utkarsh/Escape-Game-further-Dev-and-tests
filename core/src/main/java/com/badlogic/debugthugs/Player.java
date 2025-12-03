@@ -73,10 +73,14 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal) {
+    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth) {
         float speed = 128f;
         if (energyDrink.drank) {
             speed = 160f;
+        }
+
+        if (duoAuth.active) {
+            return;
         }
         float delta = Gdx.graphics.getDeltaTime();
         float distance = speed * delta;
@@ -168,6 +172,8 @@ public class Player {
 
             if (!Collision.collisionCheck(this) && !Collision.door(this)) {
                 validPosition = true;
+                hiddenEvent += 1;
+                AchievementManager.get().unlock("TELEPORTED");
             } else {
                 playerX = oldX;
                 playerY = oldY;
