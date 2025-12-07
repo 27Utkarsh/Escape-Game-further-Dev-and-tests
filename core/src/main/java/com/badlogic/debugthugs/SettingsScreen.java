@@ -52,7 +52,7 @@ public class SettingsScreen implements Screen {
      */
     @Override
     public void show() {
-        stage = new Stage(game.uiViewport, game.batch);
+        stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 

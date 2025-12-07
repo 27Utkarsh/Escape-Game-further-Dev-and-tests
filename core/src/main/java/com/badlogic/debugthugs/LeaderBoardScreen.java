@@ -45,7 +45,7 @@ public class LeaderBoardScreen extends ScreenAdapter {
      */
     @Override
     public void show() {
-        stage = new Stage(game.uiViewport, game.batch);
+        stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
         game.font.getData().setScale(2f);

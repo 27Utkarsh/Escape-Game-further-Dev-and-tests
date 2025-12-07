@@ -13,7 +13,6 @@ public class Enemy {
     public Sprite enemySprite;
     public Rectangle bounds;
     public boolean caughtPlayer = false;
-    Texture enemyTexture;
     float x, y;
     float speed = 90f;
     float cooldown = 0f;
@@ -26,7 +25,6 @@ public class Enemy {
     float repathInterval = 3f;
 
     public Enemy(Texture texture, float x, float y, Pathfinding pathfinder) {
-        this.enemyTexture  = texture;
         enemySprite = new Sprite(texture);
         this.x = x;
         this.y = y;

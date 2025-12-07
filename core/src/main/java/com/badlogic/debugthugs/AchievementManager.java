@@ -203,4 +203,9 @@ public class AchievementManager {
         popupFont.setColor(popupColor);
         popupFont.draw(batch, currentPopup, drawX, drawY);
     }
+
+    public void dispose()
+    {
+        popupFont.dispose();
+    }
 }

@@ -9,7 +9,6 @@ public class Key {
     public Sprite keySprite;
     public Rectangle bounds;
     public boolean collected = false;
-    Texture keyTexture;
 
     public Key(Texture texture, float x, float y) {
         keySprite = new Sprite(texture);

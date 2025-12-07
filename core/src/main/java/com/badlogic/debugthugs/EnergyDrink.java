@@ -8,7 +8,6 @@ public class EnergyDrink{
     public Sprite energySprite;
     public Rectangle bounds;
     public boolean drank = false;
-    Texture keyTexture;
 
     public EnergyDrink(Texture texture, float x, float y) {
         energySprite = new Sprite(texture);

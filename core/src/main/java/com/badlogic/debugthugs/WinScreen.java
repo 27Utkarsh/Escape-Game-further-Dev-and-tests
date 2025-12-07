@@ -61,7 +61,7 @@ public class WinScreen implements Screen {
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         score = calcScore(finalTime);
-        stage = new Stage(game.uiViewport, game.batch);
+        stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));

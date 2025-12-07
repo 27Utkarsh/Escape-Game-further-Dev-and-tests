@@ -26,7 +26,7 @@ public class Player {
     Animation<TextureRegion> walkCycle;
 
     TiledMapTileLayer wallLayer;
-    static TiledMapTileLayer doorLayer;
+    TiledMapTileLayer doorLayer;
 
     public static boolean doorInfront = false;
     public static boolean open = false; // door opened
@@ -50,9 +50,7 @@ public class Player {
         this.walkCycle = walkCycle;
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
-        // hi
 
-        TextureRegion first = walkCycle.getKeyFrame(0);
         this.playerWidth = 24;
         this.playerHeight = 24;
     }

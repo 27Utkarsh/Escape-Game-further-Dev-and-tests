@@ -33,7 +33,7 @@ public class LoseScreen implements Screen {
     @Override
     public void show() {
         backgroundTexture = new Texture("Game_Over_Image.png");
-        stage = new Stage(game.uiViewport, game.batch);
+        stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));

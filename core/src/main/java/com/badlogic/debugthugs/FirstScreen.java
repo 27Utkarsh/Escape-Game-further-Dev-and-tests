@@ -50,6 +50,7 @@ public class FirstScreen implements Screen {
     Portal portal;
     Enemy enemy;
     DuoAuth duoAuth;
+    TiledMap map;
     //
 
     static TiledMapTileLayer collisionLayer;
@@ -85,10 +86,10 @@ public class FirstScreen implements Screen {
         //game.worldCamera.setToOrtho(false, 800, 600);
         game.worldCamera.zoom = 0.6f;
 
-        TiledMap map = new TmxMapLoader().load("maps/maze_map.tmx");
+        map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
         MapLayer doorsLayer = map.getLayers().get("Doors");
-        MapLayer booksLayer = map.getLayers().get("Books");
+        //MapLayer booksLayer = map.getLayers().get("Books");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
         doorLayer = (TiledMapTileLayer) doorsLayer;
         //bookLayer = (TiledMapTileLayer) booksLayer;
@@ -341,6 +342,23 @@ public class FirstScreen implements Screen {
      */
     @Override
     public void dispose() {
+        if (renderer != null) renderer.dispose();
+        if (map != null) map.dispose();
+
+        if (walkSheet != null) walkSheet.dispose();
+        if (keyTexture != null) keyTexture.dispose();
+        if (energyTexture != null) energyTexture.dispose();
+        if (portalTexture != null) portalTexture.dispose();
+        if (enemyTexture != null) enemyTexture.dispose();
+        if (duoTexture != null) duoTexture.dispose();
+        if (pauseTexture != null) pauseTexture.dispose();
+        
+        if (music != null) music.dispose();
+
+        if (skin != null) skin.dispose();
+        if (pauseStage != null) pauseStage.dispose();
+
+        if (achievements != null) achievements.dispose();
     }
 
     @Override
