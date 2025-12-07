@@ -1,14 +1,11 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * The WinScreen class is displayed when the player gets to the end of the maze
@@ -27,14 +22,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * Also now updated to save user data for the leaderboard rankings
  */
 public class WinScreen implements Screen {
-    FitViewport viewport;
     Texture backgroundTexture;
-    SpriteBatch batch;
-    Game game;
+    Main game;
     Stage stage;
     Skin skin;
     Music music;
-    BitmapFont font;
     Preferences prefs;
     float finalTime;
     float score;
@@ -44,7 +36,7 @@ public class WinScreen implements Screen {
      * Creates a WinScreen instance.
      * @param game Reference to the main game class to allow screen switching.
      */
-    public WinScreen(Game game, float finalTime) {
+    public WinScreen(Main game, float finalTime) {
         this.game = game;
         this.finalTime = finalTime;
     }
@@ -65,13 +57,11 @@ public class WinScreen implements Screen {
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
         backgroundTexture = new Texture("Win.png");
-        font = new BitmapFont();
-        font.getData().setScale(4f);
-        font.setColor(Color.WHITE);
+        game.font.getData().setScale(4f);
+        game.font.setColor(Color.WHITE);
         score = calcScore(finalTime);
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
@@ -80,7 +70,6 @@ public class WinScreen implements Screen {
         music.play();
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         TextField userInput = new TextField("", skin);
         userInput.setMessageText("Enter your name (1-8 characters):");
@@ -141,12 +130,12 @@ public class WinScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.RED);
-        viewport.apply();
-
-        batch.begin();
-        batch.draw(backgroundTexture,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        font.draw(batch, "Score: " + score, 20, 600);
-        batch.end();
+        game.uiViewport.apply();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        game.batch.draw(backgroundTexture,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        game.font.draw(game.batch, "Score: " + score, 20, 600);
+        game.batch.end();
 
         stage.act(delta);
         stage.draw();
@@ -154,9 +143,6 @@ public class WinScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        stage.getViewport().update(width, height, true);
-        batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override
@@ -179,11 +165,9 @@ public class WinScreen implements Screen {
      */
     @Override
     public void dispose() {
-        batch.dispose();
         backgroundTexture.dispose();
         stage.dispose();
         skin.dispose();
         music.dispose();
-        font.dispose();
     }
 }

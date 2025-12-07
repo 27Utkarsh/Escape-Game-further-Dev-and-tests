@@ -1,11 +1,11 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,19 +14,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import org.w3c.dom.Text;
 
 public class MenuScreen extends ScreenAdapter {
-    private static final int VIEWPORT_WIDTH = 1280;
-    private static final int VIEWPORT_HEIGHT = 720;
+    //private static final int VIEWPORT_WIDTH = 1280;
+    //private static final int VIEWPORT_HEIGHT = 720;
 
-    Game game;
-    FitViewport viewport;
-    SpriteBatch batch;
+    Main game;
+    //FitViewport viewport;
+    //SpriteBatch batch;
     Stage stage;
 
-    BitmapFont font;
+    //BitmapFont font;
     Skin skin;
     Texture background;
     Music music;
@@ -35,7 +33,7 @@ public class MenuScreen extends ScreenAdapter {
      * Creates the main menu screen.
      * @param game reference to the main game instance for screen switching
      */
-    public MenuScreen(Game game) {
+    public MenuScreen(Main game) {
         this.game = game;
     }
     /**
@@ -44,8 +42,7 @@ public class MenuScreen extends ScreenAdapter {
      */
     @Override
     public void show() {
-        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-        stage = new Stage(viewport);
+        stage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         background = new Texture("Menu.png");
@@ -55,9 +52,8 @@ public class MenuScreen extends ScreenAdapter {
         music.setVolume(SettingsScreen.getNoise());
         music.play();
 
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        font.getData().setScale(2f);
+        game.font.getData().setScale(2f);
+        game.font.setColor(Color.WHITE);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -65,21 +61,21 @@ public class MenuScreen extends ScreenAdapter {
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
-        Label.LabelStyle titleStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label.LabelStyle titleStyle = new Label.LabelStyle(game.font, Color.WHITE);
         Label titleLabel = new Label("University Escape [WIP Title]", titleStyle);
-
-        TextButton startButton = new TextButton("Start", skin);
-        TextButton settingsButton = new TextButton("Settings", skin);
-        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
-
         rootTable.add(titleLabel).padBottom(80f);
         rootTable.row();
+
+        TextButton startButton = new TextButton("Start", skin);
         rootTable.add(startButton).width(300).height(80).padBottom(40);
         rootTable.row();
+
+        TextButton settingsButton = new TextButton("Settings", skin);
         rootTable.add(settingsButton).width(300).height(80).padBottom(40);
         rootTable.row();
-        rootTable.add(leaderBoardButton).width(300).height(80);
 
+        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
+        rootTable.add(leaderBoardButton).width(300).height(80);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -113,12 +109,12 @@ public class MenuScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.DARK_GRAY);
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+        //game.uiViewport.apply();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
 
-        batch.begin();
-        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        batch.end();
+        game.batch.begin();
+        game.batch.draw(background, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+        game.batch.end();
 
         stage.act(delta);
         stage.draw();
@@ -126,16 +122,6 @@ public class MenuScreen extends ScreenAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             game.setScreen(new FirstScreen(game));
         }
-    }
-    /**
-     * Updates the viewport and stage sizes when the screen changes size.
-     * @param width  new width of the screen
-     * @param height new height of the screen
-     */
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -159,8 +145,6 @@ public class MenuScreen extends ScreenAdapter {
      */
     @Override
     public void dispose() {
-        batch.dispose();
-        font.dispose();
         stage.dispose();
         background.dispose();
         skin.dispose();

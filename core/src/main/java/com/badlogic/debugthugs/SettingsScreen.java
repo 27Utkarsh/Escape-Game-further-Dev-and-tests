@@ -1,31 +1,31 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class SettingsScreen implements Screen {
     float initialVolume = 0.5f;
     static float volume;
-    Game game;
+    Main game;
     Stage stage;
     Skin skin;
-    SpriteBatch batch;
 
     /**
      * Creates a SettingsScreen instance.
      * @param game Reference to the main game class to allow screen switching.
      */
-    public SettingsScreen(Game game) {
+    public SettingsScreen(Main game) {
         this.game = game;
     }
 
@@ -52,8 +52,7 @@ public class SettingsScreen implements Screen {
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -103,6 +102,7 @@ public class SettingsScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
         stage.act(delta);
         stage.draw();
     }

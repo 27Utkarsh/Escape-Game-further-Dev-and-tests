@@ -1,9 +1,14 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -12,12 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.lang.reflect.Array;
-import java.util.*;
 
 /**
  * This class handles the leaderboard screen and reads from the preference
@@ -25,11 +24,8 @@ import java.util.*;
  * Extends ScreenAdapter as a convenience implementation of screen
  */
 public class LeaderBoardScreen extends ScreenAdapter {
-    FitViewport viewport;
-    Game game;
+    Main game;
     Stage stage;
-    SpriteBatch batch;
-    BitmapFont font;
     Skin skin;
     Preferences prefs;
     HashMap<String, Float> returnScores;
@@ -40,7 +36,7 @@ public class LeaderBoardScreen extends ScreenAdapter {
      * Creates a new leaderboard instance for the game
      * @param game the main LibGDX Game object used to manage screens and shared resources
      */
-    public LeaderBoardScreen(Game game) { this.game = game; }
+    public LeaderBoardScreen(Main game) { this.game = game; }
 
     /**
      * Creates the objects to be displayed on the screen once it has been initiated, and
@@ -49,28 +45,24 @@ public class LeaderBoardScreen extends ScreenAdapter {
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(game.uiViewport, game.batch);
+        Gdx.input.setInputProcessor(stage);
 
-        font = new BitmapFont();
-        font.getData().setScale(2f);
+        game.font.getData().setScale(2f);
 
         //Calls the preference file and manages the data handlers
         prefs = Gdx.app.getPreferences("GameScores");
         returnScores = getScores();
         sortScores(returnScores);
 
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-
-        Gdx.input.setInputProcessor(stage);
 
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
         //Sets labels with the array data containing player names and scores
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(game.font, Color.WHITE);
         Label l0 = new Label("Top 5 players score: ", labelStyle);
         Label l1 = new Label("1: " + topNames[0] + ": " +  topScores[0], labelStyle);
         Label l2 = new Label("2: " + topNames[1] + ": " + topScores[1], labelStyle);
@@ -79,17 +71,17 @@ public class LeaderBoardScreen extends ScreenAdapter {
         Label l5 = new Label("5: " + topNames[4] + ": " + topScores[4], labelStyle);
         TextButton exit = new TextButton("Exit", skin);
 
-        table.add(l0).padBottom(80f);
+        table.add(l0).padBottom(40f);
         table.row();
-        table.add(l1).padBottom(80f);
+        table.add(l1).padBottom(40f);
         table.row();
-        table.add(l2).padBottom(80f);
+        table.add(l2).padBottom(40f);
         table.row();
-        table.add(l3).padBottom(80f);
+        table.add(l3).padBottom(40f);
         table.row();
-        table.add(l4).padBottom(80f);
+        table.add(l4).padBottom(40f);
         table.row();
-        table.add(l5).padBottom(80f);
+        table.add(l5).padBottom(40f);
         table.row();
         table.add(exit).width(150).height(40);
         table.row();
@@ -159,8 +151,8 @@ public class LeaderBoardScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+        game.uiViewport.apply();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
 
         stage.act(delta);
         stage.draw();
@@ -168,8 +160,6 @@ public class LeaderBoardScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        stage.getViewport().update(width, height, true);
     }
 
     /**
@@ -179,8 +169,6 @@ public class LeaderBoardScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
-        batch.dispose();
-        font.dispose();
         skin.dispose();
     }
 }

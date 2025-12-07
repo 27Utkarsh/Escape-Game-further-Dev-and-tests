@@ -1,24 +1,20 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class LoseScreen implements Screen {
     Texture backgroundTexture;
-    SpriteBatch batch;
-    Game game;
+    Main game;
     Stage stage;
     Skin skin;
     Music music;
@@ -26,19 +22,18 @@ public class LoseScreen implements Screen {
      * Creates a new LoseScreen.
      * @param game reference to the main game instance for screen switching
      */
-    public LoseScreen(Game game) {
-
+    public LoseScreen(Main game) {
         this.game = game;
     }
+
     /**
      * Called when the lose screen becomes the current screen
      * initialises the game over image, music and waits for the player to press the try again button
      */
     @Override
     public void show() {
-        batch = new SpriteBatch();
         backgroundTexture = new Texture("Game_Over_Image.png");
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
@@ -71,9 +66,10 @@ public class LoseScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(Color.RED);
 
-        batch.begin();
-        batch.draw(backgroundTexture,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        batch.end();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        game.batch.draw(backgroundTexture,0,0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+        game.batch.end();
 
         stage.act(delta);
         stage.draw();
@@ -81,7 +77,6 @@ public class LoseScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
@@ -104,7 +99,6 @@ public class LoseScreen implements Screen {
      */
     @Override
     public void dispose() {
-        batch.dispose();
         backgroundTexture.dispose();
         stage.dispose();
         skin.dispose();

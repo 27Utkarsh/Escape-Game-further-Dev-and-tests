@@ -200,12 +200,7 @@ public class AchievementManager {
         float drawX = xPos - textWidth / 2f;
         float drawY = yPos + textHeight / 2f;
 
-        batch.begin();
         popupFont.setColor(popupColor);
-
         popupFont.draw(batch, currentPopup, drawX, drawY);
-
-        batch.end();
-
     }
 }
