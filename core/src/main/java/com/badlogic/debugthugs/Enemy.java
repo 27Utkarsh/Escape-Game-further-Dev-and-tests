@@ -85,7 +85,7 @@ public class Enemy {
         {
             float nx = distX / distance;
             float ny = distY / distance;
-            
+
             float nextX = x + nx * speed * delta;
             float nextY = y + ny * speed * delta;
 

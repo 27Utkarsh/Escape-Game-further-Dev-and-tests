@@ -42,21 +42,30 @@ public class WinScreen implements Screen {
 
     /**
      * Creates a WinScreen instance.
+     *
      * @param game Reference to the main game class to allow screen switching.
+     * @param finalTime Time elapsed in the game
+     * @param bonusPoints Extra points (from coins)
      */
-    public WinScreen(Game game, float finalTime) {
+    public WinScreen(Game game, float finalTime, float bonusPoints) {
         this.game = game;
         this.finalTime = finalTime;
+        this.score = calcScore(finalTime) + bonusPoints; // <-- minimal change: add bonus points
     }
 
     /**
      * Calculates the overall player score
+     *
      * @param time passed as final time to factor into score
      * @return final score as a float
      */
     public float calcScore(float time) {
-        score = time * 4f;
-        return score;
+        float maxTime = 300f; // 5 minutes in seconds
+        float remaining = maxTime - time;
+
+        if (remaining < 0) remaining = 0; // no negative score
+
+        return (remaining / 60f) * 100f;
     }
 
     /**
@@ -70,7 +79,6 @@ public class WinScreen implements Screen {
         font = new BitmapFont();
         font.getData().setScale(4f);
         font.setColor(Color.WHITE);
-        score = calcScore(finalTime);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -95,10 +103,6 @@ public class WinScreen implements Screen {
 
         userInput.addListener(new ChangeListener() {
             @Override
-            /**
-             * Sets the status of whether the exit button is enabled or not
-             * depending if the text in the bar is empty or not
-             */
             public void changed(ChangeEvent event, Actor actor) {
                 String userName =  userInput.getText();
                 againButton.setDisabled(userName.isEmpty());
@@ -107,18 +111,11 @@ public class WinScreen implements Screen {
 
         againButton.addListener(new ClickListener() {
             @Override
-            /**
-             * Handles when the player clicks the "Play Again" button.
-             * If user has entered text into the bar then the username and score
-             * is loaded into a preference file
-             * Then stops music and returns to the menu screen if button is clicked
-             */
             public void clicked(InputEvent event, float x, float y) {
                 String userName =  userInput.getText();
                 if (!userName.isEmpty()) {
                     prefs = Gdx.app.getPreferences("GameScores");
                     float oldScore = prefs.getFloat(userName);
-                    //Makes sure previous highscore isn't overwritten
                     if (oldScore < score) {
                         prefs.putFloat(userName, score);
                         prefs.flush();
@@ -134,10 +131,7 @@ public class WinScreen implements Screen {
 
         achievementManager = AchievementManager.get();
     }
-    /**
-     * Called every frame to render the screen
-     * @param delta The time in seconds since the last render.
-     */
+
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.RED);
@@ -160,23 +154,14 @@ public class WinScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
+    public void hide() {}
 
-    }
-    /**
-     * Releases assets and resources used by this screen.
-     * helps free memory
-     */
     @Override
     public void dispose() {
         batch.dispose();

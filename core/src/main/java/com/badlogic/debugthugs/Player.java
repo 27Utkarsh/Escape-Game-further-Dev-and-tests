@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Player {
 
@@ -129,4 +130,8 @@ public class Player {
             }
         }
     }
+    public Rectangle getBounds() {
+        return new Rectangle(playerX, playerY, playerWidth, playerHeight);
+    }
+
 }

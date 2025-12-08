@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
     Texture walkSheet;
@@ -55,8 +54,9 @@ public class FirstScreen implements Screen {
     Key key;
     EnergyDrink energyDrink;
     Enemy enemy;
-//
-
+    WinScreen winScreen;
+    Coin coin;
+    float coinBonusPoints = 0f; // accumulate coin points
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
@@ -67,23 +67,13 @@ public class FirstScreen implements Screen {
 
     AchievementManager achievements;
 
-    /**
-     * Creates a new FirstScreen instance for the game
-     * @param game the main LibGDX Game object used to manage screens and shared resources
-     */
     public FirstScreen(Game game) {
         this.game = game;
     }
 
-    /**
-     * Sets up the camera and viewport. loads the tiled map and its collision layers,
-     * prepares the player's animation and starting position, initializes rendering
-     * tools (SpriteBatch, map renderer), starts background music, prepares font and timer rendering for the HUD.
-     */
     @Override
     public void show() {
         viewport = new FitViewport(800, 600);
-        //made a separate camera rather than using the viewport so that the timer stays in the top corner
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 600);
         camera.zoom = 0.6f;
@@ -105,22 +95,22 @@ public class FirstScreen implements Screen {
 
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
-        enemy = new Enemy(enemyTexture, 1340,1860, pathfinder);
-        //music stuff
+        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+
+        coin = new Coin(new Texture("Enemy.png"), 1100, 1800);
+        coin.bonusPoints = 50f; // 50 points for collection
+
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
 
-        //timer stuff
         timeBatch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
 
-        //animation set up
         walkSheet = new Texture("walkfixed.png");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, 32, 32);
-
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
         for (int col = 0; col < FRAME_COLS; col++) {
             walkFrames[col] = tmp[1][col];
@@ -151,17 +141,9 @@ public class FirstScreen implements Screen {
         pauseStage.addActor(menuButton);
 
         achievements = AchievementManager.get();
-        achievements.resetAll(); // TODO: This is only for testing purposes - delete before submitting project
+        achievements.resetAll();
     }
 
-    /**
-     * Updates and renders the game state for the current frame.
-     * Handles player movement and animation timing, updates the camera to follow the player,
-     * renders the tile map and player sprite, updates and displays the countdown timer, checks if the player has won or lost.
-     * Player loses if the time runs out and wins if they overlap the exit area
-     *
-     * @param delta time passed since the last frame (used for animation timing when it comes to frames and also the timer)
-     */
     @Override
     public void render(float delta) {
         float animSpeed = 0.5f;
@@ -170,13 +152,13 @@ public class FirstScreen implements Screen {
         } else {
             stateTime = 0;
         }
-        if (paused == false) {
+        if (!paused) {
             playerChar.playerInput(key, energyDrink);
             logic();
             enemy.update(playerChar);
         }
         input();
-        //sets the camera to position the sprite in the middle of the screen
+
         camera.position.set(
             playerChar.playerX + playerChar.playerWidth / 2f,
             playerChar.playerY + playerChar.playerHeight / 2f,
@@ -184,12 +166,8 @@ public class FirstScreen implements Screen {
         );
         camera.update();
 
-
-
         TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
-
         draw();
-
         renderer.setView(camera);
         renderer.render();
 
@@ -203,7 +181,11 @@ public class FirstScreen implements Screen {
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
 
-        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent, playerChar.playerX - 100, playerChar.playerY + 180);
+        coin.checkCollected(playerChar, this);
+        coin.render(spriteBatch);
+
+        font.draw(spriteBatch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: " + playerChar.hiddenEvent,
+            playerChar.playerX - 100, playerChar.playerY + 180);
 
         spriteBatch.end();
 
@@ -237,8 +219,7 @@ public class FirstScreen implements Screen {
         menuButton.setPosition(screenPos.x - 280, screenPos.y - 200);
         menuButton.setVisible(paused);
 
-        //timer stuff
-        if (paused == false) {
+        if (!paused) {
             timePassed -= delta;
         }
         if (timePassed <= 0) {
@@ -253,12 +234,6 @@ public class FirstScreen implements Screen {
         font.draw(timeBatch, time, 20, 580);
         timeBatch.end();
 
-
-        //This code will display your mouse x,y coordinates
-        Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mousePos);
-        //System.out.println(mousePos.x + ", " +  mousePos.y);
-
         player.setX(playerChar.playerX);
         player.setY(playerChar.playerY);
 
@@ -267,7 +242,8 @@ public class FirstScreen implements Screen {
 
         if (player.overlaps(exitArea)) {
             music.stop();
-            game.setScreen(new WinScreen(game, timePassed));
+            float timeSpent = 300f - timePassed;
+            game.setScreen(new WinScreen(game, timeSpent, coinBonusPoints)); // pass collected coin points
             AchievementManager.get().unlock("ESCAPED");
             if (playerChar.badEvent == 0) AchievementManager.get().unlock("FLAWLESS_RUN");
         }
@@ -278,21 +254,9 @@ public class FirstScreen implements Screen {
             paused = !paused;
             if (paused) {
                 Gdx.input.setInputProcessor(pauseStage);
-            }
-            else {
+            } else {
                 Gdx.input.setInputProcessor(null);
             }
-        }
-    }
-
-    private boolean check_book(float x, float y) {
-        int tileX = (int) (x / 32);
-        int tileY = (int) (y / 32);
-        TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
-        if (cell == null) {
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -300,44 +264,18 @@ public class FirstScreen implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
     }
 
-    /**
-     * Clears the screen.
-     * Uses a specific colour that blends in with the tilemap rather than making empty spaces completely black
-     */
     private void draw() {
         ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
         viewport.apply();
     }
 
-    /**
-     * Handles resizing of the game window or viewport
-     * Makes the game more compatible over different devices
-     *
-     * @param width  the new window width in pixels
-     * @param height the new window height in pixels
-     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        if (width <= 0 || height <= 0) return;
     }
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-    /**
-     * Releases assets and resources used by this screen
-     * helps free memory
-     */
-    @Override
-    public void dispose() {
-    }
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {}
 }
