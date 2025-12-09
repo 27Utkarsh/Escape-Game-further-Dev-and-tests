@@ -71,13 +71,17 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth) {
+    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor) {
         float speed = 128f;
         if (energyDrink.drank) {
             speed = 160f;
         }
 
         if (duoAuth.active) {
+            return;
+        }
+
+        if (wetFloor.active){
             return;
         }
         float delta = Gdx.graphics.getDeltaTime();

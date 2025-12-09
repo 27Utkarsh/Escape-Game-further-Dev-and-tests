@@ -29,7 +29,8 @@ public class AchievementManager {
         "ENERGISED",
         "FLAWLESS_RUN",
         "TELEPORTED",
-        "DUO_AUTHENTICATED"
+        "DUO_AUTHENTICATED",
+        "WATCH_YOUR_STEP"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();

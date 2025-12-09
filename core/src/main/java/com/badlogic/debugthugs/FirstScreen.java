@@ -35,6 +35,7 @@ public class FirstScreen implements Screen {
     Texture pauseTexture;
     Texture enemyTexture;
     Texture duoTexture;
+    Texture wetFloorTexture;
     Music music;
     Stage pauseStage;
     Skin skin;
@@ -50,6 +51,7 @@ public class FirstScreen implements Screen {
     Portal portal;
     Enemy enemy;
     DuoAuth duoAuth;
+    WetFloor wetFloor;
     TiledMap map;
     //
 
@@ -110,6 +112,9 @@ public class FirstScreen implements Screen {
 
         duoTexture = new Texture("DuoAuth.png");
         duoAuth = new DuoAuth(duoTexture, 1536f, 704f);
+
+        wetFloorTexture = new Texture("WetFloor.png");
+        wetFloor = new WetFloor(wetFloorTexture,  544, 1152);
 
         // music stuff
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
@@ -207,11 +212,14 @@ public class FirstScreen implements Screen {
         }
 
         if (!paused) {
-            playerChar.playerInput(key, energyDrink, portal, duoAuth);
+            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor);
             
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);
+            wetFloor.checkTriggered(playerChar);
+            wetFloor.update(delta);
+
         }
 
         key.checkCollected(playerChar);
@@ -273,6 +281,7 @@ public class FirstScreen implements Screen {
         playerChar.render(game.batch, stateTime);
         enemy.render(game.batch);
         duoAuth.render(game.batch);
+        wetFloor.render(game.batch);
 
         game.batch.end();
     }
@@ -351,6 +360,7 @@ public class FirstScreen implements Screen {
         if (portalTexture != null) portalTexture.dispose();
         if (enemyTexture != null) enemyTexture.dispose();
         if (duoTexture != null) duoTexture.dispose();
+        if (wetFloorTexture != null) wetFloorTexture.dispose();
         if (pauseTexture != null) pauseTexture.dispose();
         
         if (music != null) music.dispose();
