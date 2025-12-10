@@ -97,7 +97,7 @@ public class FirstScreen implements Screen {
         //bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        keyTexture = new Texture("key.png");
+        keyTexture = new Texture("Key.png");
         key = new Key(keyTexture, 1180, 1700);
 
         energyTexture = new Texture("energyDrink.png");
