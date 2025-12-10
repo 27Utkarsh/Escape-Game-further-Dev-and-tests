@@ -160,8 +160,8 @@ public class Player {
         boolean validPosition = false;
         while (!validPosition) {
             // random teleport on the map
-            float randomX = com.badlogic.gdx.math.MathUtils.random(0, 2000);
-            float randomY = com.badlogic.gdx.math.MathUtils.random(0, 2000);
+            float randomX = com.badlogic.gdx.math.MathUtils.random(400, 1500);
+            float randomY = com.badlogic.gdx.math.MathUtils.random(400, 1500);
 
             randomX = (int) (randomX / 32) * 32;
             randomY = (int) (randomY / 32) * 32;
