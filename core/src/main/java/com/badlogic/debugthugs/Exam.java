@@ -17,8 +17,8 @@ private SpriteBatch batch;
     private final Main game;
 
     // Patrol data
-    private float patrolStartX;
-    private float patrolEndX;
+    private float patrolStartY;
+    private float patrolEndY;
     private float speed = 60f;     
     private int direction = 1;      
 
@@ -34,30 +34,30 @@ private SpriteBatch batch;
 
         examSprite = new Sprite(texture1);
         examSprite.setPosition(x, y);
-        examSprite.setSize(32, 32);
+        examSprite.setSize(50, 50);
 
         batch = new SpriteBatch();
 
         overlayTexture = texture2;
 
-        bounds = new Rectangle(780, 1800, 32, 32);
+        bounds = new Rectangle(1184, 1500, 50, 50);
         
-        // Patrol from x to x + patrolDistance
-        patrolStartX = 780;
-        patrolEndX = 780 + patrolDistance;
+        // Patrol from y to y + patrolDistance
+        patrolStartY = 1000;
+        patrolEndY = 1000 + patrolDistance;
     }
 
     /** Call this every frame*/
     public void update(float delta) {
         // Move horizontally according to current direction
-        x += speed * direction * delta;
+        y += speed * direction * delta;
 
         // Reverse direction at patrol bounds
-        if (x < patrolStartX) {
-            x = patrolStartX;
+        if (y < patrolStartY) {
+            y = patrolStartY;
             direction = 1;
-        } else if (x > patrolEndX) {
-            x = patrolEndX;
+        } else if (y > patrolEndY) {
+            y = patrolEndY;
             direction = -1;
         }
 
@@ -94,7 +94,7 @@ private SpriteBatch batch;
             player.badEvent += 1;
             AchievementManager.get().unlock("EXAM");
             examed = true;
-            overlayTimer = 7f;
+            overlayTimer = 15f;
         }
     }
     public void dispose() {

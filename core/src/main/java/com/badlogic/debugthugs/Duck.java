@@ -24,14 +24,14 @@ public class Duck {
         this.y = y;
 
         duckSprite = new Sprite(texture);
-        duckSprite.setPosition(760, 1780);
-        duckSprite.setSize(32, 32);
+        duckSprite.setPosition(x, y);
+        duckSprite.setSize(50, 55);
 
-        bounds = new Rectangle(760, 1780, 32, 32);
+        bounds = new Rectangle(680, 520, 50, 55);
         
         
-        patrolStartX = 760;
-        patrolEndX = 760 + patrolDistance;
+        patrolStartX = 670;
+        patrolEndX = 670 + patrolDistance;
     }
 
     /** Call this every frame*/

@@ -114,10 +114,10 @@ public class FirstScreen implements Screen {
 //1
         examTexture = new Texture("Exam.png");
         pressureTexture = new Texture("Pressure.png");
-        exam = new Exam(examTexture, pressureTexture, 780, 1800, 400f, game);
+        exam = new Exam(examTexture, pressureTexture, 1184, 1500, 400f, game);
 //2
         duckTexture = new Texture("Longboi.png");
-        duck = new Duck(duckTexture, 1000, 1700, 200f); // start at (1000,1700), patrol 200 pixels
+        duck = new Duck(duckTexture, 680, 520, 250f); // start at (1000,1700), patrol 200 pixels
 
         portalTexture = new Texture("portal.png");
         portal = new Portal(portalTexture, 608, 512);
