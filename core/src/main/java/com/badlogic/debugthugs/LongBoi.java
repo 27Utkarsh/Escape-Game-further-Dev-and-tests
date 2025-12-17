@@ -31,7 +31,7 @@ public class LongBoi {
             triggered = true;
             active = true;
             timer = 10f;
-
+            AchievementManager.get().unlock("Quack");
         }
     }
 
@@ -40,7 +40,7 @@ public class LongBoi {
             timer -= delta;
             if (timer <= 0) {
                 active = false;
-            AchievementManager.get().unlock("Quack");
+            
             }
         }
     }
