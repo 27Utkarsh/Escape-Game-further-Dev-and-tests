@@ -30,7 +30,8 @@ public class AchievementManager {
         "FLAWLESS_RUN",
         "TELEPORTED",
         "DUO_AUTHENTICATED",
-        "WATCH_YOUR_STEP"
+        "WATCH_YOUR_STEP",
+	"Quack"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();

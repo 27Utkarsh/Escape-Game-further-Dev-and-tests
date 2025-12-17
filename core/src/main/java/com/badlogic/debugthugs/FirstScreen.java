@@ -33,6 +33,7 @@ public class FirstScreen implements Screen {
     Texture energyTexture;
     Texture portalTexture;
     Texture pauseTexture;
+    Texture longBoiTexture;
     Texture enemyTexture;
     Texture duoTexture;
     Texture wetFloorTexture;
@@ -50,6 +51,7 @@ public class FirstScreen implements Screen {
     EnergyDrink energyDrink;
     Portal portal;
     Enemy enemy;
+    LongBoi longBoi;
     DuoAuth duoAuth;
     WetFloor wetFloor;
     TiledMap map;
@@ -109,6 +111,9 @@ public class FirstScreen implements Screen {
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
         enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+
+        longBoiTexture = new Texture("LongBoi.png");
+        longBoi = new LongBoi(longBoiTexture, 448, 680);
 
         duoTexture = new Texture("DuoAuth.png");
         duoAuth = new DuoAuth(duoTexture, 1536f, 704f);
@@ -212,13 +217,14 @@ public class FirstScreen implements Screen {
         }
 
         if (!paused) {
-            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor);
+            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, longBoi);
             
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);
             wetFloor.checkTriggered(playerChar);
             wetFloor.update(delta);
+            longBoi.checkTriggered(playerChar);
         }
 
         key.checkCollected(playerChar);
@@ -281,6 +287,7 @@ public class FirstScreen implements Screen {
         enemy.render(game.batch);
         duoAuth.render(game.batch);
         wetFloor.render(game.batch);
+	    longBoi.render(game.batch);
 
         game.batch.end();
     }
@@ -358,6 +365,7 @@ public class FirstScreen implements Screen {
         if (energyTexture != null) energyTexture.dispose();
         if (portalTexture != null) portalTexture.dispose();
         if (enemyTexture != null) enemyTexture.dispose();
+        if (longBoiTexture != null) longBoiTexture.dispose();
         if (duoTexture != null) duoTexture.dispose();
         if (wetFloorTexture != null) wetFloorTexture.dispose();
         if (pauseTexture != null) pauseTexture.dispose();

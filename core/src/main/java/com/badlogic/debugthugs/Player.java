@@ -76,6 +76,13 @@ public class Player {
         if (energyDrink.drank) {
             speed = 160f;
         }
+    }
+    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, 	LongBoi longBoi) {
+        float speed = 128f;
+        if (energyDrink.drank) {
+            speed = 160f;
+        }
+
 
         if (duoAuth.active) {
             return;
