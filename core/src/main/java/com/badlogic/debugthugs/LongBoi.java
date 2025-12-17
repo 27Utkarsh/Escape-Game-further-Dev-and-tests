@@ -26,8 +26,7 @@ public class LongBoi {
     }
 
     public void checkTriggered(Player player) {
-        if ( bounds
-                .overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+        if (!triggered && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.hiddenEvent += 1;
             triggered = true;
             active = true;
