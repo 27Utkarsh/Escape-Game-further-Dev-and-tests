@@ -219,7 +219,6 @@ public class FirstScreen implements Screen {
             duoAuth.update(delta);
             wetFloor.checkTriggered(playerChar);
             wetFloor.update(delta);
-
         }
 
         key.checkCollected(playerChar);

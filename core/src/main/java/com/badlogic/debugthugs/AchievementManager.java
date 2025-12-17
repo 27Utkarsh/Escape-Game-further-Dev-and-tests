@@ -37,7 +37,7 @@ public class AchievementManager {
     private float popupTimer = 0f;
     private String currentPopup = null;
     private final BitmapFont popupFont = new BitmapFont();
-    private final Color popupColor = Color.WHITE;
+    private final Color popupColor = new Color(1f, 1f, 1f, 1f);
     private final GlyphLayout layout = new GlyphLayout();
     
     /**
