@@ -74,7 +74,7 @@ public class SettingsScreen implements Screen {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        TextButton menuButton = new TextButton("Try Again", skin);
+        TextButton menuButton = new TextButton("Back to Menu", skin);
         menuButton.setPosition(20,20);
         menuButton.setSize(150, 40);
 
