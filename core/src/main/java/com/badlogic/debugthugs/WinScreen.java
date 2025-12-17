@@ -4,16 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /**
@@ -30,7 +33,6 @@ public class WinScreen implements Screen {
     Preferences prefs;
     float finalTime;
     float score;
-    AchievementManager achievementManager;
 
     /**
      * Creates a WinScreen instance.
@@ -57,30 +59,41 @@ public class WinScreen implements Screen {
      */
     @Override
     public void show() {
-        backgroundTexture = new Texture("Win.png");
-        game.font.getData().setScale(4f);
-        game.font.setColor(Color.WHITE);
-        score = calcScore(finalTime);
-        stage = new Stage(game.uiViewport);
-        Gdx.input.setInputProcessor(stage);
+        
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
 
+        score = calcScore(finalTime);
+
+        stage = new Stage(game.uiViewport);
+        Gdx.input.setInputProcessor(stage);
+
+        backgroundTexture = new Texture("Win.png");
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+        Table root = new Table();
+        root.setFillParent(true);
+        root.setBackground(new TextureRegionDrawable(backgroundTexture));
+        stage.addActor(root);
+        root.align(Align.left | Align.center);
+        root.padLeft(40);
+
+        Label scoreLabel = new Label("Score: " + (int) score, skin);
+        scoreLabel.setAlignment(Align.center);
+
 
         TextField userInput = new TextField("", skin);
         userInput.setMessageText("Enter your name (1-8 characters):");
         userInput.setMaxLength(8);
-        userInput.setPosition(20, 400);
-        userInput.setSize(400, 100);
+
 
         TextButton againButton = new TextButton("Try Again", skin);
-        againButton.setPosition(20,20);
-        againButton.setSize(150, 40);
         againButton.setDisabled(true);
+
 
         userInput.addListener(new ChangeListener() {
             @Override
@@ -118,10 +131,14 @@ public class WinScreen implements Screen {
             }
         });
 
-        stage.addActor(againButton);
-        stage.addActor(userInput);
+        root.defaults().pad(30);
+        root.add(scoreLabel);
+        root.row();
+        root.add(userInput).width(400).height(60);
+        root.row();
+        root.add(againButton).width(300).height(70);
 
-        achievementManager = AchievementManager.get();
+
     }
     /**
      * Called every frame to render the screen
@@ -129,20 +146,14 @@ public class WinScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(Color.RED);
-        game.uiViewport.apply();
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-        game.batch.draw(backgroundTexture,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        game.font.draw(game.batch, "Score: " + score, 20, 600);
-        game.batch.end();
-
+        ScreenUtils.clear(0, 0, 0, 1);
         stage.act(delta);
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
