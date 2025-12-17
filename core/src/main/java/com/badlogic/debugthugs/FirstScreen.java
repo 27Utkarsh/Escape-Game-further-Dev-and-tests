@@ -250,7 +250,7 @@ public class FirstScreen implements Screen {
 
         achievements.update(delta);
 
-        if (player.overlaps(exitArea)) {
+        if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) { //TODO: C check is just for testing to quickly navigate to win screen.
             music.stop();
             game.setScreen(new WinScreen(game, timePassed));
             AchievementManager.get().unlock("ESCAPED");
