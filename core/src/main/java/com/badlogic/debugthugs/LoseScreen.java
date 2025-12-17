@@ -8,8 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class LoseScreen implements Screen {
@@ -32,20 +35,17 @@ public class LoseScreen implements Screen {
      */
     @Override
     public void show() {
-        backgroundTexture = new Texture("Game_Over_Image.png");
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
-        music.setLooping(true);
-        music.setVolume(SettingsScreen.getNoise());
-        music.play();
-
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
+        backgroundTexture = new Texture("Game_Over_Image.png");
+        
+        Table root = new Table();
+        root.setFillParent(true);
+
         TextButton againButton = new TextButton("Try Again", skin);
-        againButton.setPosition(20,20);
-        againButton.setSize(150, 40);
 
         againButton.addListener(new ClickListener() {
             @Override
@@ -55,7 +55,16 @@ public class LoseScreen implements Screen {
             }
         });
 
-        stage.addActor(againButton);
+        root.add(againButton).width(300).height(80).padBottom(80);
+        root.align(Align.bottom);
+
+        root.setBackground(new TextureRegionDrawable(backgroundTexture));
+        stage.addActor(root);
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
+        music.setLooping(true);
+        music.setVolume(SettingsScreen.getNoise());
+        music.play();
     }
 
     /**
@@ -64,7 +73,7 @@ public class LoseScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(Color.RED);
+        ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
@@ -77,6 +86,7 @@ public class LoseScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
