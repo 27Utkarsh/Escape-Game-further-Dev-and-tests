@@ -37,6 +37,11 @@ public class FirstScreen implements Screen {
     Texture enemyTexture;
     Texture duoTexture;
     Texture wetFloorTexture;
+    //1
+    Texture examTexture;
+    Texture pressureTexture;
+    //2
+    Texture duckTexture;
     Music music;
     Stage pauseStage;
     Skin skin;
@@ -52,6 +57,10 @@ public class FirstScreen implements Screen {
     Portal portal;
     Enemy enemy;
     LongBoi longBoi;
+    //1
+    Exam exam;
+    //2
+    Duck duck;
     DuoAuth duoAuth;
     WetFloor wetFloor;
     TiledMap map;
@@ -99,11 +108,18 @@ public class FirstScreen implements Screen {
         //bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        keyTexture = new Texture("Key.png");
+        keyTexture = new Texture("key.png");
         key = new Key(keyTexture, 1180, 1700);
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
+//1
+        examTexture = new Texture("Exam.png");
+        pressureTexture = new Texture("Pressure.png");
+        exam = new Exam(examTexture, pressureTexture, 1184, 1500, 400f, game);
+//2
+        duckTexture = new Texture("Longboi.png");
+        duck = new Duck(duckTexture, 680, 520, 250f); // start at (1000,1700), patrol 200 pixels
 
         portalTexture = new Texture("portal.png");
         portal = new Portal(portalTexture, 608, 512);
@@ -224,6 +240,12 @@ public class FirstScreen implements Screen {
             duoAuth.update(delta);
             wetFloor.checkTriggered(playerChar);
             wetFloor.update(delta);
+        //1
+            exam.update(delta);
+            exam.checkCollided(playerChar);
+        //2
+            duck.update(delta);
+            duck.checkCollided(playerChar);
             longBoi.checkTriggered(playerChar);
         }
 
@@ -287,6 +309,11 @@ public class FirstScreen implements Screen {
         enemy.render(game.batch);
         duoAuth.render(game.batch);
         wetFloor.render(game.batch);
+        //1
+        exam.render(game.batch);
+        //2
+        duck.render(game.batch);
+
 	    longBoi.render(game.batch);
 
         game.batch.end();
