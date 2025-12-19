@@ -118,7 +118,7 @@ public class FirstScreen implements Screen {
         pressureTexture = new Texture("Pressure.png");
         exam = new Exam(examTexture, pressureTexture, 1184, 1500, 400f, game);
 //2
-        duckTexture = new Texture("Longboi.png");
+        duckTexture = new Texture("MovingDuck.png");
         duck = new Duck(duckTexture, 680, 520, 250f); // start at (1000,1700), patrol 200 pixels
 
         portalTexture = new Texture("portal.png");
@@ -336,6 +336,8 @@ public class FirstScreen implements Screen {
             game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
         }
 
+        exam.renderOverlay(game.batch);
+
         if (paused) {
             game.batch.setColor(0, 0, 0, 0.5f);
             game.batch.draw(pauseTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
@@ -395,6 +397,9 @@ public class FirstScreen implements Screen {
         if (longBoiTexture != null) longBoiTexture.dispose();
         if (duoTexture != null) duoTexture.dispose();
         if (wetFloorTexture != null) wetFloorTexture.dispose();
+        if (duckTexture != null) duckTexture.dispose();
+        if (examTexture != null) examTexture.dispose();
+        if (pressureTexture != null) pressureTexture.dispose();
         if (pauseTexture != null) pauseTexture.dispose();
         
         if (music != null) music.dispose();

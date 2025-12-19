@@ -31,7 +31,8 @@ public class AchievementManager {
         "TELEPORTED",
         "DUO_AUTHENTICATED",
         "WATCH_YOUR_STEP",
-	"Quack"
+	    "Quack",
+        "DUCK_OF_RESETTING"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();

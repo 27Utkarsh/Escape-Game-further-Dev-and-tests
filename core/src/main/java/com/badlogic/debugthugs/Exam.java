@@ -1,15 +1,13 @@
 package com.badlogic.debugthugs;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Exam {
-public Sprite examSprite;
-public Texture overlayTexture;
-private SpriteBatch batch;
+    public Sprite examSprite;
+    public Texture overlayTexture;
     public Rectangle bounds;
 
     private float x, y;
@@ -35,8 +33,6 @@ private SpriteBatch batch;
         examSprite = new Sprite(texture1);
         examSprite.setPosition(x, y);
         examSprite.setSize(50, 50);
-
-        batch = new SpriteBatch();
 
         overlayTexture = texture2;
 
@@ -71,13 +67,13 @@ private SpriteBatch batch;
         if (!examed) {
             examSprite.draw(sb);
         }
+    }
 
+    public void renderOverlay(SpriteBatch sb)
+    {
         if (overlayTimer >= 0f) 
         {   
-            game.batch.setProjectionMatrix(game.uiCamera.combined);
-            batch.begin();
-            batch.draw(overlayTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            batch.end();
+            sb.draw(overlayTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
         }
     }
 
@@ -97,11 +93,6 @@ private SpriteBatch batch;
             overlayTimer = 15f;
         }
     }
-    public void dispose() {
-        overlayTexture.dispose();
-        batch.dispose();
-    }
-
 }
 
 

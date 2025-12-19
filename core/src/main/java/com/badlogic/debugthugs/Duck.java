@@ -67,7 +67,7 @@ public class Duck {
         if (bounds.overlaps(playerBounds)) {
             // Trigger event
             player.badEvent += 1;
-            AchievementManager.get().unlock("DUCK");
+            AchievementManager.get().unlock("DUCK_OF_RESETTING");
 
             player.playerX = 710;
             player.playerY = 1730;
