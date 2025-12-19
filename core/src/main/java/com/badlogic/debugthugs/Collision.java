@@ -13,13 +13,14 @@ public class Collision {
         //checks 3 corners of the sprite to see if it's colliding with a wall.
         //I originally checked 4 corners but it made movement around corners slightly smoother if I checked 3
         //The last check allows for the player to be walking in front of the wall we're facing slightly
-        if (check_wall(player,player.playerX + 10, player.playerY)) {
+        if (check_wall(player,player.playerX, player.playerY)) {
             return true;
         }
         if (check_wall(player,player.playerX + player.playerWidth, player.playerY )) {
             return true;
         }
-        if (check_wall(player,player.playerX + player.playerWidth, player.playerY + (player.playerHeight/2))) {
+        if (check_wall(player,player.playerX, player.playerY + player.playerHeight)) return true;
+        if (check_wall(player,player.playerX + player.playerWidth, player.playerY + player.playerHeight)) {
             return true;
         }
         return false;

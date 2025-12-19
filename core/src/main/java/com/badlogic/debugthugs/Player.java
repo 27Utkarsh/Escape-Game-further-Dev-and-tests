@@ -51,8 +51,8 @@ public class Player {
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
 
-        this.playerWidth = 24;
-        this.playerHeight = 24;
+        this.playerWidth = 12;
+        this.playerHeight = 14;
     }
 
     /**
@@ -64,7 +64,7 @@ public class Player {
      */
     public void render(SpriteBatch batch, float stateTime) {
         TextureRegion frame = walkCycle.getKeyFrame(stateTime, true);
-        batch.draw(frame, playerX, playerY);
+        batch.draw(frame, playerX - 10, playerY - 10);
     }
 
     /**

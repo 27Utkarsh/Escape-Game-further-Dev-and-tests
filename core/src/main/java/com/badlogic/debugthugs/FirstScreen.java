@@ -126,7 +126,7 @@ public class FirstScreen implements Screen {
 
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
-        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder, game);
 
         longBoiTexture = new Texture("LongBoi.png");
         longBoi = new LongBoi(longBoiTexture, 448, 680);
@@ -199,16 +199,7 @@ public class FirstScreen implements Screen {
 
         renderWorld();
         renderUI();
-
-        //draw();
-
-        //Vector3 screenPos = camera.project(new Vector3(playerChar.playerX, playerChar.playerY, 0));
-        
-
-        // This code will display your mouse x,y coordinates
-        // Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        // camera.unproject(mousePos);
-        // System.out.println(mousePos.x + ", " + mousePos.y);
+        //enemy.renderDebugPath(playerChar);
     }
 
     private void input() {
@@ -299,9 +290,6 @@ public class FirstScreen implements Screen {
 
         game.batch.begin();
 
-        TextureRegion currentFrame = playerChar.walkCycle.getKeyFrame(stateTime, true);
-        game.batch.draw(currentFrame, playerChar.playerX, playerChar.playerY);
-
         key.render(game.batch);
         energyDrink.render(game.batch);
         portal.render(game.batch);
@@ -359,15 +347,6 @@ public class FirstScreen implements Screen {
         if (paused) pauseStage.draw();
     }
 
-    /**
-     * Clears the screen.
-     * Uses a specific colour that blends in with the tilemap rather than making
-     * empty spaces completely black
-     */
-    private void draw() {
-
-    }
-
     @Override
     public void pause() {
     }
@@ -413,15 +392,4 @@ public class FirstScreen implements Screen {
     @Override
     public void resize(int width, int height) {
     }
-
-        // private boolean check_book(float x, float y) {
-    //     int tileX = (int) (x / 32);
-    //     int tileY = (int) (y / 32);
-    //     TiledMapTileLayer.Cell cell = bookLayer.getCell(tileX, tileY);
-    //     if (cell == null) {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     }
-    // }
 }

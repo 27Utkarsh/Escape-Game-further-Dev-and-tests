@@ -70,7 +70,7 @@ public class Pathfinding {
     }
 
     /**
-     * Returns the heuristic between two points, using the octile distance.
+     * Returns the heuristic between two points, using the octile distance (to account for diagonals).
      */
     private float heuristic(int ax, int ay, int bx, int by)
     {
@@ -88,14 +88,13 @@ public class Pathfinding {
         int goalX  = (int) (tx / tileWidth);
         int goalY  = (int) (ty / tileHeight);
 
-        // Checks whether there is a walkable tile at the goal.
+        //Checks whether there is a walkable tile at the goal.
         if (!isWalkable(goalX, goalY))
         {
-            // If the goal tile is blocked, return null.
             return null;
         }
 
-        // Min-heap where nodes are ordered by f cost value.
+        // Min-heap - nodes are ordered by f cost value.
         PriorityQueue<Node> open = new PriorityQueue<>(Comparator.comparingDouble(Node::f));
 
         boolean[][] closed = new boolean[mapCols][mapRows];
@@ -139,7 +138,7 @@ public class Pathfinding {
 
             closed[current.x][current.y] = true;
 
-            // Neighbor exploration
+            // neighbour exploration
 
             for (int[] d : dirs) {
                 int nx = current.x + d[0];
