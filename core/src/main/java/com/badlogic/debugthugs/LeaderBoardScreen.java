@@ -27,10 +27,10 @@ public class LeaderBoardScreen extends ScreenAdapter {
     Main game;
     Stage stage;
     Skin skin;
-    Preferences prefs;
+    public Preferences prefs;
     HashMap<String, Float> returnScores;
-    String[] topNames = new String[5];
-    Float[] topScores =  new Float[5];
+    public String[] topNames = new String[5];
+    public Float[] topScores =  new Float[5];
 
     /**
      * Creates a new leaderboard instance for the game
@@ -113,7 +113,14 @@ public class LeaderBoardScreen extends ScreenAdapter {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            float score = Float.parseFloat((String) value);
+            float score;
+            if (value instanceof Float) {
+                score = (Float) value;
+            } else if (value instanceof String) {
+                score = Float.parseFloat((String) value);
+            } else {
+                continue;
+            }
             returnScores.put(key, score);
         }
 

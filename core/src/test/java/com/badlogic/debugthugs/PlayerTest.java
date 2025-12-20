@@ -10,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /**
  * Unit tests for the {@link Player}.
- * 
+ *
  * Validates the basic, non-rendering logic. Tests run purely in the JVM without requiring LibGDX native backends.
  */
 public class PlayerTest {
