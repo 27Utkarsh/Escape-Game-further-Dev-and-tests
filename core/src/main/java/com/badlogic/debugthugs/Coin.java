@@ -29,7 +29,15 @@ public class Coin {
         Rectangle playerRect = new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight);
         if (!collected && bounds.overlaps(playerRect)) {
             collected = true;
+
+            // Add to coin points
             firstScreen.coinBonusPoints += bonusPoints;
+
+            // Increment positive events
+            player.goodEvent += 1;
+
+            // Announce the coin collection
+            AchievementManager.get().showPopup("Coin Collected! +" + (int)bonusPoints + " points");
         }
     }
 }

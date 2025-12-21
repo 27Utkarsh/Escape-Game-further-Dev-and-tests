@@ -54,6 +54,8 @@ public class FirstScreen implements Screen {
     Key key;
     EnergyDrink energyDrink;
     Enemy enemy;
+    HelperCharacter helper;
+    Texture helperTexture;
     WinScreen winScreen;
     Coin coin;
     float coinBonusPoints = 0f; // accumulate coin points
@@ -97,7 +99,11 @@ public class FirstScreen implements Screen {
         enemyTexture = new Texture("Enemy.png");
         enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
 
-        coin = new Coin(new Texture("Enemy.png"), 1100, 1800);
+        helperTexture = new Texture("helper.png"); // make sure the image exists in assets
+        helper = new HelperCharacter(helperTexture, 1500, 1200); // choose a position in your map
+
+
+        coin = new Coin(new Texture("coin.jpg"), 1100, 1800);
         coin.bonusPoints = 50f; // 50 points for collection
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
@@ -180,6 +186,10 @@ public class FirstScreen implements Screen {
         energyDrink.render(spriteBatch);
         playerChar.render(spriteBatch, stateTime);
         enemy.render(spriteBatch);
+
+        helper.checkCollected(playerChar, this);
+        helper.render(spriteBatch);
+
 
         coin.checkCollected(playerChar, this);
         coin.render(spriteBatch);
