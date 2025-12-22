@@ -33,7 +33,7 @@ public class Player {
 
     /**
      * Constructs the player entity in the game
-     * 
+     *
      * @param startX    X-coordinate for where the player starts
      * @param startY    Y-coordinate for where the player starts
      * @param walkCycle Animation object holding frames to create a walk cycle
@@ -59,7 +59,7 @@ public class Player {
      * Renders the player's current animation frame
      * Retrieves the correct frame from the walking animation using state time
      * and draws it at the player's current X and Y position using the SpriteBatch
-     * 
+     *
      * @param batch the SpriteBatch used to draw the frame to the screen
      */
     public void render(SpriteBatch batch, float stateTime) {
@@ -159,7 +159,7 @@ public class Player {
 
     /**
      * Teleports the player to a random position on the map
-     * 
+     *
      * @param randomX X-coordinate for where the player teleports to
      * @param randomY Y-coordinate for where the player teleports to
      */

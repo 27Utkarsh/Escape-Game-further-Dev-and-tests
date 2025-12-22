@@ -36,7 +36,9 @@ public class WinScreen implements Screen {
 
     /**
      * Creates a WinScreen instance.
+     *
      * @param game Reference to the main game class to allow screen switching.
+     * @param finalTime Time elapsed in the game
      */
     public WinScreen(Main game, float finalTime) {
         this.game = game;
@@ -49,8 +51,12 @@ public class WinScreen implements Screen {
      * @return final score as a float
      */
     public float calcScore(float time) {
-        score = time * 4f;
-        return score;
+        float maxTime = 300f; // 5 minutes in seconds
+        float remaining = maxTime - time;
+
+        if (remaining < 0) remaining = 0; // no negative score
+
+        return (remaining / 60f) * 100f;
     }
 
     /**
@@ -59,7 +65,7 @@ public class WinScreen implements Screen {
      */
     @Override
     public void show() {
-        
+
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
         music.setLooping(true);

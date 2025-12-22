@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
     Texture walkSheet;
+    SpriteBatch spriteBatch;
     float stateTime;
     Main game;
     Texture keyTexture;
@@ -56,6 +57,11 @@ public class FirstScreen implements Screen {
     EnergyDrink energyDrink;
     Portal portal;
     Enemy enemy;
+    HelperCharacter helper;
+    Texture helperTexture;
+    WinScreen winScreen;
+    Coin coin;
+    float coinBonusPoints = 0f; // accumulate coin points
     LongBoi longBoi;
     //1
     Exam exam;
@@ -77,7 +83,7 @@ public class FirstScreen implements Screen {
 
     /**
      * Creates a new FirstScreen instance for the game
-     * 
+     *
      * @param game the main LibGDX Game object used to manage screens and shared
      *             resources
      */
@@ -138,6 +144,15 @@ public class FirstScreen implements Screen {
         wetFloor = new WetFloor(wetFloorTexture,  544, 1152);
 
         // music stuff
+        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+
+        helperTexture = new Texture("helper.png"); // make sure the image exists in assets
+        helper = new HelperCharacter(helperTexture, 1500, 1200); // choose a position in your map
+
+
+        coin = new Coin(new Texture("coin.jpg"), 1100, 1800);
+        coin.bonusPoints = 50f; // 50 points for collection
+
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
@@ -145,6 +160,7 @@ public class FirstScreen implements Screen {
 
         game.font.getData().setScale(1f);
         game.font.setColor(Color.WHITE);
+
 
         // animation set up
         walkSheet = new Texture("walkfixed.png");
@@ -225,7 +241,7 @@ public class FirstScreen implements Screen {
 
         if (!paused) {
             playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, longBoi);
-            
+
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);
@@ -249,7 +265,7 @@ public class FirstScreen implements Screen {
 
         menuButton.setVisible(paused);
         if (paused) pauseStage.act(delta);
-        
+
         if (paused == false) {
             timePassed -= delta;
         }
@@ -331,7 +347,7 @@ public class FirstScreen implements Screen {
             game.batch.draw(pauseTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
             game.batch.setColor(Color.WHITE);
             game.font.draw(game.batch, "Paused", 600, playerChar.playerY + 500);
-            
+
         }
 
         // timer stuff
@@ -343,7 +359,7 @@ public class FirstScreen implements Screen {
         achievements.render(game.batch, 640, 200);
 
         game.batch.end();
-                
+
         if (paused) pauseStage.draw();
     }
 
@@ -380,7 +396,7 @@ public class FirstScreen implements Screen {
         if (examTexture != null) examTexture.dispose();
         if (pressureTexture != null) pressureTexture.dispose();
         if (pauseTexture != null) pauseTexture.dispose();
-        
+
         if (music != null) music.dispose();
 
         if (skin != null) skin.dispose();
