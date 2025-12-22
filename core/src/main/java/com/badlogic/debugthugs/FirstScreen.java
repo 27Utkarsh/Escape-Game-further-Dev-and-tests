@@ -14,43 +14,31 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/**
- * First screen of the application. Displayed after the application is created.
- */
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
+
     Texture walkSheet;
-    SpriteBatch spriteBatch;
     float stateTime;
     Main game;
-    Texture keyTexture;
-    Texture energyTexture;
-    Texture portalTexture;
-    Texture pauseTexture;
-    Texture longBoiTexture;
-    Texture enemyTexture;
-    Texture duoTexture;
-    Texture wetFloorTexture;
-    //1
-    Texture examTexture;
-    Texture pressureTexture;
-    //2
-    Texture duckTexture;
+
+    Texture keyTexture, energyTexture, portalTexture, pauseTexture;
+    Texture longBoiTexture, enemyTexture, duoTexture, wetFloorTexture;
+    Texture examTexture, pressureTexture, duckTexture, coinTexture, helperTexture;
     Music music;
     Stage pauseStage;
     Skin skin;
     TextButton menuButton;
+
     float timePassed = 300f;
-    int mins;
-    int seconds;
+    int mins, seconds;
     boolean paused = false;
+
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
     Key key;
@@ -58,60 +46,39 @@ public class FirstScreen implements Screen {
     Portal portal;
     Enemy enemy;
     HelperCharacter helper;
-    Texture helperTexture;
-    WinScreen winScreen;
     Coin coin;
-    float coinBonusPoints = 0f; // accumulate coin points
     LongBoi longBoi;
-    //1
     Exam exam;
-    //2
     Duck duck;
     DuoAuth duoAuth;
     WetFloor wetFloor;
     TiledMap map;
-    //
 
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
-    //TiledMapTileLayer bookLayer;
 
     Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
     Rectangle player;
 
     AchievementManager achievements;
 
-    /**
-     * Creates a new FirstScreen instance for the game
-     *
-     * @param game the main LibGDX Game object used to manage screens and shared
-     *             resources
-     */
+    // --- SCORE SYSTEM ---
+    public float maxScore = 500f;
+    public float playerScore = maxScore; // decreases over time
+
     public FirstScreen(Main game) {
         this.game = game;
     }
 
-    /**
-     * Sets up the camera and viewport. loads the tiled map and its collision
-     * layers,
-     * prepares the player's animation and starting position, initializes rendering
-     * tools (SpriteBatch, map renderer), starts background music, prepares font and
-     * timer rendering for the HUD.
-     */
     @Override
     public void show() {
-        // made a separate camera rather than using the viewport so that the timer stays
-        // in the top corner
-        //game.worldCamera.setToOrtho(false, 800, 600);
         game.worldCamera.zoom = 0.6f;
 
         map = new TmxMapLoader().load("maps/maze_map.tmx");
         MapLayer wallsLayer = map.getLayers().get("Walls");
         MapLayer doorsLayer = map.getLayers().get("Doors");
-        //MapLayer booksLayer = map.getLayers().get("Books");
         collisionLayer = (TiledMapTileLayer) wallsLayer;
         doorLayer = (TiledMapTileLayer) doorsLayer;
-        //bookLayer = (TiledMapTileLayer) booksLayer;
         renderer = new OrthogonalTiledMapRenderer(map);
 
         keyTexture = new Texture("key.png");
@@ -119,13 +86,13 @@ public class FirstScreen implements Screen {
 
         energyTexture = new Texture("energyDrink.png");
         energyDrink = new EnergyDrink(energyTexture, 1380, 1160);
-//1
+
         examTexture = new Texture("Exam.png");
         pressureTexture = new Texture("Pressure.png");
         exam = new Exam(examTexture, pressureTexture, 1184, 1500, 400f, game);
-//2
+
         duckTexture = new Texture("MovingDuck.png");
-        duck = new Duck(duckTexture, 680, 520, 250f); // start at (1000,1700), patrol 200 pixels
+        duck = new Duck(duckTexture, 680, 520, 250f);
 
         portalTexture = new Texture("portal.png");
         portal = new Portal(portalTexture, 608, 512);
@@ -141,17 +108,14 @@ public class FirstScreen implements Screen {
         duoAuth = new DuoAuth(duoTexture, 1536f, 704f);
 
         wetFloorTexture = new Texture("WetFloor.png");
-        wetFloor = new WetFloor(wetFloorTexture,  544, 1152);
+        wetFloor = new WetFloor(wetFloorTexture, 544, 1152);
 
-        // music stuff
-        enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder);
+        coinTexture = new Texture("coin.jpg");
+        coin = new Coin(coinTexture, 1100, 1800);
+        coin.bonusPoints = 50f;
 
-        helperTexture = new Texture("helper.png"); // make sure the image exists in assets
-        helper = new HelperCharacter(helperTexture, 1500, 1200); // choose a position in your map
-
-
-        coin = new Coin(new Texture("coin.jpg"), 1100, 1800);
-        coin.bonusPoints = 50f; // 50 points for collection
+        helperTexture = new Texture("helper.png");
+        helper = new HelperCharacter(helperTexture, 1500, 1200);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
         music.setLooping(true);
@@ -161,11 +125,9 @@ public class FirstScreen implements Screen {
         game.font.getData().setScale(1f);
         game.font.setColor(Color.WHITE);
 
-
-        // animation set up
+        // --- Player animation setup ---
         walkSheet = new Texture("walkfixed.png");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, 32, 32);
-
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
         for (int col = 0; col < FRAME_COLS; col++) {
             walkFrames[col] = tmp[1][col];
@@ -187,7 +149,7 @@ public class FirstScreen implements Screen {
         menuButton.setVisible(false);
         menuButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 music.stop();
                 game.setScreen(new MenuScreen(game));
             }
@@ -195,80 +157,59 @@ public class FirstScreen implements Screen {
         pauseStage.addActor(menuButton);
 
         achievements = AchievementManager.get();
-        achievements.resetAll(); // TODO: This is only for testing purposes - delete before submitting project
+        achievements.resetAll();
     }
 
-    /**
-     * Updates and renders the game state for the current frame.
-     * Handles player movement and animation timing, updates the camera to follow
-     * the player,
-     * renders the tile map and player sprite, updates and displays the countdown
-     * timer, checks if the player has won or lost.
-     * Player loses if the time runs out and wins if they overlap the exit area
-     *
-     * @param delta time passed since the last frame (used for animation timing when
-     *              it comes to frames and also the timer)
-     */
     @Override
     public void render(float delta) {
         logic(delta);
-
         renderWorld();
         renderUI();
-        //enemy.renderDebugPath(playerChar);
-    }
-
-    private void input() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            paused = !paused;
-            if (paused) {
-                Gdx.input.setInputProcessor(pauseStage);
-            } else {
-                Gdx.input.setInputProcessor(null);
-            }
-        }
     }
 
     private void logic(float delta) {
-        input();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            paused = !paused;
+            if (paused) Gdx.input.setInputProcessor(pauseStage);
+            else Gdx.input.setInputProcessor(null);
+        }
 
         float animSpeed = 0.5f;
-        if (playerChar.isMoving) {
-            stateTime += delta * animSpeed;
-        } else {
-            stateTime = 0;
-        }
+        if (playerChar.isMoving) stateTime += delta * animSpeed;
+        else stateTime = 0f;
 
         if (!paused) {
             playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, longBoi);
-
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);
             wetFloor.checkTriggered(playerChar);
             wetFloor.update(delta);
-        //1
             exam.update(delta);
             exam.checkCollided(playerChar);
-        //2
             duck.update(delta);
             duck.checkCollided(playerChar);
             longBoi.checkTriggered(playerChar);
+
+            // --- TIME-BASED SCORE ---
+            float decayRate = maxScore / 300f;
+            playerScore -= decayRate * delta;
+            if (playerScore < 0) playerScore = 0;
+
+            // --- Collect coin & helper ---
+            if (coin != null) coin.checkCollected(playerChar, this);
+            if (helper != null) helper.checkCollected(playerChar, this);
         }
 
         key.checkCollected(playerChar);
         energyDrink.checkDrank(playerChar);
 
-        if (enemy.checkCollided(playerChar)) {
-            timePassed -= 30;
-        }
+        if (enemy.checkCollided(playerChar)) timePassed -= 30;
 
         menuButton.setVisible(paused);
         if (paused) pauseStage.act(delta);
 
-        if (paused == false) {
-            timePassed -= delta;
-        }
+        if (!paused) timePassed -= delta;
         if (timePassed <= 0) {
             music.stop();
             game.setScreen(new LoseScreen(game));
@@ -279,9 +220,9 @@ public class FirstScreen implements Screen {
 
         achievements.update(delta);
 
-        if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) { //TODO: C check is just for testing to quickly navigate to win screen.
+        if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             music.stop();
-            game.setScreen(new WinScreen(game, timePassed));
+            game.setScreen(new WinScreen(game, playerScore));
             AchievementManager.get().unlock("ESCAPED");
             if (playerChar.badEvent == 0)
                 AchievementManager.get().unlock("FLAWLESS_RUN");
@@ -292,18 +233,14 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(220 / 255f, 157 / 255f, 126 / 255f, 1);
         game.worldViewport.apply();
 
-        // sets the camera to position the sprite in the middle of the screen
-        game.worldCamera.position.set(
-                playerChar.playerX + playerChar.playerWidth / 2f,
-                playerChar.playerY + playerChar.playerHeight / 2f,
-                0);
+        game.worldCamera.position.set(playerChar.playerX + playerChar.playerWidth / 2f,
+            playerChar.playerY + playerChar.playerHeight / 2f, 0);
         game.worldCamera.update();
 
         renderer.setView(game.worldCamera);
         renderer.render();
 
         game.batch.setProjectionMatrix(game.worldCamera.combined);
-
         game.batch.begin();
 
         key.render(game.batch);
@@ -313,32 +250,29 @@ public class FirstScreen implements Screen {
         enemy.render(game.batch);
         duoAuth.render(game.batch);
         wetFloor.render(game.batch);
-        //1
         exam.render(game.batch);
-        //2
         duck.render(game.batch);
+        longBoi.render(game.batch);
 
-	    longBoi.render(game.batch);
+        // --- RENDER COIN & HELPER ---
+        if (coin != null) coin.render(game.batch);
+        if (helper != null) helper.render(game.batch);
 
         game.batch.end();
     }
 
-    private void renderUI(){
+    private void renderUI() {
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
         game.font.draw(game.batch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
-                + playerChar.hiddenEvent, 540, 650);
+            + playerChar.hiddenEvent, 540, 650);
 
-        if (playerChar.needsKeyMessage) {
-            game.font.draw(game.batch, "You need to find the key first", 540, 300);
-        }
-        if (playerChar.needsInteractMessage) {
-            game.font.draw(game.batch, "Press 'E' to open the door", 540, 300);
-        }
-        if (duoAuth.active) {
-            game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
-        }
+        game.font.draw(game.batch, "Score: " + (int) playerScore, 20, 550);
+
+        if (playerChar.needsKeyMessage) game.font.draw(game.batch, "You need to find the key first", 540, 300);
+        if (playerChar.needsInteractMessage) game.font.draw(game.batch, "Press 'E' to open the door", 540, 300);
+        if (duoAuth.active) game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
 
         exam.renderOverlay(game.batch);
 
@@ -347,38 +281,23 @@ public class FirstScreen implements Screen {
             game.batch.draw(pauseTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
             game.batch.setColor(Color.WHITE);
             game.font.draw(game.batch, "Paused", 600, playerChar.playerY + 500);
-
         }
 
-        // timer stuff
         mins = (int) timePassed / 60;
         seconds = (int) timePassed - mins * 60;
         String time = String.format("%d.%02d", mins, seconds);
         game.font.draw(game.batch, time, 20, 580);
 
         achievements.render(game.batch, 640, 200);
-
         game.batch.end();
 
         if (paused) pauseStage.draw();
     }
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    /**
-     * Releases assets and resources used by this screen
-     * helps free memory
-     */
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void resize(int width, int height) {}
     @Override
     public void dispose() {
         if (renderer != null) renderer.dispose();
@@ -397,15 +316,14 @@ public class FirstScreen implements Screen {
         if (pressureTexture != null) pressureTexture.dispose();
         if (pauseTexture != null) pauseTexture.dispose();
 
-        if (music != null) music.dispose();
+        if (coin != null && coin.sprite != null && coin.sprite.getTexture() != null)
+            coin.sprite.getTexture().dispose();
+        if (helper != null && helper.sprite != null && helper.sprite.getTexture() != null)
+            helper.sprite.getTexture().dispose();
 
+        if (music != null) music.dispose();
         if (skin != null) skin.dispose();
         if (pauseStage != null) pauseStage.dispose();
-
         if (achievements != null) achievements.dispose();
-    }
-
-    @Override
-    public void resize(int width, int height) {
     }
 }

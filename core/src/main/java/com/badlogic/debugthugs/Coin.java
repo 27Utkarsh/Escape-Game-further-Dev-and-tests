@@ -1,43 +1,41 @@
 package com.badlogic.debugthugs;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Coin {
-    public float x, y;
-    public float width = 32, height = 32;
-    public float bonusPoints;
-    public boolean collected = false;
+    public Sprite sprite;
     public Rectangle bounds;
-    public Texture texture;
+    public boolean collected = false;
+    public float bonusPoints = 0f; // Points added to score
 
     public Coin(Texture texture, float x, float y) {
-        this.texture = texture;
-        this.x = x;
-        this.y = y;
-        this.bounds = new Rectangle(x, y, width, height);
+        sprite = new Sprite(texture);
+        sprite.setPosition(x, y);
+        sprite.setSize(32, 32);
+        bounds = new Rectangle(x, y, 32, 32);
     }
 
     public void render(SpriteBatch batch) {
-        if (!collected) {
-            batch.draw(texture, x, y, width, height);
-        }
+        if (!collected) sprite.draw(batch);
     }
 
-    public void checkCollected(Player player, FirstScreen firstScreen) {
-        Rectangle playerRect = new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight);
-        if (!collected && bounds.overlaps(playerRect)) {
+    public void checkCollected(Player player, FirstScreen screen) {
+        if (!collected && bounds.overlaps(new Rectangle(
+            player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+
             collected = true;
 
-            // Add to coin points
-            firstScreen.coinBonusPoints += bonusPoints;
+            // Increase score ONCE
+            screen.playerScore += bonusPoints;
 
             // Increment positive events
             player.goodEvent += 1;
 
-            // Announce the coin collection
-            AchievementManager.get().showPopup("Coin Collected! +" + (int)bonusPoints + " points");
+            // Unlock achievement
+            AchievementManager.get().unlock("COIN_COLLECTED");
         }
     }
 }

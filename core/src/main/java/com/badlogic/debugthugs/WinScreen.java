@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,12 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
-/**
- * The WinScreen class is displayed when the player gets to the end of the maze
- * shows a victory image, plays music, and provides a button to return to the main menu to try again
- * Also now updated to save user data for the leaderboard rankings
- */
+
 public class WinScreen implements Screen {
     Texture backgroundTexture;
     Main game;
@@ -31,54 +27,24 @@ public class WinScreen implements Screen {
     Skin skin;
     Music music;
     Preferences prefs;
-    float finalTime;
     float score;
 
-    /**
-     * Creates a WinScreen instance.
-     *
-     * @param game Reference to the main game class to allow screen switching.
-     * @param finalTime Time elapsed in the game
-     */
-    public WinScreen(Main game, float finalTime) {
+    public WinScreen(Main game, float finalScore) {
         this.game = game;
-        this.finalTime = finalTime;
+        this.score = finalScore; // directly use the time-based score
     }
 
-    /**
-     * Calculates the overall player score
-     * @param time passed as final time to factor into score
-     * @return final score as a float
-     */
-    public float calcScore(float time) {
-        float maxTime = 300f; // 5 minutes in seconds
-        float remaining = maxTime - time;
-
-        if (remaining < 0) remaining = 0; // no negative score
-
-        return (remaining / 60f) * 100f;
-    }
-
-    /**
-     * Called when the screen becomes visible
-     * Initializes buttons, loads textures (background image) and music
-     */
     @Override
     public void show() {
-
-
-        music = Gdx.audio.newMusic(Gdx.files.internal("Lose.ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Win.ogg"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
-
-        score = calcScore(finalTime);
 
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture("Win.png");
-
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Table root = new Table();
@@ -91,22 +57,15 @@ public class WinScreen implements Screen {
         Label scoreLabel = new Label("Score: " + (int) score, skin);
         scoreLabel.setAlignment(Align.center);
 
-
         TextField userInput = new TextField("", skin);
         userInput.setMessageText("Enter your name (1-8 characters):");
         userInput.setMaxLength(8);
 
-
         TextButton againButton = new TextButton("Try Again", skin);
         againButton.setDisabled(true);
 
-
         userInput.addListener(new ChangeListener() {
             @Override
-            /**
-             * Sets the status of whether the exit button is enabled or not
-             * depending if the text in the bar is empty or not
-             */
             public void changed(ChangeEvent event, Actor actor) {
                 String userName =  userInput.getText();
                 againButton.setDisabled(userName.isEmpty());
@@ -115,18 +74,11 @@ public class WinScreen implements Screen {
 
         againButton.addListener(new ClickListener() {
             @Override
-            /**
-             * Handles when the player clicks the "Play Again" button.
-             * If user has entered text into the bar then the username and score
-             * is loaded into a preference file
-             * Then stops music and returns to the menu screen if button is clicked
-             */
             public void clicked(InputEvent event, float x, float y) {
                 String userName =  userInput.getText();
                 if (!userName.isEmpty()) {
                     prefs = Gdx.app.getPreferences("GameScores");
                     float oldScore = prefs.getFloat(userName);
-                    //Makes sure previous highscore isn't overwritten
                     if (oldScore < score) {
                         prefs.putFloat(userName, score);
                         prefs.flush();
@@ -143,13 +95,8 @@ public class WinScreen implements Screen {
         root.add(userInput).width(400).height(60);
         root.row();
         root.add(againButton).width(300).height(70);
-
-
     }
-    /**
-     * Called every frame to render the screen
-     * @param delta The time in seconds since the last render.
-     */
+
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
@@ -162,24 +109,10 @@ public class WinScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
-    @Override
-    public void pause() {
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-    /**
-     * Releases assets and resources used by this screen.
-     * helps free memory
-     */
     @Override
     public void dispose() {
         backgroundTexture.dispose();

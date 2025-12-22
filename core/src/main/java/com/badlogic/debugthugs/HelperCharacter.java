@@ -5,22 +5,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-/**
- * A helper character that grants +20 seconds when found, increases positive events,
- * and displays a pop-up message using the AchievementManager system.
- */
 public class HelperCharacter {
-
     public Sprite sprite;
     public Rectangle bounds;
     public boolean collected = false;
-    private final float bonusTime = 20f; // Time bonus in seconds
 
     public HelperCharacter(Texture texture, float x, float y) {
         sprite = new Sprite(texture);
-        sprite.setSize(32, 32);
         sprite.setPosition(x, y);
-
+        sprite.setSize(32, 32);          // same size as other events
         bounds = new Rectangle(x, y, 32, 32);
     }
 
@@ -29,22 +22,20 @@ public class HelperCharacter {
     }
 
     public void checkCollected(Player player, FirstScreen screen) {
-        if (!collected && bounds.overlaps(new Rectangle(
-            player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+        Rectangle playerRect = new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight);
 
-            // Add 20 seconds to the timer
-            screen.timePassed += bonusTime;
-
-            // Increment positive events
-            player.goodEvent += 1;
-
+        if (!collected && bounds.overlaps(playerRect)) {
             collected = true;
 
-            // Unlock achievement to show pop-up
-            AchievementManager.get().unlock("HELPER_FOUND");
+            // Increment good events
+            player.goodEvent += 1;
 
-            // Optional: show a custom pop-up in addition to the achievement
-            AchievementManager.get().showPopup("Helper Found! +20 seconds");
+            // Add 20 seconds to timer
+            screen.timePassed += 20f;
+
+            // Unlock achievement
+            AchievementManager.get().unlock("HELPER_FOUND");
         }
     }
 }
+
