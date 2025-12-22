@@ -20,6 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+/**
+ * First screen of the application. Displayed after the application is created.
+ */
+
 public class FirstScreen implements Screen {
     private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
 
@@ -62,13 +66,28 @@ public class FirstScreen implements Screen {
 
     AchievementManager achievements;
 
-    // --- SCORE SYSTEM ---
+    /**
+     * Creates a new FirstScreen instance for the game
+     *
+     * @param game the main LibGDX Game object used to manage screens and shared
+     *             resources
+     */
+
+    
     public float maxScore = 500f;
-    public float playerScore = maxScore; // decreases over time
+    public float playerScore = maxScore; 
 
     public FirstScreen(Main game) {
         this.game = game;
     }
+    /**
+     * Sets up the camera and viewport. loads the tiled map and its collision
+     * layers,
+     * prepares the player's animation and starting position, initializes rendering
+     * tools (SpriteBatch, map renderer), starts background music, prepares font and
+     * timer rendering for the HUD.
+     * Also sets up the coin and helper character.
+     */
 
     @Override
     public void show() {
@@ -159,7 +178,15 @@ public class FirstScreen implements Screen {
         achievements = AchievementManager.get();
         achievements.resetAll();
     }
-
+/**
+     * Updates and renders the game state for the current frame.
+     * Handles player movement and animation timing, updates the camera to follow
+     * the player, renders the tile map and player sprite, updates and displays the countdown
+     * timer, checks if the player has won or lost.
+     * Also checks coin and helper collection.
+     *
+     * @param delta time passed since the last frame (used for animation timing and timer)
+     */
     @Override
     public void render(float delta) {
         logic(delta);
@@ -191,12 +218,10 @@ public class FirstScreen implements Screen {
             duck.checkCollided(playerChar);
             longBoi.checkTriggered(playerChar);
 
-            // --- TIME-BASED SCORE ---
             float decayRate = maxScore / 300f;
             playerScore -= decayRate * delta;
             if (playerScore < 0) playerScore = 0;
 
-            // --- Collect coin & helper ---
             if (coin != null) coin.checkCollected(playerChar, this);
             if (helper != null) helper.checkCollected(playerChar, this);
         }
@@ -254,7 +279,6 @@ public class FirstScreen implements Screen {
         duck.render(game.batch);
         longBoi.render(game.batch);
 
-        // --- RENDER COIN & HELPER ---
         if (coin != null) coin.render(game.batch);
         if (helper != null) helper.render(game.batch);
 
@@ -297,6 +321,11 @@ public class FirstScreen implements Screen {
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
+
+    /**
+     * Releases assets and resources used by this screen
+     * helps free memory
+     */
     @Override public void resize(int width, int height) {}
     @Override
     public void dispose() {
