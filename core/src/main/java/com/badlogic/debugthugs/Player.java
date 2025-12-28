@@ -127,11 +127,6 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor) {
-        if (energyDrink.drank) {
-            speed = 160f;
-        }
-    }
     public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, 	LongBoi longBoi) {
         
         if (energyDrink.drank) {
