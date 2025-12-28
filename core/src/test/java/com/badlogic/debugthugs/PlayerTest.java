@@ -11,7 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 /**
  * Unit tests for the {@link Player}.
  * 
- * Validates the basic, non-rendering logic. Tests run purely in the JVM without requiring LibGDX native backends.
+ * Validates the basic, non-rendering logic. The tests don't require LibGDX native backends.
  */
 public class PlayerTest {
     private Player player;
@@ -20,7 +20,7 @@ public class PlayerTest {
     private Animation<TextureRegion> dummyAnim;
 
     /**
-     * Creates a dummy Player instance using empty tile layers and a single-frame animation.
+     * Creates a dummy Player instance using empty tile layers and a single-frame animation before each Test.
      */
     @BeforeEach
     void setUp() {
@@ -30,13 +30,7 @@ public class PlayerTest {
         TextureRegion region = new TextureRegion();
         dummyAnim = new Animation<>(0f, region);
 
-        player = new Player(
-            10f,
-            20f,
-            dummyAnim,
-            dummyWallLayer,
-            dummyDoorLayer
-        );
+        player = new Player(10f, 20f, dummyAnim, dummyWallLayer, dummyDoorLayer);
     }
 
     /**
@@ -46,7 +40,30 @@ public class PlayerTest {
     void testInitialPositionAndSize() {
         assertEquals(10f, player.playerX, 0.0001f);
         assertEquals(20f, player.playerY, 0.0001f);
-        assertEquals(24f, player.playerWidth, 0.0001f);
-        assertEquals(24f, player.playerHeight, 0.0001f);
+        assertEquals(12f, player.playerWidth, 0.0001f);
+        assertEquals(14f, player.playerHeight, 0.0001f);
+    }
+
+    @Test
+    void testInitialEventCounters() {
+        assertEquals(0, player.goodEvent);
+        assertEquals(0, player.badEvent);
+        assertEquals(0, player.hiddenEvent);
+    }
+
+    /**
+     * Checks the player's speed increases when picking up an energy drink.
+     */
+    @Test
+    void testEnergyDrinkSpeed() {
+        EnergyDrink drink = new EnergyDrink(true);
+        Key key = new Key(false);
+        Portal portal = new Portal(false);
+        DuoAuth duoAuth = new DuoAuth(false, false);
+        WetFloor wetFloor = new WetFloor(false, false);
+
+        assertEquals(player.speed, 128f, 0.0001f);
+        player.playerInput(key, drink, portal, duoAuth, wetFloor);
+        assertEquals(player.speed, 160f, 0.0001f);
     }
 }

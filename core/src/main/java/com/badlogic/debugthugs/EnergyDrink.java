@@ -29,4 +29,16 @@ public class EnergyDrink{
             AchievementManager.get().unlock("ENERGISED");
         }
     }
+
+    /**
+     * Create a EnergyDrink instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param drank Initial value for whether the energy drink has been drank.
+     */
+    public EnergyDrink(boolean drank)
+    {
+        this.drank = drank;
+    }
 }

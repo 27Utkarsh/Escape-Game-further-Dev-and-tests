@@ -44,4 +44,18 @@ public class WetFloor {
             }
         }
     }
+
+    /**
+     * Create a DuoAuth instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param triggered Initial value for triggered.
+     * @param active Initial value for active.
+     */
+    public WetFloor(boolean triggered, boolean active)
+    {
+        this.triggered = triggered;
+        this.active = active;
+    }
 }

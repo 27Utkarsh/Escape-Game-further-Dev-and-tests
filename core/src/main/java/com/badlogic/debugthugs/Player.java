@@ -23,6 +23,8 @@ public class Player {
     boolean needsKeyMessage = false;
     boolean needsInteractMessage = false;
 
+    public float speed = 128f;
+
     Animation<TextureRegion> walkCycle;
 
     TiledMapTileLayer wallLayer;
@@ -72,13 +74,12 @@ public class Player {
      * Specifically movement and the player interacting with doors
      */
     public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor) {
-        float speed = 128f;
         if (energyDrink.drank) {
             speed = 160f;
         }
     }
     public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, 	LongBoi longBoi) {
-        float speed = 128f;
+        
         if (energyDrink.drank) {
             speed = 160f;
         }
