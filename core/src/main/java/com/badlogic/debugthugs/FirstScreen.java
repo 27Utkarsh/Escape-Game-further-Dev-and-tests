@@ -25,9 +25,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
  */
 
 public class FirstScreen implements Screen {
-    private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
 
-    Texture walkSheet;
+
     float stateTime;
     Main game;
 
@@ -65,6 +64,46 @@ public class FirstScreen implements Screen {
     Rectangle player;
 
     AchievementManager achievements;
+
+     // initalizing all animation sheets 
+        Texture walkSheet = new Texture(Gdx.files.internal("WalkDown.png"));
+        Texture walkLeftSheet = new Texture(Gdx.files.internal("WalkLeft.png"));
+        Texture walkRightSheet = new Texture(Gdx.files.internal("WalkRight.png"));
+        Texture walkUpSheet = new Texture(Gdx.files.internal("WalkUp.png"));
+        Texture fallSheet = new Texture(Gdx.files.internal("fallAnimation.png"));
+        Texture bushSheet = new Texture(Gdx.files.internal("LongBush.png"));
+    
+        // function that takes a 2d TextureRegion and removes any empty frames and returns an Animation
+        public static Animation<TextureRegion> frameTrimmer(TextureRegion[] array, int empty){
+            TextureRegion[] arrayOut = new TextureRegion[array.length - empty];
+            for(int i = 0; i < (array.length - empty); i++){
+                arrayOut[i] = array[i];
+            }
+            return new Animation<>(0.05f,arrayOut);
+        }
+        // function that converts an 2d TextureRegion array to a linear TextureRegion array
+        public static TextureRegion[] texture2Array(Texture sheet, int row, int col){
+            TextureRegion[][] tmp = TextureRegion.split(sheet,32,32);
+            TextureRegion[] arrayOut = new TextureRegion[row * col];
+            int index = 0;
+    
+            for (int i = 0; i < row; i++){
+                for (int j = 0; j < col; j++){
+                    arrayOut[index++] = tmp[i][j];
+                }
+            }
+            return arrayOut;
+    
+        }
+    
+    
+        Animation<TextureRegion> walkAnimation = frameTrimmer(texture2Array(walkSheet,3,3),1);
+        Animation<TextureRegion> walkLeftAnimation = frameTrimmer(texture2Array(walkLeftSheet,3,3),1);
+        Animation<TextureRegion> walkRightAnimation = frameTrimmer(texture2Array(walkRightSheet,3,3),1);
+        Animation<TextureRegion> walkUpAnimation = frameTrimmer(texture2Array(walkUpSheet,3,3),1);
+        Animation<TextureRegion> fallAnimation = frameTrimmer(texture2Array(fallSheet,4,3),0);
+        Animation<TextureRegion> bushAnimation = frameTrimmer(texture2Array(bushSheet, 3, 3), 1);
+    
 
     /**
      * Creates a new FirstScreen instance for the game
@@ -121,7 +160,7 @@ public class FirstScreen implements Screen {
         enemy = new Enemy(enemyTexture, 1340, 1860, pathfinder, game);
 
         longBoiTexture = new Texture("LongBoi.png");
-        longBoi = new LongBoi(longBoiTexture, 448, 680);
+        longBoi = new LongBoi(longBoiTexture, bushAnimation, 448, 680);
 
         duoTexture = new Texture("DuoAuth.png");
         duoAuth = new DuoAuth(duoTexture, 1536f, 704f);
@@ -129,7 +168,7 @@ public class FirstScreen implements Screen {
         wetFloorTexture = new Texture("WetFloor.png");
         wetFloor = new WetFloor(wetFloorTexture, 544, 1152);
 
-        coinTexture = new Texture("coin.jpg");
+        coinTexture = new Texture("coin.png");
         coin = new Coin(coinTexture, 1100, 1800);
         coin.bonusPoints = 50f;
 
@@ -144,17 +183,19 @@ public class FirstScreen implements Screen {
         game.font.getData().setScale(1f);
         game.font.setColor(Color.WHITE);
 
-        // --- Player animation setup ---
-        walkSheet = new Texture("walkfixed.png");
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, 32, 32);
-        TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
-        for (int col = 0; col < FRAME_COLS; col++) {
-            walkFrames[col] = tmp[1][col];
-        }
 
-        playerChar = new Player(710, 1730, new Animation<TextureRegion>(0.025f, walkFrames), collisionLayer, doorLayer);
+
+        playerChar = new Player(710, 1730, collisionLayer, doorLayer);
         player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
+        
+    
         stateTime = 0f;
+        playerChar.walk   = walkAnimation;
+        playerChar.walkL  = walkLeftAnimation;
+        playerChar.walkR  = walkRightAnimation;
+        playerChar.walkUp = walkUpAnimation;
+        playerChar.fall   = fallAnimation;
+        longBoi.longBush  = bushAnimation;
 
         pauseStage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(pauseStage);
@@ -217,6 +258,7 @@ public class FirstScreen implements Screen {
             duck.update(delta);
             duck.checkCollided(playerChar);
             longBoi.checkTriggered(playerChar);
+            longBoi.update(delta);
 
             float decayRate = maxScore / 300f;
             playerScore -= decayRate * delta;
@@ -332,7 +374,7 @@ public class FirstScreen implements Screen {
         if (renderer != null) renderer.dispose();
         if (map != null) map.dispose();
 
-        if (walkSheet != null) walkSheet.dispose();
+        
         if (keyTexture != null) keyTexture.dispose();
         if (energyTexture != null) energyTexture.dispose();
         if (portalTexture != null) portalTexture.dispose();
