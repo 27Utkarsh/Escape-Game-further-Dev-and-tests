@@ -17,7 +17,6 @@ public class PlayerTest {
     private Player player;
     private TiledMapTileLayer dummyWallLayer;
     private TiledMapTileLayer dummyDoorLayer;
-    private Animation<TextureRegion> dummyAnim;
 
     /**
      * Creates a dummy Player instance using empty tile layers and a single-frame animation before each Test.
@@ -27,10 +26,7 @@ public class PlayerTest {
         dummyWallLayer = new TiledMapTileLayer(10, 10, 32, 32);
         dummyDoorLayer = new TiledMapTileLayer(10, 10, 32, 32);
 
-        TextureRegion region = new TextureRegion();
-        dummyAnim = new Animation<>(0f, region);
-
-        player = new Player(10f, 20f, dummyAnim, dummyWallLayer, dummyDoorLayer);
+        player = new Player(10f, 20f, dummyWallLayer, dummyDoorLayer);
     }
 
     /**
