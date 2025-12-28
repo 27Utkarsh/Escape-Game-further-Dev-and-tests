@@ -247,7 +247,7 @@ public class FirstScreen implements Screen {
         else stateTime = 0f;
 
         if (!paused) {
-            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, longBoi);
+            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, delta);
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);

@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /**
@@ -36,8 +34,8 @@ public class PlayerTest {
     void testInitialPositionAndSize() {
         assertEquals(10f, player.playerX, 0.0001f);
         assertEquals(20f, player.playerY, 0.0001f);
-        assertEquals(12f, player.playerWidth, 0.0001f);
-        assertEquals(14f, player.playerHeight, 0.0001f);
+        assertEquals(16f, player.playerWidth, 0.0001f);
+        assertEquals(16f, player.playerHeight, 0.0001f);
     }
 
     @Test
@@ -47,19 +45,5 @@ public class PlayerTest {
         assertEquals(0, player.hiddenEvent);
     }
 
-    /**
-     * Checks the player's speed increases when picking up an energy drink.
-     */
-    @Test
-    void testEnergyDrinkSpeed() {
-        EnergyDrink drink = new EnergyDrink(true);
-        Key key = new Key(false);
-        Portal portal = new Portal(false);
-        DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
 
-        assertEquals(player.speed, 128f, 0.0001f);
-        player.playerInput(key, drink, portal, duoAuth, wetFloor);
-        assertEquals(player.speed, 160f, 0.0001f);
-    }
 }

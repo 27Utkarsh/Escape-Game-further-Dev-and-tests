@@ -31,6 +31,7 @@ public class Portal {
      * @param used Initial value for whether the Portal has been used.
      */
     public Portal(boolean used){
+        this.bounds = new Rectangle(608, 512, 32, 32);
         this.used = used;
     }
 }
