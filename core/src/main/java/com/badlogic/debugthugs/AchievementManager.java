@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * Manages the persistent saving and accessing of achievements, as well as displaying achievement pop-up notifications.
- * 
+ *
  * Implemented as a singleton, and accessed using {@code AchievementManager.get()}, ensuring a single shared instance across the application.
  * Achievements are stored using LibGDX {@link Preferences}.
  */
@@ -32,7 +32,8 @@ public class AchievementManager {
         "DUO_AUTHENTICATED",
         "WATCH_YOUR_STEP",
 	    "Quack",
-        "DUCK_OF_RESETTING"
+        "DUCK_OF_RESETTING",
+        "HELPER_FOUND"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();
@@ -41,7 +42,7 @@ public class AchievementManager {
     private final BitmapFont popupFont = new BitmapFont();
     private final Color popupColor = new Color(1f, 1f, 1f, 1f);
     private final GlyphLayout layout = new GlyphLayout();
-    
+
     /**
      * Create a new instance of AchievementManager.
      * Initialises the achievements preferences file if necessary.
@@ -56,7 +57,7 @@ public class AchievementManager {
 
     /**
      * Returns the single shared instance of the AchievementManager, using a Singleton pattern.
-     * 
+     *
      * Creates the instance if it has not yet been initialised.
      */
     public static AchievementManager get() {
@@ -68,7 +69,7 @@ public class AchievementManager {
 
     /**
      * Ensures all achievement keys exist in persistent storage.
-     * 
+     *
      * Missing keys are added and initialised to false.
      */
     private void initialiseAchievements()
@@ -101,7 +102,7 @@ public class AchievementManager {
 
     /**
      * Unlocks an achievement if it is valid and not already unlocked.
-     * 
+     *
      * Queues a pop-up achievement notification.
      * @param key the name of the achievement to unlock.
      */
@@ -132,7 +133,7 @@ public class AchievementManager {
 
     /**
      * Reset all achievements to false.
-     * 
+     *
      * Mainly intended for testing.
      */
     public void resetAll()
@@ -158,7 +159,7 @@ public class AchievementManager {
 
     /**
      * Updates the achievement pop-up system every frame.
-     * 
+     *
      * Handles showing queued pop-ups and fading out the current pop-up.
      * @param delta the time passed since the last frame (seconds).
      */

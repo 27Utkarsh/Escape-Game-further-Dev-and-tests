@@ -22,4 +22,16 @@ public class Portal {
             portalSprite.draw(sb);
         }
     }
+
+    /**
+     * Create a Portal instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param used Initial value for whether the Portal has been used.
+     */
+    public Portal(boolean used){
+        this.bounds = new Rectangle(608, 512, 32, 32);
+        this.used = used;
+    }
 }

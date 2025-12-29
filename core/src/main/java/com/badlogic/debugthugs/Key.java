@@ -30,4 +30,16 @@ public class Key {
             AchievementManager.get().unlock("FOUND_KEY");
         }
     }
+
+    /**
+     * Create a Key instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param collected Initial value for whether the key has been collected.
+     */
+    public Key(boolean collected)
+    {
+        this.collected = collected;
+    }
 }

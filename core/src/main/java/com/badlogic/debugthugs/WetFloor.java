@@ -6,22 +6,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class WetFloor {
+    
     public Sprite wetFloorSprite;
     public Rectangle bounds;
-    public boolean triggered = false;
-    public boolean active = false;
+    public boolean triggered;
+    public boolean active;
     public float timer = 0f;
+    /**
+     * 
+     * @param texture stores the texture that will be used for wetFloorSprite
+     * @param x stores the x coordinate that the sprite will be rendered at
+     * @param y stores the x coordinate that the sprite will be rendered at
+     * bounds is used to store a Rectangle which is used to trigger the event
+     */
 
     public WetFloor(Texture texture, float x, float y) {
         wetFloorSprite = new Sprite(texture);
         wetFloorSprite.setPosition(x, y);
         wetFloorSprite.setSize(32, 32);
-        bounds = new Rectangle(x, y, 16, 16);
+        bounds = new Rectangle(x, y, 8, 8);
     }
-
+ 
     public void render(SpriteBatch sb) {
         if (!triggered) {
-            wetFloorSprite.draw(sb);
+            wetFloorSprite.draw(sb); 
         }
     }
 
@@ -29,10 +37,21 @@ public class WetFloor {
         if (!triggered && bounds
                 .overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.badEvent += 1;
+            player.playerFall();
             triggered = true;
             active = true;
-            timer = 5f;
+            timer = 1.1f;
         }
+        /**
+         * when player overlaps the bounds;
+         *  badEvent is incremented,
+         *  playerFall() is called to set playerAnimation = State.FALL,
+         *  triggered = true (to stop event from triggering multiple times),
+         *  active = true used for logic in update()
+         *  timer = 1.1f is used to start to count down time passing
+         * 
+         * 
+         */
     }
 
     public void update(float delta) {
@@ -43,5 +62,24 @@ public class WetFloor {
                 AchievementManager.get().unlock("Watch Your Step");
             }
         }
+    }
+    /**
+     * when active is set to true the timer counts down from 1.1f,
+     * active is then set to false this controls the time the player
+     * cannot move for
+     */
+
+    /**
+     * Create a DuoAuth instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param triggered Initial value for triggered.
+     * @param active Initial value for active.
+     */
+    public WetFloor(boolean triggered, boolean active)
+    {
+        this.triggered = triggered;
+        this.active = active;
     }
 }

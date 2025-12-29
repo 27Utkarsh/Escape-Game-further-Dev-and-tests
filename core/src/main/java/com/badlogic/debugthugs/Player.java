@@ -10,6 +10,18 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Player {
 
+    public enum State{
+    
+        WALK,
+        WALK_L,
+        WALK_R,
+        WALK_UP,
+        FALL
+    } // used to store different possible animation states of the player
+
+    //initalizes the playerAnimation as the variable which stores player's State
+    public State playerAnimation = State.WALK;
+    
     public float playerX;
     public float playerY;
     public float playerWidth;
@@ -23,7 +35,16 @@ public class Player {
     boolean needsKeyMessage = false;
     boolean needsInteractMessage = false;
 
-    Animation<TextureRegion> walkCycle;
+    public float speed = 128f;
+
+    // defines the different walking animations
+    // and a placeholder activeAnimation which stores the the animation in use
+    Animation<TextureRegion> walk;
+    Animation<TextureRegion> walkL;
+    Animation<TextureRegion> walkR;
+    Animation<TextureRegion> walkUp;
+    Animation<TextureRegion> fall;
+    Animation<TextureRegion> activeAnimation;
 
     TiledMapTileLayer wallLayer;
     TiledMapTileLayer doorLayer;
@@ -33,52 +54,81 @@ public class Player {
 
     /**
      * Constructs the player entity in the game
-     * 
+     *
      * @param startX    X-coordinate for where the player starts
      * @param startY    Y-coordinate for where the player starts
-     * @param walkCycle Animation object holding frames to create a walk cycle
      * @param wallLayer Layer on the tilemap where collide-able walls are
      * @param doorLayer Layer on the tilemap where doors are
      */
     public Player(float startX, float startY,
-            Animation<TextureRegion> walkCycle,
             TiledMapTileLayer wallLayer,
             TiledMapTileLayer doorLayer) {
 
         this.playerX = startX;
         this.playerY = startY;
-        this.walkCycle = walkCycle;
+        this.playerAnimation = State.WALK;
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
 
-        this.playerWidth = 12;
-        this.playerHeight = 14;
+        this.playerWidth = 16;
+        this.playerHeight = 16;
     }
 
     /**
      * Renders the player's current animation frame
      * Retrieves the correct frame from the walking animation using state time
      * and draws it at the player's current X and Y position using the SpriteBatch
-     * 
+     *
      * @param batch the SpriteBatch used to draw the frame to the screen
      */
     public void render(SpriteBatch batch, float stateTime) {
-        TextureRegion frame = walkCycle.getKeyFrame(stateTime, true);
-        batch.draw(frame, playerX - 10, playerY - 10);
+
+        if(!isMoving){
+            stateTime = 0f;
+        }
+        
+        switch (playerAnimation){
+            case WALK:
+                activeAnimation = walk;
+            break;
+
+            case WALK_L:
+                activeAnimation = walkL;
+            break;
+
+            case WALK_R:
+                activeAnimation = walkR;
+            break;
+
+            case WALK_UP:
+                activeAnimation = walkUp;
+            break;
+
+            case FALL:
+                activeAnimation = fall;
+            break;
+
+            default:
+                activeAnimation = walk;
+                break;
+
+        }
+
+        TextureRegion frame = activeAnimation.getKeyFrame(stateTime, true);
+        batch.draw(frame, playerX -8, playerY -10, 32, 48);
+
+    }
+    //used to change playerAnimation to = State.FALL by events
+    public void playerFall(){
+        playerAnimation = State.FALL;
     }
 
     /**
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor) {
-        float speed = 128f;
-        if (energyDrink.drank) {
-            speed = 160f;
-        }
-    }
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, 	LongBoi longBoi) {
-        float speed = 128f;
+    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, float delta) {
+        
         if (energyDrink.drank) {
             speed = 160f;
         }
@@ -91,7 +141,6 @@ public class Player {
         if (wetFloor.active){
             return;
         }
-        float delta = Gdx.graphics.getDeltaTime();
         float distance = speed * delta;
         isMoving = false;
 
@@ -126,6 +175,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             isMoving = true;
+            playerAnimation = State.WALK_R;
             playerX += distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerX -= distance;
@@ -134,6 +184,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             isMoving = true;
+            playerAnimation = State.WALK_L;
             playerX -= distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerX += distance;
@@ -142,6 +193,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             isMoving = true;
+            playerAnimation = State.WALK_UP;
             playerY += distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerY -= distance;
@@ -150,6 +202,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             isMoving = true;
+            playerAnimation = State.WALK;
             playerY -= distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerY += distance;
@@ -159,7 +212,7 @@ public class Player {
 
     /**
      * Teleports the player to a random position on the map
-     * 
+     *
      * @param randomX X-coordinate for where the player teleports to
      * @param randomY Y-coordinate for where the player teleports to
      */
