@@ -27,11 +27,30 @@ public class WinScreen implements Screen {
     Skin skin;
     Music music;
     Preferences prefs;
+    float finalTime;
     float score;
 
-    public WinScreen(Main game, float finalScore) {
+    public WinScreen(Main game, float finalTime) {
         this.game = game;
-        this.score = finalScore; // directly use the time-based score
+        this.finalTime = finalTime;
+    }
+
+    public void addScore(String userName, Float score) {
+        prefs = Gdx.app.getPreferences("GameScores");
+        float oldScore = prefs.getFloat(userName);
+        if (oldScore < score) {
+            prefs.putFloat(userName, score);
+            prefs.flush();
+        }
+    }
+
+    /** Calculates the overall player score
+     *
+     * @return final score as a float
+     */
+    public float calcScore() {
+        score = this.finalTime * 4f;
+        return score;
     }
 
     @Override
@@ -40,6 +59,8 @@ public class WinScreen implements Screen {
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
+
+        score = calcScore();
 
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
@@ -77,12 +98,7 @@ public class WinScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 String userName =  userInput.getText();
                 if (!userName.isEmpty()) {
-                    prefs = Gdx.app.getPreferences("GameScores");
-                    float oldScore = prefs.getFloat(userName);
-                    if (oldScore < score) {
-                        prefs.putFloat(userName, score);
-                        prefs.flush();
-                    }
+                    addScore(userName, score);
                     music.stop();
                     game.setScreen(new MenuScreen(game));
                 }
