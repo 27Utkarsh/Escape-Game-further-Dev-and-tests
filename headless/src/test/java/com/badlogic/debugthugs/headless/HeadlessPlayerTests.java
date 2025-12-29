@@ -1,6 +1,7 @@
 package com.badlogic.debugthugs.headless;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,8 @@ import com.badlogic.debugthugs.Key;
 import com.badlogic.debugthugs.Player;
 import com.badlogic.debugthugs.Portal;
 import com.badlogic.debugthugs.WetFloor;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class HeadlessPlayerTests extends AbstractHeadlessTest {
@@ -42,5 +45,49 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         assertEquals(player.speed, 128f, 0.0001f);
         player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
         assertEquals(player.speed, 160f, 0.0001f);
+    }
+
+    /**
+     * Checks that the player can move right.
+     */
+    @Test
+    void testMoveRight() {
+        FakeInput input = new FakeInput();
+        Gdx.input = input;
+        EnergyDrink drink = new EnergyDrink(false);
+        Key key = new Key(false);
+        Portal portal = new Portal(false);
+        DuoAuth duoAuth = new DuoAuth(false, false);
+        WetFloor wetFloor = new WetFloor(false, false);
+        
+        assertEquals(player.playerX, 10f, 0.0001f);
+        input.press(Input.Keys.RIGHT);
+        for (int i = 0; i < 10; i++) {
+            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+        }
+        assertTrue(player.playerX > 10f);
+    }
+
+    /**
+     * Checks that when DuoAuth is active, the player can't move.
+     */
+    @Test
+    void testInputDuoAuth() {
+        FakeInput input = new FakeInput();
+        Gdx.input = input;
+
+        EnergyDrink drink = new EnergyDrink(false);
+        Key key = new Key(false);
+        Portal portal = new Portal(false);
+        DuoAuth duoAuth = new DuoAuth(true, true);
+        WetFloor wetFloor = new WetFloor(false, false);
+
+        assertEquals(player.playerX, 10f, 0.0001f);
+        input.press(Input.Keys.RIGHT);
+        for (int i = 0; i < 10; i++) {
+            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+        }
+        
+        assertEquals(player.playerX, 10f, 0.0001f);
     }
 }
