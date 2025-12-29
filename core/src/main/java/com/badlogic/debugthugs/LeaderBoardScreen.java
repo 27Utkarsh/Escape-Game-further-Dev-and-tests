@@ -87,11 +87,11 @@ public class LeaderBoardScreen extends ScreenAdapter {
         table.row();
 
         exit.addListener(new ClickListener() {
-            @Override
             /**
              * Handles the player clicking the "exit" button
              * Loads the main menu
              */
+            @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MenuScreen(game));
             }

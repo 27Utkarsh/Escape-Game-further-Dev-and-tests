@@ -5,7 +5,6 @@ Enemy.png
 Exam.png
 FallAnimation.png
 Game_Over_Image.png
-Idle.png
 Key.png
 LongBush.png
 Longboi.png
@@ -22,6 +21,7 @@ WalkUp.png
 WetFloor.png
 Win.png
 background.png
+coin.jpg
 coin.png
 drop.mp3
 energyDrink.png
@@ -50,4 +50,6 @@ ui/font.fnt
 ui/uiskin.atlas
 ui/uiskin.json
 ui/uiskin.png
+walk.png
+walkfixed.png
 white3.png
