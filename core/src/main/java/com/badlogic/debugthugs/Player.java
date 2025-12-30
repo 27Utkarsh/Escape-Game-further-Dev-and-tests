@@ -24,8 +24,8 @@ public class Player {
     
     public float playerX;
     public float playerY;
-    public float playerWidth;
-    public float playerHeight;
+    public float playerWidth = 16;
+    public float playerHeight = 16;
 
     public int goodEvent = 0;
     public int badEvent = 0;
@@ -69,9 +69,6 @@ public class Player {
         this.playerAnimation = State.WALK;
         this.wallLayer = wallLayer;
         this.doorLayer = doorLayer;
-
-        this.playerWidth = 16;
-        this.playerHeight = 16;
     }
 
     /**
