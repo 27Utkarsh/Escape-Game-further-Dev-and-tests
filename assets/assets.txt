@@ -1,5 +1,7 @@
 .gitkeep
 AnimationSheet.png
+Bus.png
+BusStop.png
 DuoAuth.png
 Enemy.png
 Exam.png

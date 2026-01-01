@@ -19,9 +19,14 @@ public class Player {
         FALL
     } // used to store different possible animation states of the player
 
-    //initalizes the playerAnimation as the variable which stores player's State
+    public String lastBusMessage = "";
+    public boolean needsBusMessage = false;
+    public boolean canRideBus = false;
+    private float busMessageTimer = 0f;
+
+    // initalizes the playerAnimation as the variable which stores player's State
     public State playerAnimation = State.WALK;
-    
+
     public float playerX;
     public float playerY;
     public float playerWidth = 16;
@@ -124,8 +129,10 @@ public class Player {
      * Handles user input
      * Specifically movement and the player interacting with doors
      */
-    public void playerInput(Key key, EnergyDrink energyDrink, Portal portal, DuoAuth duoAuth, WetFloor wetFloor, float delta) {
-        
+    public void playerInput(Key key, EnergyDrink energyDrink, Bus bus, java.util.List<BusStop> busStops,
+            DuoAuth duoAuth,
+            WetFloor wetFloor, float delta) {
+
         if (energyDrink.drank) {
             speed = 160f;
         }
@@ -155,17 +162,27 @@ public class Player {
             }
         }
 
-        // Portal Interaction
-        if (!portal.used && portal.bounds.overlaps(new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
-            needsInteractMessage = true;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                teleport();
-                portal.used = true;
+        // Bus Interaction
+        boolean overlappingBus = false;
+        canRideBus = false;
+
+        if (needsBusMessage) {
+            busMessageTimer += delta;
+            if (busMessageTimer > 3f) {
+                needsBusMessage = false;
+                busMessageTimer = 0f;
             }
         }
 
-        if (!doorInfront && (!portal.bounds.overlaps(new Rectangle(playerX, playerY, playerWidth, playerHeight))
-                || portal.used)) {
+        if (bus.bounds.overlaps(new Rectangle(playerX, playerY, playerWidth, playerHeight))) {
+            overlappingBus = true;
+            canRideBus = true;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                teleportToRandomStop(busStops);
+            }
+        }
+
+        if (!doorInfront && !overlappingBus) {
             needsKeyMessage = false;
             needsInteractMessage = false;
         }
@@ -213,30 +230,21 @@ public class Player {
      * @param randomX X-coordinate for where the player teleports to
      * @param randomY Y-coordinate for where the player teleports to
      */
-    private void teleport() {
-        boolean validPosition = false;
-        while (!validPosition) {
-            // random teleport on the map
-            float randomX = com.badlogic.gdx.math.MathUtils.random(400, 1500);
-            float randomY = com.badlogic.gdx.math.MathUtils.random(400, 1500);
+    private void teleportToRandomStop(java.util.List<BusStop> busStops) {
+        if (busStops.isEmpty())
+            return;
 
-            randomX = (int) (randomX / 32) * 32;
-            randomY = (int) (randomY / 32) * 32;
+        int index = com.badlogic.gdx.math.MathUtils.random(0, busStops.size() - 1);
+        BusStop targetStop = busStops.get(index);
 
-            float oldX = playerX;
-            float oldY = playerY;
+        playerX = targetStop.bounds.x;
+        playerY = targetStop.bounds.y;
 
-            playerX = randomX;
-            playerY = randomY;
+        lastBusMessage = "You took a bus to " + targetStop.name;
+        needsBusMessage = true;
+        busMessageTimer = 0f;
 
-            if (!Collision.collisionCheck(this) && !Collision.door(this)) {
-                validPosition = true;
-                hiddenEvent += 1;
-                AchievementManager.get().unlock("TELEPORTED");
-            } else {
-                playerX = oldX;
-                playerY = oldY;
-            }
-        }
+        hiddenEvent += 1;
+        AchievementManager.get().unlock("TELEPORTED");
     }
 }

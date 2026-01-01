@@ -26,11 +26,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FirstScreen implements Screen {
 
-
     float stateTime;
     Main game;
 
-    Texture keyTexture, energyTexture, portalTexture, pauseTexture;
+    Texture keyTexture, energyTexture, busStopTexture, busTexture, pauseTexture;
     Texture longBoiTexture, enemyTexture, duoTexture, wetFloorTexture;
     Texture examTexture, pressureTexture, duckTexture, coinTexture, helperTexture;
     Music music;
@@ -46,7 +45,8 @@ public class FirstScreen implements Screen {
     Player playerChar;
     Key key;
     EnergyDrink energyDrink;
-    Portal portal;
+    Bus bus;
+    java.util.List<BusStop> busStops;
     Enemy enemy;
     HelperCharacter helper;
     Coin coin;
@@ -152,8 +152,21 @@ public class FirstScreen implements Screen {
         duckTexture = new Texture("MovingDuck.png");
         duck = new Duck(duckTexture, 680, 520, 250f);
 
-        portalTexture = new Texture("portal.png");
-        portal = new Portal(portalTexture, 608, 512);
+        busStopTexture = new Texture("BusStop.png");
+        busTexture = new Texture("Bus.png");
+        bus = new Bus(busTexture, 608, 512);
+
+        busStops = new java.util.ArrayList<>();
+        busStops.add(new BusStop(busStopTexture, 992, 1856, "Stop A"));
+        busStops.add(new BusStop(busStopTexture, 1184, 512, "Stop B"));
+        busStops.add(new BusStop(busStopTexture, 1856, 480, "Stop C"));
+        busStops.add(new BusStop(busStopTexture, 780, 1785, "Stop D"));
+        busStops.add(new BusStop(busStopTexture, 1504, 1696, "Stop E"));
+        busStops.add(new BusStop(busStopTexture, 1024, 1568, "Stop F"));
+        busStops.add(new BusStop(busStopTexture, 480, 832, "Stop G"));
+        busStops.add(new BusStop(busStopTexture, 1184, 768, "Stop H"));
+        busStops.add(new BusStop(busStopTexture, 1536, 864, "Stop I"));
+        busStops.add(new BusStop(busStopTexture, 1280, 1280, "Stop J"));
 
         Pathfinding pathfinder = new Pathfinding(collisionLayer);
         enemyTexture = new Texture("Enemy.png");
@@ -247,7 +260,7 @@ public class FirstScreen implements Screen {
         else stateTime = 0f;
 
         if (!paused) {
-            playerChar.playerInput(key, energyDrink, portal, duoAuth, wetFloor, delta);
+            playerChar.playerInput(key, energyDrink, bus, busStops, duoAuth, wetFloor, delta);
             enemy.update(playerChar);
             duoAuth.checkTriggered(playerChar);
             duoAuth.update(delta);
@@ -312,7 +325,10 @@ public class FirstScreen implements Screen {
 
         key.render(game.batch);
         energyDrink.render(game.batch);
-        portal.render(game.batch);
+        bus.render(game.batch);
+        for (BusStop stop : busStops) {
+            stop.render(game.batch);
+        }
         playerChar.render(game.batch, stateTime);
         enemy.render(game.batch);
         duoAuth.render(game.batch);

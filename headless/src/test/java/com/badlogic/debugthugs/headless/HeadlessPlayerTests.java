@@ -11,7 +11,8 @@ import com.badlogic.debugthugs.EnergyDrink;
 import com.badlogic.debugthugs.Key;
 import com.badlogic.debugthugs.Player;
 import com.badlogic.debugthugs.Player.State;
-import com.badlogic.debugthugs.Portal;
+import com.badlogic.debugthugs.Bus;
+import com.badlogic.debugthugs.BusStop;
 import com.badlogic.debugthugs.WetFloor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -21,9 +22,10 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     private Player player;
     private TiledMapTileLayer dummyWallLayer;
     private TiledMapTileLayer dummyDoorLayer;
-    
+
     /**
-     * Creates a dummy Player instance using empty tile layers and a single-frame animation before each Test.
+     * Creates a dummy Player instance using empty tile layers and a single-frame
+     * animation before each Test.
      */
     @BeforeEach
     void setUp() {
@@ -40,12 +42,14 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     void testEnergyDrinkSpeed() {
         EnergyDrink drink = new EnergyDrink(true);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(false, false);
+        Bus bus = new Bus(0, 0);
 
         assertEquals(player.speed, 128f, 0.0001f);
-        player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+        player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         assertEquals(player.speed, 160f, 0.0001f);
     }
 
@@ -58,14 +62,16 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         Gdx.input = input;
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(false, false);
-        
+        Bus bus = new Bus(0, 0);
+
         assertEquals(player.playerX, 10f, 0.0001f);
         input.press(Input.Keys.RIGHT);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertSame(player.playerAnimation, State.WALK_R);
         assertTrue(player.playerX > 10f);
@@ -80,14 +86,16 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         Gdx.input = input;
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(false, false);
-        
+        Bus bus = new Bus(0, 0);
+
         assertEquals(player.playerX, 10f, 0.0001f);
         input.press(Input.Keys.LEFT);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertSame(player.playerAnimation, State.WALK_L);
         assertTrue(player.playerX < 10f);
@@ -102,14 +110,16 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         Gdx.input = input;
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(false, false);
-        
+        Bus bus = new Bus(0, 0);
+
         assertEquals(player.playerY, 20f, 0.0001f);
         input.press(Input.Keys.UP);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertSame(player.playerAnimation, State.WALK_UP);
         assertTrue(player.playerY > 20f);
@@ -124,14 +134,16 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         Gdx.input = input;
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(false, false);
-        
+        Bus bus = new Bus(0, 0);
+
         assertEquals(player.playerY, 20f, 0.0001f);
         input.press(Input.Keys.DOWN);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertSame(player.playerAnimation, State.WALK);
         assertTrue(player.playerY < 20f);
@@ -147,19 +159,21 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
 
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(true, true);
         WetFloor wetFloor = new WetFloor(false, false);
+        Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);
         input.press(Input.Keys.RIGHT);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertEquals(player.playerX, 10f, 0.0001f);
     }
 
-        /**
+    /**
      * Checks that when WetFloor is active, the player can't move.
      */
     @Test
@@ -169,14 +183,16 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
 
         EnergyDrink drink = new EnergyDrink(false);
         Key key = new Key(false);
-        Portal portal = new Portal(false);
+        BusStop busStop = new BusStop(false, "Test");
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
         WetFloor wetFloor = new WetFloor(true, true);
+        Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);
         input.press(Input.Keys.RIGHT);
         for (int i = 0; i < 10; i++) {
-            player.playerInput(key, drink, portal, duoAuth, wetFloor, 0.1f);
+            player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
         assertEquals(player.playerX, 10f, 0.0001f);
     }
