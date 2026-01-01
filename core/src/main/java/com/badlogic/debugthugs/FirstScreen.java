@@ -65,45 +65,46 @@ public class FirstScreen implements Screen {
 
     AchievementManager achievements;
 
-     // initalizing all animation sheets 
-        Texture walkSheet = new Texture(Gdx.files.internal("WalkDown.png"));
-        Texture walkLeftSheet = new Texture(Gdx.files.internal("WalkLeft.png"));
-        Texture walkRightSheet = new Texture(Gdx.files.internal("WalkRight.png"));
-        Texture walkUpSheet = new Texture(Gdx.files.internal("WalkUp.png"));
-        Texture fallSheet = new Texture(Gdx.files.internal("fallAnimation.png"));
-        Texture bushSheet = new Texture(Gdx.files.internal("LongBush.png"));
-    
-        // function that takes a 2d TextureRegion and removes any empty frames and returns an Animation
-        public static Animation<TextureRegion> frameTrimmer(TextureRegion[] array, int empty){
-            TextureRegion[] arrayOut = new TextureRegion[array.length - empty];
-            for(int i = 0; i < (array.length - empty); i++){
-                arrayOut[i] = array[i];
-            }
-            return new Animation<>(0.05f,arrayOut);
+    // initalizing all animation sheets
+    Texture walkSheet = new Texture(Gdx.files.internal("WalkDown.png"));
+    Texture walkLeftSheet = new Texture(Gdx.files.internal("WalkLeft.png"));
+    Texture walkRightSheet = new Texture(Gdx.files.internal("WalkRight.png"));
+    Texture walkUpSheet = new Texture(Gdx.files.internal("WalkUp.png"));
+    Texture fallSheet = new Texture(Gdx.files.internal("fallAnimation.png"));
+    Texture bushSheet = new Texture(Gdx.files.internal("LongBush.png"));
+
+    // function that takes a 2d TextureRegion and removes any empty frames and
+    // returns an Animation
+    public static Animation<TextureRegion> frameTrimmer(TextureRegion[] array, int empty) {
+        TextureRegion[] arrayOut = new TextureRegion[array.length - empty];
+        for (int i = 0; i < (array.length - empty); i++) {
+            arrayOut[i] = array[i];
         }
-        // function that converts an 2d TextureRegion array to a linear TextureRegion array
-        public static TextureRegion[] texture2Array(Texture sheet, int row, int col){
-            TextureRegion[][] tmp = TextureRegion.split(sheet,32,32);
-            TextureRegion[] arrayOut = new TextureRegion[row * col];
-            int index = 0;
-    
-            for (int i = 0; i < row; i++){
-                for (int j = 0; j < col; j++){
-                    arrayOut[index++] = tmp[i][j];
-                }
+        return new Animation<>(0.05f, arrayOut);
+    }
+
+    // function that converts an 2d TextureRegion array to a linear TextureRegion
+    // array
+    public static TextureRegion[] texture2Array(Texture sheet, int row, int col) {
+        TextureRegion[][] tmp = TextureRegion.split(sheet, 32, 32);
+        TextureRegion[] arrayOut = new TextureRegion[row * col];
+        int index = 0;
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                arrayOut[index++] = tmp[i][j];
             }
-            return arrayOut;
-    
         }
-    
-    
-        Animation<TextureRegion> walkAnimation = frameTrimmer(texture2Array(walkSheet,3,3),1);
-        Animation<TextureRegion> walkLeftAnimation = frameTrimmer(texture2Array(walkLeftSheet,3,3),1);
-        Animation<TextureRegion> walkRightAnimation = frameTrimmer(texture2Array(walkRightSheet,3,3),1);
-        Animation<TextureRegion> walkUpAnimation = frameTrimmer(texture2Array(walkUpSheet,3,3),1);
-        Animation<TextureRegion> fallAnimation = frameTrimmer(texture2Array(fallSheet,4,3),0);
-        Animation<TextureRegion> bushAnimation = frameTrimmer(texture2Array(bushSheet, 3, 3), 1);
-    
+        return arrayOut;
+
+    }
+
+    Animation<TextureRegion> walkAnimation = frameTrimmer(texture2Array(walkSheet, 3, 3), 1);
+    Animation<TextureRegion> walkLeftAnimation = frameTrimmer(texture2Array(walkLeftSheet, 3, 3), 1);
+    Animation<TextureRegion> walkRightAnimation = frameTrimmer(texture2Array(walkRightSheet, 3, 3), 1);
+    Animation<TextureRegion> walkUpAnimation = frameTrimmer(texture2Array(walkUpSheet, 3, 3), 1);
+    Animation<TextureRegion> fallAnimation = frameTrimmer(texture2Array(fallSheet, 4, 3), 0);
+    Animation<TextureRegion> bushAnimation = frameTrimmer(texture2Array(bushSheet, 3, 3), 1);
 
     /**
      * Creates a new FirstScreen instance for the game
@@ -112,13 +113,13 @@ public class FirstScreen implements Screen {
      *             resources
      */
 
-    
     public float maxScore = 500f;
-    public float playerScore = maxScore; 
+    public float playerScore = maxScore;
 
     public FirstScreen(Main game) {
         this.game = game;
     }
+
     /**
      * Sets up the camera and viewport. loads the tiled map and its collision
      * layers,
@@ -196,19 +197,16 @@ public class FirstScreen implements Screen {
         game.font.getData().setScale(1f);
         game.font.setColor(Color.WHITE);
 
-
-
         playerChar = new Player(710, 1730, collisionLayer, doorLayer);
         player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
-        
-    
+
         stateTime = 0f;
-        playerChar.walk   = walkAnimation;
-        playerChar.walkL  = walkLeftAnimation;
-        playerChar.walkR  = walkRightAnimation;
+        playerChar.walk = walkAnimation;
+        playerChar.walkL = walkLeftAnimation;
+        playerChar.walkR = walkRightAnimation;
         playerChar.walkUp = walkUpAnimation;
-        playerChar.fall   = fallAnimation;
-        longBoi.longBush  = bushAnimation;
+        playerChar.fall = fallAnimation;
+        longBoi.longBush = bushAnimation;
 
         pauseStage = new Stage(game.uiViewport, game.batch);
         Gdx.input.setInputProcessor(pauseStage);
@@ -232,14 +230,17 @@ public class FirstScreen implements Screen {
         achievements = AchievementManager.get();
         achievements.resetAll();
     }
-/**
+
+    /**
      * Updates and renders the game state for the current frame.
      * Handles player movement and animation timing, updates the camera to follow
-     * the player, renders the tile map and player sprite, updates and displays the countdown
+     * the player, renders the tile map and player sprite, updates and displays the
+     * countdown
      * timer, checks if the player has won or lost.
      * Also checks coin and helper collection.
      *
-     * @param delta time passed since the last frame (used for animation timing and timer)
+     * @param delta time passed since the last frame (used for animation timing and
+     *              timer)
      */
     @Override
     public void render(float delta) {
@@ -251,13 +252,17 @@ public class FirstScreen implements Screen {
     private void logic(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused;
-            if (paused) Gdx.input.setInputProcessor(pauseStage);
-            else Gdx.input.setInputProcessor(null);
+            if (paused)
+                Gdx.input.setInputProcessor(pauseStage);
+            else
+                Gdx.input.setInputProcessor(null);
         }
 
         float animSpeed = 0.5f;
-        if (playerChar.isMoving) stateTime += delta * animSpeed;
-        else stateTime = 0f;
+        if (playerChar.isMoving)
+            stateTime += delta * animSpeed;
+        else
+            stateTime = 0f;
 
         if (!paused) {
             playerChar.playerInput(key, energyDrink, bus, busStops, duoAuth, wetFloor, delta);
@@ -275,21 +280,27 @@ public class FirstScreen implements Screen {
 
             float decayRate = maxScore / 300f;
             playerScore -= decayRate * delta;
-            if (playerScore < 0) playerScore = 0;
+            if (playerScore < 0)
+                playerScore = 0;
 
-            if (coin != null) coin.checkCollected(playerChar, this);
-            if (helper != null) helper.checkCollected(playerChar, this);
+            if (coin != null)
+                coin.checkCollected(playerChar, this);
+            if (helper != null)
+                helper.checkCollected(playerChar, this);
         }
 
         key.checkCollected(playerChar);
         energyDrink.checkDrank(playerChar);
 
-        if (enemy.checkCollided(playerChar)) timePassed -= 30;
+        if (enemy.checkCollided(playerChar))
+            timePassed -= 30;
 
         menuButton.setVisible(paused);
-        if (paused) pauseStage.act(delta);
+        if (paused)
+            pauseStage.act(delta);
 
-        if (!paused) timePassed -= delta;
+        if (!paused)
+            timePassed -= delta;
         if (timePassed <= 0) {
             music.stop();
             game.setScreen(new LoseScreen(game));
@@ -314,7 +325,7 @@ public class FirstScreen implements Screen {
         game.worldViewport.apply();
 
         game.worldCamera.position.set(playerChar.playerX + playerChar.playerWidth / 2f,
-            playerChar.playerY + playerChar.playerHeight / 2f, 0);
+                playerChar.playerY + playerChar.playerHeight / 2f, 0);
         game.worldCamera.update();
 
         renderer.setView(game.worldCamera);
@@ -337,8 +348,10 @@ public class FirstScreen implements Screen {
         duck.render(game.batch);
         longBoi.render(game.batch);
 
-        if (coin != null) coin.render(game.batch);
-        if (helper != null) helper.render(game.batch);
+        if (coin != null)
+            coin.render(game.batch);
+        if (helper != null)
+            helper.render(game.batch);
 
         game.batch.end();
     }
@@ -347,14 +360,23 @@ public class FirstScreen implements Screen {
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
-        game.font.draw(game.batch, "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
-            + playerChar.hiddenEvent, 540, 650);
+        game.font.draw(game.batch,
+                "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
+                        + playerChar.hiddenEvent,
+                540, 650);
 
         game.font.draw(game.batch, "Score: " + (int) playerScore, 20, 550);
 
-        if (playerChar.needsKeyMessage) game.font.draw(game.batch, "You need to find the key first", 540, 300);
-        if (playerChar.needsInteractMessage) game.font.draw(game.batch, "Press 'E' to open the door", 540, 300);
-        if (duoAuth.active) game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
+        if (playerChar.needsKeyMessage)
+            game.font.draw(game.batch, "You need to find the key first", 540, 300);
+        if (playerChar.needsInteractMessage)
+            game.font.draw(game.batch, "Press 'E' to open the door", 540, 300);
+        if (playerChar.canRideBus)
+            game.font.draw(game.batch, "Press 'E' to ride the bus", 540, 300);
+        if (playerChar.needsBusMessage)
+            game.font.draw(game.batch, playerChar.lastBusMessage, 540, 300);
+        if (duoAuth.active)
+            game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
 
         exam.renderOverlay(game.batch);
 
@@ -373,44 +395,74 @@ public class FirstScreen implements Screen {
         achievements.render(game.batch, 640, 200);
         game.batch.end();
 
-        if (paused) pauseStage.draw();
+        if (paused)
+            pauseStage.draw();
     }
 
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
 
     /**
      * Releases assets and resources used by this screen
      * helps free memory
      */
-    @Override public void resize(int width, int height) {}
+    @Override
+    public void resize(int width, int height) {
+    }
+
     @Override
     public void dispose() {
-        if (renderer != null) renderer.dispose();
-        if (map != null) map.dispose();
+        if (renderer != null)
+            renderer.dispose();
+        if (map != null)
+            map.dispose();
 
-        
-        if (keyTexture != null) keyTexture.dispose();
-        if (energyTexture != null) energyTexture.dispose();
-        if (portalTexture != null) portalTexture.dispose();
-        if (enemyTexture != null) enemyTexture.dispose();
-        if (longBoiTexture != null) longBoiTexture.dispose();
-        if (duoTexture != null) duoTexture.dispose();
-        if (wetFloorTexture != null) wetFloorTexture.dispose();
-        if (duckTexture != null) duckTexture.dispose();
-        if (examTexture != null) examTexture.dispose();
-        if (pressureTexture != null) pressureTexture.dispose();
-        if (pauseTexture != null) pauseTexture.dispose();
+        if (keyTexture != null)
+            keyTexture.dispose();
+        if (energyTexture != null)
+            energyTexture.dispose();
+        if (busStopTexture != null)
+            busStopTexture.dispose();
+        if (busTexture != null)
+            busTexture.dispose();
+        if (enemyTexture != null)
+            enemyTexture.dispose();
+        if (longBoiTexture != null)
+            longBoiTexture.dispose();
+        if (duoTexture != null)
+            duoTexture.dispose();
+        if (wetFloorTexture != null)
+            wetFloorTexture.dispose();
+        if (duckTexture != null)
+            duckTexture.dispose();
+        if (examTexture != null)
+            examTexture.dispose();
+        if (pressureTexture != null)
+            pressureTexture.dispose();
+        if (pauseTexture != null)
+            pauseTexture.dispose();
 
         if (coin != null && coin.sprite != null && coin.sprite.getTexture() != null)
             coin.sprite.getTexture().dispose();
         if (helper != null && helper.sprite != null && helper.sprite.getTexture() != null)
             helper.sprite.getTexture().dispose();
 
-        if (music != null) music.dispose();
-        if (skin != null) skin.dispose();
-        if (pauseStage != null) pauseStage.dispose();
-        if (achievements != null) achievements.dispose();
+        if (music != null)
+            music.dispose();
+        if (skin != null)
+            skin.dispose();
+        if (pauseStage != null)
+            pauseStage.dispose();
+        if (achievements != null)
+            achievements.dispose();
     }
 }

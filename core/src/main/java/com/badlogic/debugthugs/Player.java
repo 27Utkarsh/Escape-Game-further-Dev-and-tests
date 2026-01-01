@@ -10,8 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Player {
 
-    public enum State{
-    
+    public enum State {
+
         WALK,
         WALK_L,
         WALK_R,
@@ -85,30 +85,30 @@ public class Player {
      */
     public void render(SpriteBatch batch, float stateTime) {
 
-        if(!isMoving){
+        if (!isMoving) {
             stateTime = 0f;
         }
-        
-        switch (playerAnimation){
+
+        switch (playerAnimation) {
             case WALK:
                 activeAnimation = walk;
-            break;
+                break;
 
             case WALK_L:
                 activeAnimation = walkL;
-            break;
+                break;
 
             case WALK_R:
                 activeAnimation = walkR;
-            break;
+                break;
 
             case WALK_UP:
                 activeAnimation = walkUp;
-            break;
+                break;
 
             case FALL:
                 activeAnimation = fall;
-            break;
+                break;
 
             default:
                 activeAnimation = walk;
@@ -117,11 +117,12 @@ public class Player {
         }
 
         TextureRegion frame = activeAnimation.getKeyFrame(stateTime, true);
-        batch.draw(frame, playerX -8, playerY -10, 32, 48);
+        batch.draw(frame, playerX - 8, playerY - 10, 32, 48);
 
     }
-    //used to change playerAnimation to = State.FALL by events
-    public void playerFall(){
+
+    // used to change playerAnimation to = State.FALL by events
+    public void playerFall() {
         playerAnimation = State.FALL;
     }
 
@@ -137,12 +138,11 @@ public class Player {
             speed = 160f;
         }
 
-
         if (duoAuth.active) {
             return;
         }
 
-        if (wetFloor.active){
+        if (wetFloor.active) {
             return;
         }
         float distance = speed * delta;
