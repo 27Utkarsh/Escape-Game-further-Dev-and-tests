@@ -38,6 +38,10 @@ public class PlayerTest {
         assertEquals(16f, player.playerHeight, 0.0001f);
     }
 
+    
+    /**
+     * Checks that player is initialised with initial event counters at 0.
+     */
     @Test
     void testInitialEventCounters() {
         assertEquals(0, player.goodEvent);

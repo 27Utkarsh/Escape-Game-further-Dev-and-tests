@@ -37,9 +37,9 @@ public class FirstScreen implements Screen {
     Skin skin;
     TextButton menuButton;
 
-    float timePassed = 300f;
+    public float timePassed = 300f;
     int mins, seconds;
-    boolean paused = false;
+    public boolean paused = false;
 
     OrthogonalTiledMapRenderer renderer;
     Player playerChar;
@@ -249,7 +249,7 @@ public class FirstScreen implements Screen {
         renderUI();
     }
 
-    private void logic(float delta) {
+    public void logic(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused;
             if (paused)
