@@ -18,6 +18,9 @@ public class AchievementTests extends AbstractHeadlessTest {
         mgr.resetAll();
     }
 
+    /**
+     * Checks that achievements start locked.
+     */
     @Test
     void achievementsStartLocked()
     {
@@ -25,6 +28,7 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertFalse(mgr.isUnlocked("FOUND_KEY"));        
     }
 
+    /** Checks that achievements can be unlocked. */
     @Test
     void unlockShouldSetStateTrue() {
         assertFalse(mgr.isUnlocked("FOUND_KEY"));
@@ -32,6 +36,9 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertTrue(mgr.isUnlocked("FOUND_KEY"));
     }
 
+    /**
+     * Checks that unlocking an achievement with an invalid key doesn't crash the game.
+     */
     @Test
     void unlockingInvalidKeyDoesNotCrash()
     {
@@ -39,6 +46,9 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertFalse(mgr.isUnlocked("INVALID_ACHIEVEMENT_KEY"));
     }
 
+    /**
+     * Checks that resetting causes all achievements to become locked again.
+     */
     @Test
     void resetAllClearsAllAchievements() {
         mgr.unlock("ESCAPED");
@@ -50,6 +60,9 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertFalse(mgr.isUnlocked("FOUND_KEY"));
     }
 
+    /**
+     * Checks that after an achievement is unlocked, a popup for that achievement is added to the popup queue.
+     */
     @Test
     void popupIsQueuedWhenUnlocked() {
         AchievementManager mgr = AchievementManager.get();
@@ -60,6 +73,13 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertTrue(isDisplayingPopup(mgr));
     }
 
+    /**
+     * Checks that when multiple achievements are unlocked at once, the popup system handles this 
+     * correctly by displaying the first achievement and storing the next achievement temporarily 
+     * in the queue. After 2 seconds, the first popup should have finished and the second popup 
+     * should start. After a few seconds both popups will have finished displaying and so the 
+     * achievement manager should no longer be displaying any popups.
+     */
     @Test
     void multiplePopupsQueueAndDisplaySequentially() {
         mgr.unlock("FOUND_KEY");
@@ -82,6 +102,9 @@ public class AchievementTests extends AbstractHeadlessTest {
         assertFalse(isDisplayingPopup(mgr));
     }
 
+    /**
+     * Helper function to return whether the Achievment manager is currently displaying a popup.
+     */
     private boolean isDisplayingPopup(AchievementManager mgr)
     {
         mgr.update(0.0001f);
