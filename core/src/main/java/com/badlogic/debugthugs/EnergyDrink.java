@@ -9,8 +9,6 @@ public class EnergyDrink{
     public Rectangle bounds;
     public boolean drank = false;
 
-    private boolean testMode = false;
-
     public EnergyDrink(Texture texture, float x, float y) {
         energySprite = new Sprite(texture);
         energySprite.setPosition(x, y);
@@ -29,7 +27,6 @@ public class EnergyDrink{
     }
 
     public void checkDrank(Player player) {
-        if (testMode) return;
 
         if (!drank && playerTouched(player)) {
             player.goodEvent += 1;
@@ -50,7 +47,6 @@ public class EnergyDrink{
      */
     public EnergyDrink(float x, float y, boolean drank)
     {
-        testMode = true;
         this.drank = drank;
         this.bounds = new Rectangle(x,y,32,32);
     }

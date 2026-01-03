@@ -41,7 +41,7 @@ public class FirstScreenTest extends AbstractHeadlessTest {
 
         player = new Player(10f, 20f, dummyWallLayer, dummyDoorLayer);
 
-        drink = new EnergyDrink(false);
+        drink = new EnergyDrink(200f, 200f, false);
         key = new Key(false);
         busStop = new BusStop(false, "Test");
         busStops = java.util.Collections.singletonList(busStop);
