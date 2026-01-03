@@ -16,16 +16,6 @@ public class Bus {
         bounds = new Rectangle(x, y, 32, 32);
     }
 
-    /**
-     * Constructor for testing so doesn't use any rendering or sprites
-     * @param x
-     * @param y
-     * Both parameters take the theoretical test positioning
-     */
-    public Bus(float x, float y) {
-        this.bounds = new Rectangle(x, y, 32, 32);
-    }
-
     public void render(SpriteBatch sb) {
         sprite.draw(sb);
     }
