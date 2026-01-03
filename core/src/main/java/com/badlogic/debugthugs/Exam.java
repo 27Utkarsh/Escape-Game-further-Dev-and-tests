@@ -22,6 +22,8 @@ public class Exam {
 
     private float overlayTimer = 0f;     
     private boolean examed = false;
+
+    private boolean testMode = false;
     
 
     public Exam(Texture texture1, Texture texture2, float x, float y, float patrolDistance, Main game) {
@@ -45,6 +47,7 @@ public class Exam {
 
     /** Call this every frame*/
     public void update(float delta) {
+        if (testMode) return;
         // Move horizontally according to current direction
         y += speed * direction * delta;
 
@@ -92,6 +95,21 @@ public class Exam {
             examed = true;
             overlayTimer = 15f;
         }
+    }
+
+    /**
+     * Create a test instance of exam.
+     * 
+     * @param game The main game instance.
+     */
+    public Exam(Main game)
+    {
+
+        testMode = true;
+        this.game = game;
+        examed = false;
+        bounds = new Rectangle(1184, 1500, 50, 50);
+        overlayTimer = 0f;
     }
 }
 

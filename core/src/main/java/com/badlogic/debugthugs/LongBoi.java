@@ -13,6 +13,9 @@ public class LongBoi {
     public boolean active = true;
     public float eventTime = 0f;
     public float longX, bushX, bushY;
+
+    private boolean testMode = false;
+
     Animation<TextureRegion> longBush;
     // triggered is used to track if the player has triggered the event
     // active is used to track if the longBoiSprite is still being rendered
@@ -67,6 +70,8 @@ public class LongBoi {
     }
 
     public void checkTriggered(Player player) {
+        if (testMode) return;
+
         if (!triggered && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.hiddenEvent += 1;
             triggered = true;
@@ -81,6 +86,8 @@ public class LongBoi {
     }
 
     public void update(float delta) {
+        if (testMode) return;
+
         if (triggered) {
             longBoiSprite.translateX(-40 * delta);
             eventTime += delta;
@@ -101,4 +108,11 @@ public class LongBoi {
      * and event time is reset to be usable for tracking animation frames for longBush.
      */
 
+    /**
+     * Create a test instance for LongBoi.
+     */
+    public LongBoi()
+    {
+        testMode = true;
+    }
 }    

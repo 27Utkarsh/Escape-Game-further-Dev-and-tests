@@ -42,7 +42,7 @@ public class FirstScreen implements Screen {
     public boolean paused = false;
 
     OrthogonalTiledMapRenderer renderer;
-    Player playerChar;
+    public Player playerChar;
     Key key;
     EnergyDrink energyDrink;
     Bus bus;
@@ -60,8 +60,8 @@ public class FirstScreen implements Screen {
     static TiledMapTileLayer collisionLayer;
     static TiledMapTileLayer doorLayer;
 
-    Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
-    Rectangle player;
+    public Rectangle exitArea = new Rectangle(1665, 1825, 800, 800);
+    public Rectangle player;
 
     AchievementManager achievements;
 
@@ -232,6 +232,35 @@ public class FirstScreen implements Screen {
     }
 
     /**
+     * Allows initialisation of objects and variables required for the game logic to be used in testing.
+     * These objects must be passed in as parameters.
+     * 
+     * Doesn't initialise graphics or audio.
+     */
+    public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus, 
+    java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY)
+    {
+        this.playerChar = player;
+        this.key = key;
+        this.energyDrink = energyDrink;
+        this.bus = bus;
+        this.busStops = busStops;
+        this.duoAuth = duoAuth;
+        this.wetFloor = wetFloor;
+
+        this.player = new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight);
+        this.enemy = new Enemy(enemyX, enemyY);
+        this.exam = new Exam(game);
+        this.duck = new Duck();
+        this.longBoi = new LongBoi();
+        this.coin = null;
+        this.helper = null;
+        this.paused = false;
+
+        this.achievements = AchievementManager.get();
+    }
+
+    /**
      * Updates and renders the game state for the current frame.
      * Handles player movement and animation timing, updates the camera to follow
      * the player, renders the tile map and player sprite, updates and displays the
@@ -246,7 +275,7 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         logic(delta);
         renderWorld();
-        renderUI();
+        renderUI(delta);
     }
 
     public void logic(float delta) {
@@ -295,14 +324,10 @@ public class FirstScreen implements Screen {
         if (enemy.checkCollided(playerChar))
             timePassed -= 30;
 
-        menuButton.setVisible(paused);
-        if (paused)
-            pauseStage.act(delta);
-
         if (!paused)
             timePassed -= delta;
         if (timePassed <= 0) {
-            music.stop();
+            if (music != null) music.stop();
             game.setScreen(new LoseScreen(game));
         }
 
@@ -312,12 +337,20 @@ public class FirstScreen implements Screen {
         achievements.update(delta);
 
         if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            music.stop();
+            if (music != null) music.stop();
             game.setScreen(new WinScreen(game, playerScore));
             AchievementManager.get().unlock("ESCAPED");
             if (playerChar.badEvent == 0)
                 AchievementManager.get().unlock("FLAWLESS_RUN");
         }
+    }
+
+    /**
+     * Returns whether the player is overlapping the exit area.
+     */
+    public boolean isPlayerOverlappingExit()
+    {
+        return player.overlaps(exitArea);
     }
 
     private void renderWorld() {
@@ -356,7 +389,9 @@ public class FirstScreen implements Screen {
         game.batch.end();
     }
 
-    private void renderUI() {
+    private void renderUI(float delta) {
+        menuButton.setVisible(paused);
+        if (paused) pauseStage.act(delta);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 

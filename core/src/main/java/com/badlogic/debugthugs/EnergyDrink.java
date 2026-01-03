@@ -9,6 +9,8 @@ public class EnergyDrink{
     public Rectangle bounds;
     public boolean drank = false;
 
+    private boolean testMode = false;
+
     public EnergyDrink(Texture texture, float x, float y) {
         energySprite = new Sprite(texture);
         energySprite.setPosition(x, y);
@@ -23,6 +25,8 @@ public class EnergyDrink{
     }
 
     public void checkDrank(Player player) {
+        if (testMode) return;
+
         if (!drank && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.goodEvent += 1;
             drank = true;
@@ -39,6 +43,7 @@ public class EnergyDrink{
      */
     public EnergyDrink(boolean drank)
     {
+        testMode = true;
         this.drank = drank;
     }
 }

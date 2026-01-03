@@ -12,6 +12,8 @@ public class DuoAuth {
     public boolean active = false;
     public float timer = 0f;
 
+    private boolean testMode = false;
+
     public DuoAuth(Texture texture, float x, float y) {
         duoSprite = new Sprite(texture);
         duoSprite.setPosition(x, y);
@@ -26,6 +28,8 @@ public class DuoAuth {
     }
 
     public void checkTriggered(Player player) {
+        if (testMode) return;
+
         if (!triggered && bounds
                 .overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.badEvent += 1;
@@ -55,6 +59,7 @@ public class DuoAuth {
      */
     public DuoAuth(boolean triggered, boolean active)
     {
+        testMode = true;
         this.triggered = triggered;
         this.active = active;
     }

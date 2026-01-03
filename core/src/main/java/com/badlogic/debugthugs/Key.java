@@ -9,6 +9,7 @@ public class Key {
     public Sprite keySprite;
     public Rectangle bounds;
     public boolean collected = false;
+    private boolean testMode = false;
 
     public Key(Texture texture, float x, float y) {
         keySprite = new Sprite(texture);
@@ -24,6 +25,7 @@ public class Key {
     }
 
     public void checkCollected(Player player) {
+        if (testMode) return;
         if (collected == false && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.hiddenEvent += 1;
             collected = true;
@@ -40,6 +42,7 @@ public class Key {
      */
     public Key(boolean collected)
     {
+        testMode = true;
         this.collected = collected;
     }
 }

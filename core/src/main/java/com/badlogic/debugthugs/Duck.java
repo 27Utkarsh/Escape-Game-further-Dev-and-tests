@@ -17,6 +17,8 @@ public class Duck {
     private float speed = 60f;      
     private int direction = 1;      
 
+    private boolean testMode = false;
+
 
     public Duck(Texture texture, float x, float y, float patrolDistance) {
 
@@ -36,6 +38,8 @@ public class Duck {
 
     /** Call this every frame*/
     public void update(float delta) {
+        if (testMode) return;
+
         // Move horizontally according to current direction
         x += speed * direction * delta;
 
@@ -72,5 +76,14 @@ public class Duck {
             player.playerX = 710;
             player.playerY = 1730;
         }
+    }
+
+    /**
+     * Create an instance of Duck for testing.
+     */
+    public Duck()
+    {
+        testMode = true;
+        this.bounds = new Rectangle(680, 520, 50, 55);
     }
 }

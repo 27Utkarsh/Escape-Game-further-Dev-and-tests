@@ -28,6 +28,8 @@ public class Enemy {
     private ShapeRenderer shapeRenderer;
     Main game;
 
+    private boolean testMode = false;
+
     public Enemy(Texture texture, float x, float y, Pathfinding pathfinder, Main game) {
         enemySprite = new Sprite(texture);
         this.x = x;
@@ -40,6 +42,8 @@ public class Enemy {
         this.game = game;
     }
     public void update(Player player) {
+        if (testMode) return;
+
         float delta = Gdx.graphics.getDeltaTime();
 
         repathTimer -= delta;
@@ -138,5 +142,28 @@ public class Enemy {
             }
         }
         return false;
+    }
+
+    
+    /**
+     * Create an Enemy instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * 
+     * @param x the initial x position for the enemy.
+     * @param y the initial y position for the enemy. 
+     */
+    public Enemy(float x, float y)
+    {
+        this.testMode = true;
+
+        this.x = x;
+        this.y = y;
+        this.speed = 0f;
+        this.interval = 2f;
+        this.cooldown = 0f;
+        this.bounds = new Rectangle(x, y, 32, 32);
+        this.path = null;
+        this.pathfinder = null;
     }
 }
