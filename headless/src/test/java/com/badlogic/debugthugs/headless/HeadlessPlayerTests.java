@@ -40,7 +40,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
      */
     @Test
     void testEnergyDrinkSpeed() {
-        EnergyDrink drink = new EnergyDrink(true);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, true);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -60,7 +60,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     void testMoveRight() {
         FakeInput input = new FakeInput();
         Gdx.input = input;
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -84,7 +84,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     void testMoveLeft() {
         FakeInput input = new FakeInput();
         Gdx.input = input;
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -108,7 +108,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     void testMoveUp() {
         FakeInput input = new FakeInput();
         Gdx.input = input;
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -132,7 +132,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
     void testMoveDown() {
         FakeInput input = new FakeInput();
         Gdx.input = input;
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -157,7 +157,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         FakeInput input = new FakeInput();
         Gdx.input = input;
 
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
@@ -181,7 +181,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         FakeInput input = new FakeInput();
         Gdx.input = input;
 
-        EnergyDrink drink = new EnergyDrink(false);
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
         Key key = new Key(false);
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);

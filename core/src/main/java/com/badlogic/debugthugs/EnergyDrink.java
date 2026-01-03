@@ -24,10 +24,14 @@ public class EnergyDrink{
         }
     }
 
+    public Boolean playerTouched(Player player){
+        return bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight));
+    }
+
     public void checkDrank(Player player) {
         if (testMode) return;
 
-        if (!drank && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+        if (!drank && playerTouched(player)) {
             player.goodEvent += 1;
             drank = true;
             AchievementManager.get().unlock("ENERGISED");
@@ -36,14 +40,18 @@ public class EnergyDrink{
 
     /**
      * Create a EnergyDrink instance for testing.
-     * 
+     *
      * Doesn't initialise the sprite so that doesn't interfere with tests.
-     * 
+     *
+     * @param x
+     * @param y
+     * Both these parameters take the theoretical test positioning
      * @param drank Initial value for whether the energy drink has been drank.
      */
-    public EnergyDrink(boolean drank)
+    public EnergyDrink(float x, float y, boolean drank)
     {
         testMode = true;
         this.drank = drank;
+        this.bounds = new Rectangle(x,y,32,32);
     }
 }
