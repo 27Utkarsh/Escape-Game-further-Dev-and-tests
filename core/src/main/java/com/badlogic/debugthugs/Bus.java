@@ -19,4 +19,16 @@ public class Bus {
     public void render(SpriteBatch sb) {
         sprite.draw(sb);
     }
+
+    /**
+     * Create a Bus instance for testing.
+     * 
+     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * @param x The x position of the bus (bottom left).
+     * @param y The y position of the bus (bottom left).
+     */
+    public Bus(float x, float y)
+    {
+        bounds = new Rectangle(x, y, 32, 32);
+    }
 }
