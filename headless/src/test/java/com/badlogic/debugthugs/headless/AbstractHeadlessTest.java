@@ -15,18 +15,21 @@ public abstract class AbstractHeadlessTest {
     private HeadlessApplication application;
 
     @BeforeEach
-    public void setup() {
+       public void setup() {
         // Mock OpenGL interface to simulate graphics context
         Gdx.gl = Gdx.gl20 = Mockito.mock(GL20.class);
 
         // Configure shader compilation mocks to return success status
         Mockito.when(Gdx.gl.glCreateShader(anyInt())).thenReturn(1);
-        Mockito.when(Gdx.gl.glCompileShader(anyInt())).thenAnswer(i -> {}); 
-        Mockito.when(Gdx.gl.glGetShaderiv(anyInt(), anyInt(), Mockito.any())).thenAnswer(invocation -> {
+        
+        // Use doAnswer for void methods to avoid compilation errors
+        Mockito.doAnswer(i -> null).when(Gdx.gl).glCompileShader(anyInt());
+        
+        Mockito.doAnswer(invocation -> {
             java.nio.IntBuffer buffer = invocation.getArgument(2);
             buffer.put(0, 1); 
             return null;
-        });
+        }).when(Gdx.gl).glGetShaderiv(anyInt(), anyInt(), Mockito.any());
 
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = -1; // Disable update loop for unit tests
