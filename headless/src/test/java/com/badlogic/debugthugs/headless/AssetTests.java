@@ -1,103 +1,52 @@
 package com.badlogic.debugthugs.headless;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class AssetTests {
 
-    private static AssetManager assetManager;
-
-    @BeforeAll
-    static void init() {
-        // required to make Gdx.files work in a test environment
-        HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        new HeadlessApplication(new ApplicationAdapter() {}, config);
-
-        assetManager = new AssetManager();
-        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-    }
-
     @Test
-    void testAllAssetsFromTxtFile() {
-        FileHandle listFile = Gdx.files.internal("assets/assets.txt");
+    void debugFileSystem() throws Exception {
+        System.out.println("================ FILE SYSTEM DEBUG ================");
         
-        if (!listFile.exists()) {
-            fail("assets.txt missing, cannot verify assets");
+        File currentDir = new File(".").getCanonicalFile();
+        System.out.println("TEST RUNNING IN: " + currentDir.getAbsolutePath());
+
+        System.out.println("\n--- Listing Files in Current Directory ---");
+        try (Stream<Path> paths = Files.list(currentDir.toPath())) {
+            paths.forEach(p -> System.out.println(p.getFileName()));
         }
 
-        System.out.println("Verifying assets from: " + listFile.path());
-        
-        List<String> failedAssets = new ArrayList<>();
-        int loadedCount = 0;
-
-        try (BufferedReader reader = new BufferedReader(listFile.reader())) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                // ignore git files or comments
-                if (line.isEmpty() || line.startsWith("#") || line.equals(".gitkeep")) continue; 
-
-                // assets.txt paths are relative to the assets folder
-                String fullPath = "assets/" + line; 
-                
-                // verify file exists on disk first
-                if (!Gdx.files.internal(fullPath).exists()) {
-                    System.err.println("MISSING: " + fullPath);
-                    failedAssets.add(fullPath + " (File not found)");
-                    continue;
-                }
-
-                // queue loadable resources
-                if (line.endsWith(".png") || line.endsWith(".jpg")) {
-                    assetManager.load(fullPath, Texture.class);
-                } else if (line.endsWith(".tmx")) {
-                    assetManager.load(fullPath, TiledMap.class);
-                } else if (line.endsWith(".json") && line.contains("skin")) {
-                    assetManager.load(fullPath, Skin.class);
-                } else {
-                    // skip audio (crashes headless backend) and config files
-                    System.out.println("Skipping load check: " + line);
-                    continue; 
-                }
-                
-                loadedCount++;
+        System.out.println("\n--- Searching for 'assets' folder ---");
+        File assetsDir = new File(currentDir, "assets");
+        if (assetsDir.exists()) {
+            System.out.println("FOUND ASSETS FOLDER AT: " + assetsDir.getAbsolutePath());
+            System.out.println("Contents:");
+            try (Stream<Path> paths = Files.list(assetsDir.toPath())) {
+                paths.forEach(p -> System.out.println("  " + p.getFileName()));
             }
-        } catch (IOException e) {
-            fail("Error reading assets.txt: " + e.getMessage());
-        }
-
-        // blocking load to catch corrupt files
-        try {
-            System.out.println("Loading " + loadedCount + " assets...");
-            assetManager.finishLoading();
-        } catch (Exception e) {
-            failedAssets.add("AssetManager error: " + e.getMessage());
-        }
-
-        // report failures
-        if (!failedAssets.isEmpty()) {
-            fail("Asset verification failed:\n" + String.join("\n", failedAssets));
+        } else {
+            System.out.println("ERROR: 'assets' folder NOT found in " + currentDir.getAbsolutePath());
+            
+            // Try parent
+            File parentDir = currentDir.getParentFile();
+            if (parentDir != null) {
+                System.out.println("Checking parent: " + parentDir.getAbsolutePath());
+                 File parentAssets = new File(parentDir, "assets");
+                 if (parentAssets.exists()) {
+                     System.out.println("Ah! Found 'assets' in parent: " + parentAssets.getAbsolutePath());
+                 } else {
+                     System.out.println("Not in parent either.");
+                 }
+            }
         }
         
-        assertTrue(true);
+        System.out.println("================ END DEBUG ================");
+        fail("Failing test intentionally to see logs.");
     }
 }
