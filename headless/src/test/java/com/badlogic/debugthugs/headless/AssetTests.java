@@ -2,29 +2,38 @@ package com.badlogic.debugthugs.headless;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import com.badlogic.gdx.Gdx;
 import java.io.File;
 
-public class AssetTests extends AbstractHeadlessTest {
+public class AssetTests {
 
     @Test
     void keyTextureExists() {
-        //Print current directory so you can see where you are in the logs
-        System.out.println("DEBUG: Working Directory: " + new File(".").getAbsolutePath());
-
-        //Check all possible path combinations
-        boolean exists = false;
+        // Define potential asset roots to check
+        String[] paths = { ".", "assets", "../assets", "core/assets", "../core/assets" };
         
-        // Check "Key.png" (Capital K)
-        if (Gdx.files.internal("Key.png").exists()) exists = true;
-        if (Gdx.files.internal("assets/Key.png").exists()) exists = true;
-        if (Gdx.files.internal("../assets/Key.png").exists()) exists = true;
+        boolean found = false;
+        
+        System.out.println("DEBUG: Starting search for Key.png...");
+        
+        for (String path : paths) {
+            File dir = new File(path);
+            if (dir.exists() && dir.isDirectory()) {
+                System.out.println("DEBUG: Scanning directory: " + dir.getAbsolutePath());
+                File[] files = dir.listFiles();
+                if (files != null) {
+                    for (File f : files) {
+                        // Case-insensitive check to handle Linux/Windows Git renaming issues
+                        if (f.getName().equalsIgnoreCase("Key.png")) {
+                            System.out.println("DEBUG: FOUND IT! " + f.getAbsolutePath());
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (found) break;
+        }
 
-        // Check "key.png" (Lowercase k)
-        if (Gdx.files.internal("key.png").exists()) exists = true;
-        if (Gdx.files.internal("assets/key.png").exists()) exists = true;
-        if (Gdx.files.internal("../assets/key.png").exists()) exists = true;
-
-        assertTrue(exists, "Could not find Key.png (or key.png) in root, assets/, or ../assets/");
+        assertTrue(found, "Key.png was not found in any standard asset folder (checked . , assets, ../assets)");
     }
 }
