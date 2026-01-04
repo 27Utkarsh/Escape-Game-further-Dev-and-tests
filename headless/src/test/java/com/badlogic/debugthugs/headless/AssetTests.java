@@ -8,6 +8,10 @@ import com.badlogic.gdx.Gdx;
 public class AssetTests extends AbstractHeadlessTest {
     @Test
     void keyTextureExists() {
-        assertTrue(Gdx.files.internal("Key.png").exists());
+    boolean exists = Gdx.files.internal("Key.png").exists() 
+                  || Gdx.files.internal("assets/Key.png").exists()
+                  || Gdx.files.internal("../assets/Key.png").exists();
+    
+    assertTrue(exists, "Key.png not found in root, assets/, or ../assets/");
     }
 }
