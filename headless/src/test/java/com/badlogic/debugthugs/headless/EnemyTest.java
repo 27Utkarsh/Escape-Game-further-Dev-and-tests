@@ -87,12 +87,19 @@ public class EnemyTest extends AbstractHeadlessTest {
     public void negativeEventsCapped() {
         testEnemy.bounds.setPosition(0,0);
 
+        //Loop tests dean still works after cooldown
         for (int i = 1; i <= 5; i++) {
             playerCaught = testEnemy.checkCollided(testPlayer);
             assertTrue(playerCaught);
             assertEquals(i, testPlayer.badEvent);
             testEnemy.reduceCooldown();
         }
+
+        //Tests negative events limit
+        playerCaught = testEnemy.checkCollided(testPlayer);
+        assertTrue(playerCaught);
+        assertEquals(5, testPlayer.badEvent);
+
     }
 
     /**
