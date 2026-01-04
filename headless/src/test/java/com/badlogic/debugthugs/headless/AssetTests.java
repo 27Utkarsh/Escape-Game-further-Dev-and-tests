@@ -47,6 +47,5 @@ public class AssetTests {
         }
         
         System.out.println("================ END DEBUG ================");
-        fail("Failing test intentionally to see logs.");
     }
 }
