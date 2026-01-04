@@ -70,7 +70,7 @@ public class FirstScreen implements Screen {
     Texture walkLeftSheet = new Texture(Gdx.files.internal("WalkLeft.png"));
     Texture walkRightSheet = new Texture(Gdx.files.internal("WalkRight.png"));
     Texture walkUpSheet = new Texture(Gdx.files.internal("WalkUp.png"));
-    Texture fallSheet = new Texture(Gdx.files.internal("fallAnimation.png"));
+    Texture fallSheet = new Texture(Gdx.files.internal("FallAnimation.png"));
     Texture bushSheet = new Texture(Gdx.files.internal("LongBush.png"));
 
     // function that takes a 2d TextureRegion and removes any empty frames and
