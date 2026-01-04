@@ -10,8 +10,6 @@ public class AssetTests {
     void keyTextureExists() {
         
         File fileAtRoot = new File("assets/Key.png");
-        
-        File fileFromHeadless = new File("../assets/Key.png");
 
         System.out.println("DEBUG: Checking path: " + fileAtRoot.getAbsolutePath());
         System.out.println("DEBUG: Checking path: " + fileFromHeadless.getAbsolutePath());
