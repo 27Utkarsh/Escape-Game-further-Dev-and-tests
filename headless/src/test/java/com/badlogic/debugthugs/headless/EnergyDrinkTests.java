@@ -22,8 +22,8 @@ public class EnergyDrinkTests extends AbstractHeadlessTest {
     private AchievementManager testAchievementManager;
 
     /**
-     * Before each test a fresh headless test player is created, the positive events counter
-     * is reset to 0 and the testing achievement manager in instantiated and reset.
+     * Before each test a fresh headless test player is created and the positive events counter
+     * is reset to 0.
      */
     @BeforeEach
     public void setUp() {
@@ -31,9 +31,6 @@ public class EnergyDrinkTests extends AbstractHeadlessTest {
         testDoorLayer = new TiledMapTileLayer(10, 10, 32, 32);
         testPlayer = new Player(0f, 0f, testWallLayer, testDoorLayer);
         testPlayer.goodEvent = 0;
-
-        testAchievementManager = AchievementManager.get();
-        testAchievementManager.resetAll();
     }
 
     /**
@@ -91,10 +88,14 @@ public class EnergyDrinkTests extends AbstractHeadlessTest {
     }
 
     /**
-     * Tests that the corresponding achievement is unlocked when the drink is obtained.
+     * Tests that the corresponding achievement is unlocked when the drink is obtained after
+     * the achievement manager is instantiated and reset.
      */
     @Test
     public void achievementUnlocked() {
+        testAchievementManager = AchievementManager.get();
+        testAchievementManager.resetAll();
+
         EnergyDrink testDrink = new EnergyDrink(0f, 0f, false);
         testDrink.checkDrank(testPlayer);
 
