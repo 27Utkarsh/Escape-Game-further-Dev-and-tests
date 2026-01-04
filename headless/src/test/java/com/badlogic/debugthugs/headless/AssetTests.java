@@ -12,10 +12,9 @@ public class AssetTests {
         File fileAtRoot = new File("assets/Key.png");
 
         System.out.println("DEBUG: Checking path: " + fileAtRoot.getAbsolutePath());
-        System.out.println("DEBUG: Checking path: " + fileFromHeadless.getAbsolutePath());
 
-        boolean found = fileAtRoot.exists() || fileFromHeadless.exists();
+        boolean found = fileAtRoot.exists();
 
-        assertTrue(found, "Key.png not found! Checked 'assets/Key.png' and '../assets/Key.png'");
+        assertTrue(found, "Key.png not found! Checked 'assets/Key.png'");
     }
 }
