@@ -51,7 +51,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: jacoco-report
-        path: build/reports/jacoco/test/html/
+        path: headless/build/reports/jacoco/test/html/
         retention-days: 7
 
     - name: Create distribution JAR
@@ -61,8 +61,8 @@ jobs:
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: game-${{ matrix.os }}.jar
-        path: lwjgl3/build/libs/*.jar
+        name: game-${{ matrix.os }}
+        path: lwjgl3/build/libs/*-all.jar
         retention-days: 7
 
   release:
@@ -73,13 +73,29 @@ jobs:
       contents: write
     
     steps:
-    - name: Download all artifacts
+    - name: Download Ubuntu artifact
       uses: actions/download-artifact@v4
+      with:
+        name: game-ubuntu-latest
+        path: ./artifacts/ubuntu
+
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: game-windows-latest
+        path: ./artifacts/windows
+
+    - name: Download MacOS artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: game-macos-latest
+        path: ./artifacts/macos
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          game-ubuntu-latest.jar/*
-          game-windows-latest.jar/*
-          game-macos-latest.jar/*
+          ./artifacts/ubuntu/*.jar
+          ./artifacts/windows/*.jar
+          ./artifacts/macos/*.jar
+        body: |
