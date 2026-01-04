@@ -41,9 +41,9 @@ jobs:
       run: |
         chmod +x gradlew
         if [ "$RUNNER_OS" == "Linux" ]; then
-          xvfb-run --auto-servernum ./gradlew build jacocoTestReport --no-daemon --stacktrace
+          xvfb-run --auto-servernum ./gradlew build jacocoTestReport --no-daemon --info
         else
-          ./gradlew build jacocoTestReport --no-daemon --stacktrace
+          ./gradlew build jacocoTestReport --no-daemon --info
         fi
 
     - name: Upload JaCoCo coverage report
