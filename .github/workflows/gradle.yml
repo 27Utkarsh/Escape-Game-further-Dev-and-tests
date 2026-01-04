@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    timeout-minutes: 30
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -40,9 +41,9 @@ jobs:
       run: |
         chmod +x gradlew
         if [ "$RUNNER_OS" == "Linux" ]; then
-          xvfb-run --auto-servernum ./gradlew build jacocoTestReport
+          xvfb-run --auto-servernum ./gradlew build jacocoTestReport --no-daemon --stacktrace
         else
-          ./gradlew build jacocoTestReport
+          ./gradlew build jacocoTestReport --no-daemon --stacktrace
         fi
 
     - name: Upload JaCoCo coverage report
@@ -55,7 +56,7 @@ jobs:
 
     - name: Create distribution JAR
       shell: bash
-      run: ./gradlew lwjgl3:dist
+      run: ./gradlew lwjgl3:dist --no-daemon
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
