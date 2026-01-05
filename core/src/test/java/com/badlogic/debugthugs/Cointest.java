@@ -32,7 +32,7 @@ public class Cointest {
     @Test
     void testMultipleCollects() {
         coin.collect();
-        coin.collect(); // calling again should not break anything
+        coin.collect(); 
         assertTrue(coin.collected, "Coin should remain collected after multiple collect() calls");
     }
 }
