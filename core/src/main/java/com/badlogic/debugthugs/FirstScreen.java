@@ -234,11 +234,11 @@ public class FirstScreen implements Screen {
     /**
      * Allows initialisation of objects and variables required for the game logic to be used in testing.
      * These objects must be passed in as parameters.
-     * 
+     *
      * Doesn't initialise graphics or audio.
      */
-    public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus, 
-    java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY)
+    public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus,
+                          java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY)
     {
         this.playerChar = player;
         this.key = key;
@@ -358,7 +358,7 @@ public class FirstScreen implements Screen {
         game.worldViewport.apply();
 
         game.worldCamera.position.set(playerChar.playerX + playerChar.playerWidth / 2f,
-                playerChar.playerY + playerChar.playerHeight / 2f, 0);
+            playerChar.playerY + playerChar.playerHeight / 2f, 0);
         game.worldCamera.update();
 
         renderer.setView(game.worldCamera);
@@ -396,9 +396,9 @@ public class FirstScreen implements Screen {
         game.batch.begin();
 
         game.font.draw(game.batch,
-                "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
-                        + playerChar.hiddenEvent,
-                540, 650);
+            "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
+                + playerChar.hiddenEvent,
+            540, 650);
 
         game.font.draw(game.batch, "Score: " + (int) playerScore, 20, 550);
 

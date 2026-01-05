@@ -10,32 +10,48 @@ public class HelperCharacter {
     public Rectangle bounds;
     public boolean collected = false;
 
+    // Normal game constructor
     public HelperCharacter(Texture texture, float x, float y) {
         sprite = new Sprite(texture);
         sprite.setPosition(x, y);
-        sprite.setSize(32, 32);          // same size as other events
+        sprite.setSize(32, 32);
         bounds = new Rectangle(x, y, 32, 32);
     }
 
-    public void render(SpriteBatch batch) {
-        if (!collected) sprite.draw(batch);
+    // ✅ Headless constructor for testing
+    public HelperCharacter(float x, float y) {
+        this.sprite = null;
+        this.bounds = new Rectangle(x, y, 32, 32);
+        this.collected = false;
     }
 
+    public void render(SpriteBatch batch) {
+        if (!collected && sprite != null) {
+            sprite.draw(batch);
+        }
+    }
+
+    // Game logic
     public void checkCollected(Player player, FirstScreen screen) {
-        Rectangle playerRect = new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight);
+        Rectangle playerRect = new Rectangle(
+            player.playerX, player.playerY,
+            player.playerWidth, player.playerHeight
+        );
 
         if (!collected && bounds.overlaps(playerRect)) {
             collected = true;
-
-            // Increment good events
             player.goodEvent += 1;
-
-            // Add 20 seconds to timer
             screen.timePassed += 20f;
-
-            // Unlock achievement
             AchievementManager.get().unlock("HELPER_FOUND");
         }
     }
-}
 
+    // ✅ Test-friendly method
+    public void collect() {
+        collected = true;
+    }
+
+    public boolean isCollected() {
+        return collected;
+    }
+}
