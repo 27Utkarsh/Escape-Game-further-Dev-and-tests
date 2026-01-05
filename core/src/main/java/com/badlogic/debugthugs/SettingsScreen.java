@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class SettingsScreen implements Screen {
     float initialVolume = 0.5f;
-    static float volume;
+    public static float volume = -1;
     Main game;
     Stage stage;
     Skin skin;
@@ -34,7 +34,7 @@ public class SettingsScreen implements Screen {
      * @return the volume level
      */
     public static float getNoise() {
-        if (volume == 0) {
+        if (volume < 0) {
             return 0.5f;
         }
         else {
@@ -43,8 +43,13 @@ public class SettingsScreen implements Screen {
     }
 
     public void setNoise(float volume) {
-        this.volume = volume;
+        if (volume < 0.01f || volume > 1f) {
+            return;
+        }
+        SettingsScreen.volume = volume;
     }
+
+    public void returnMain(Main game) {game.setScreen(new MenuScreen(game));}
 
     /**
      * Initializes the settings screen
@@ -58,7 +63,7 @@ public class SettingsScreen implements Screen {
 
         Label volumeLabel = new Label("Volume:", skin);
         final Slider volumeSlider = new Slider(0.01f, 1f, 0.01f, false, skin);
-        if (volume == 0) {
+        if (volume < 0) {
             volumeSlider.setValue(initialVolume);
         }
         else {
@@ -81,7 +86,7 @@ public class SettingsScreen implements Screen {
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MenuScreen(game));
+                returnMain(game);
             }
         });
 

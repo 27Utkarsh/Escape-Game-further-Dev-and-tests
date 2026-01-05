@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Enemy {
     public Sprite enemySprite;
     public Rectangle bounds;
-    public boolean caughtPlayer = false;
+    public int timesCaught;
     float x, y;
     float speed = 90f;
     float cooldown = 0f;
@@ -41,6 +41,7 @@ public class Enemy {
         shapeRenderer = new ShapeRenderer();
         this.game = game;
     }
+
     public void update(Player player) {
         if (testMode) return;
 
@@ -135,8 +136,11 @@ public class Enemy {
     public boolean checkCollided(Player player) {
         if (bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             if (cooldown <= 0f) {
+                if (timesCaught < 5) {
+                    timesCaught++;
+                    player.badEvent += 1;
+                }
                 cooldown = interval;
-                player.badEvent += 1;
                 AchievementManager.get().unlock("ENCOUTERED_DEAN");
                 return true;
             }
@@ -144,14 +148,21 @@ public class Enemy {
         return false;
     }
 
-    
+    public void reduceCooldown() {
+        cooldown = 0f;
+    }
+
+    public float getCooldown() {
+        return cooldown;
+    }
+
     /**
      * Create an Enemy instance for testing.
-     * 
+     *
      * Doesn't initialise the sprite so that doesn't interfere with tests.
-     * 
+     *
      * @param x the initial x position for the enemy.
-     * @param y the initial y position for the enemy. 
+     * @param y the initial y position for the enemy.
      */
     public Enemy(float x, float y)
     {
