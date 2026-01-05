@@ -18,7 +18,7 @@ public class HelperCharacter {
         bounds = new Rectangle(x, y, 32, 32);
     }
 
-    // ✅ Headless constructor for testing
+    //  Headless constructor for testing
     public HelperCharacter(float x, float y) {
         this.sprite = null;
         this.bounds = new Rectangle(x, y, 32, 32);
@@ -46,7 +46,7 @@ public class HelperCharacter {
         }
     }
 
-    // ✅ Test-friendly method
+    //  Test-friendly method
     public void collect() {
         collected = true;
     }
