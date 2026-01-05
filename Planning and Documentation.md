@@ -8,7 +8,11 @@ https://docs.google.com/document/d/1U_PReURlgOPnSZaRBElPsas7dIdUBd9V9PI_ab4OlN8/
 
 ### Testing
 
+## Software Testing Report
 https://docs.google.com/document/d/19RTKvY6Yiy64Xxy-Hwqu4KjtWZ_FHYMe--Nt2xikaBk/edit?tab=t.0
+
+## Testing Material (Including Manual Tests)
+https://docs.google.com/document/d/1OlvLxegNSgfpUuxHgW6dk1clo-pzoaaH9OEg81gZBhI/edit?tab=t.0
 
 ### User Evaluation Forms
 
