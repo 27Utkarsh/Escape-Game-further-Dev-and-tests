@@ -35,7 +35,7 @@ public class FirstScreen implements Screen {
     Music music;
     Stage pauseStage;
     Skin skin;
-    TextButton menuButton;
+    TextButton menuButton, resumeButton;
 
     public float timePassed = 300f;
     int mins, seconds;
@@ -226,6 +226,19 @@ public class FirstScreen implements Screen {
             }
         });
         pauseStage.addActor(menuButton);
+        // resume added afer user evaluation
+        resumeButton = new TextButton("Resume", skin);
+        resumeButton.setPosition(540, 380);
+        resumeButton.setSize(200, 60);
+        resumeButton.setVisible(false);
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                paused = false;
+                Gdx.input.setInputProcessor(null);
+            }
+        });
+        pauseStage.addActor(resumeButton);
 
         achievements = AchievementManager.get();
         achievements.resetAll();
@@ -392,6 +405,7 @@ public class FirstScreen implements Screen {
     private void renderUI(float delta) {
         menuButton.setVisible(paused);
         if (paused) pauseStage.act(delta);
+        resumeButton.setVisible(paused);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
