@@ -6,6 +6,16 @@
 
 https://docs.google.com/document/d/1U_PReURlgOPnSZaRBElPsas7dIdUBd9V9PI_ab4OlN8/edit?usp=sharing
 
+### Architecture
+
+## Arch2
+
+https://docs.google.com/document/d/1LKqlhqy4FrRPDi2NtSMcZuV1z286wbzTnWZVAyRLnM0/edit?usp=sharing
+
+## Architecture change report
+
+https://docs.google.com/document/d/1SwAUDWvMys3Ymi6G8XzDZHtheWdm7a6JHDvf4jfB0zE/edit?usp=sharing
+
 ### Testing
 
 ## Software Testing Report
