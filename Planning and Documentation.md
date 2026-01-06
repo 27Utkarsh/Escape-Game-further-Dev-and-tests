@@ -10,7 +10,7 @@ https://docs.google.com/document/d/1U_PReURlgOPnSZaRBElPsas7dIdUBd9V9PI_ab4OlN8/
 
 ### Arch2
 
-https://docs.google.com/document/d/1LKqlhqy4FrRPDi2NtSMcZuV1z286wbzTnWZVAyRLnM0/edit?usp=sharing
+https://docs.google.com/document/d/1jLoApnNJB3-ormqYDGYh3-WOV1HLaU_ZuzgMFFiD0Vk/edit?usp=sharing
 
 ### Architecture change report
 
