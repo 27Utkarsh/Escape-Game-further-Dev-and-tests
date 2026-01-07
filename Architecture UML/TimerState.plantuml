@@ -1,0 +1,10 @@
+@startuml TimerState
+
+[*] --> Idle
+
+state Idle : timeRemaining > 0
+
+Idle --> Running : start
+Running --> Stopped : stop
+
+@enduml

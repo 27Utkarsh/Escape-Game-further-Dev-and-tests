@@ -1,0 +1,30 @@
+@startuml GameState
+
+[*] --> Initialising
+
+state Initialising : entry / create
+
+Initialising --> MenuActive : setScreen(MenuScreen)
+
+state MenuActive : CurrentScreen = MenuScreen
+state FirstScreenActive : CurrentScreen = FirstScreen
+state SettingsScreen : CurrentScreen = SettingsScreen
+state WinScreen : CurrentScreen = WinScreen
+state LoseScreen : CurrentScreen = LoseScreen
+state LeaderBoardScreen : CurrentScreen = LeaderBoardScreen
+
+MenuActive --> FirstScreenActive : setScreen(FirstScreen)
+MenuActive --> SettingsScreen : setScreen(SettingsScreen)
+MenuActive --> LeaderBoardScreen : setScreen(LeaderBoardScreen)
+
+SettingsScreen --> MenuActive : setScreen(MenuScreen)
+
+LeaderBoardScreen --> MenuActive : setScreen(MenuScreen)
+
+FirstScreenActive --> WinScreen : setScreen(WinScreen)
+FirstScreenActive --> LoseScreen : setScreen(LoseScreen)
+
+WinScreen --> MenuActive : setScreen(MenuScreen)
+LoseScreen --> MenuActive : setScreen(MenuScreen)
+
+@enduml

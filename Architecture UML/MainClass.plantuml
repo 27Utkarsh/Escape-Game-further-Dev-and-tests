@@ -1,0 +1,108 @@
+@startuml MainClass
+
+class Main {
+  +create()
+  +setScreen(screen)
+  +dispose()
+}
+
+class MenuScreen {
+  -game : Main
+  +show()
+  +render()
+  +handleInput()
+  +dispose()
+}
+
+class SettingsScreen {
+  -volumeLevel : float
+  +toggleAudio()
+  +render()
+  +dispose()
+}
+
+class FirstScreen {
+  -player : Player
+  -collision : Collision
+  -events : Events
+  -timeRemaining : float
+  +show()
+  +update()
+  +render()
+  +startTimer()
+  +stopTimer()
+  +isTimeUp() : boolean
+  +dispose()
+}
+
+class LeaderBoardScreen {
+  +prefs : Preferences
+  -topNames : string[]
+  -topScores : float[]
+  +getScores()
+  +sortScores()
+}
+
+class AchievementManager {
+  +prefs : Preferences
+  +achievements : string[]
+  +isUnlocked()
+  +unlockAchievement()
+  +isValidKey()
+  +reset()
+}
+
+class LoseScreen {
+  -reason : string
+  +showResult()
+  +handleInput()
+}
+
+class WinScreen {
+  -score : int
+  +showResults()
+  +handleInput()
+}
+
+class Player {
+  -position : Vector2
+  -speed : float
+  +move()
+  +getBounds()
+}
+
+class Collision {
+  +checkWall(player : Player) : boolean
+  +checkExit(player : Player) : boolean
+}
+
+class Events {
+  -eventList : list
+  +triggerEvent()
+  +applyEffect()
+  +updateCounters()
+}
+
+Main *-- MenuScreen
+Main *-- SettingsScreen
+Main *-- FirstScreen
+Main *-- LoseScreen
+Main *-- WinScreen
+Main *-- LeaderBoardScreen
+
+FirstScreen *-- Player
+FirstScreen *-- Collision
+FirstScreen *-- Events
+
+Player ..> Collision
+Player ..> Events
+
+FirstScreen ..> LoseScreen
+FirstScreen ..> WinScreen
+FirstScreen ..> AchievementManager
+
+AchievementManager ..> FirstScreen
+
+WinScreen ..> LeaderBoardScreen
+
+@enduml

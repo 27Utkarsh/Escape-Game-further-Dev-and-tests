@@ -1,0 +1,60 @@
+@startuml MainSequence
+title Main Sequence
+
+actor GameEngine
+participant FirstScreen
+participant Player
+participant Enemy
+participant Key
+participant EnergyDrink
+participant Renderer
+participant Rectangle
+participant Collision
+
+GameEngine -> FirstScreen : render()
+
+loop Every frame
+    FirstScreen -> Player : playerInput(key, energyDrink)
+    FirstScreen -> Enemy : update(player)
+
+    Enemy -> Collision : collisionCheck(tempPlayer)
+    Collision --> Enemy : collisionDetected (true/false)
+
+    alt no collision
+        Enemy -> Enemy : update position
+    end
+
+    FirstScreen -> Renderer : render(spriteBatch, stateTime)
+    Renderer --> FirstScreen : drawn
+
+    FirstScreen -> Enemy : render(spriteBatch)
+    Enemy --> FirstScreen : drawn
+
+    FirstScreen -> Key : checkCollected(player)
+    Key --> FirstScreen : update status
+
+    FirstScreen -> Renderer : render(spriteBatch)
+
+    FirstScreen -> EnergyDrink : checkDrank(player)
+    EnergyDrink --> FirstScreen : update status
+
+    FirstScreen -> Renderer : render(spriteBatch)
+
+    FirstScreen -> Collision : checkCollided(player)
+    Collision -> Rectangle : new Rectangle()
+    Rectangle --> Collision : playerBounds
+
+    alt bounds overlap AND cooldown <= 0
+        Collision -> Collision : increment badEvent
+        Collision -> Collision : reset cooldown
+    end
+
+    Collision --> FirstScreen : return boolean
+
+    FirstScreen -> Renderer : setView(camera)
+    FirstScreen -> Renderer : render()
+end
+
+FirstScreen --> GameEngine : frame complete
+
+@enduml

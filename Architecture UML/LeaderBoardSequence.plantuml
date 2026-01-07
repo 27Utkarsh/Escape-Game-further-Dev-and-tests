@@ -1,0 +1,21 @@
+@startuml LeaderBoardSequence
+title LeaderBoard Sequence
+
+actor Player
+Participant WinScreen
+Participant MainMenu
+Participant LeaderBoardScreen
+Participant DataSaveFile
+
+Player -> WinScreen : Player wins
+WinScreen -> WinScreen : calcScore()
+Player -> WinScreen : Enters name
+Player -> MainMenu : setScreen(MainMenu)
+WinScreen -> DataSaveFile : addScore()
+Player -> LeaderBoardScreen : setScreen(LeaderBoardScreen)
+LeaderBoardScreen -> DataSaveFile : getScores()
+DataSaveFile -> LeaderBoardScreen : Returns scores
+LeaderBoardScreen -> LeaderBoardScreen : sortScores()
+LeaderBoardScreen -> LeaderBoardScreen : displayTopScores()
+
+@enduml

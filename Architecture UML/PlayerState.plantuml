@@ -1,0 +1,17 @@
+@startuml PlayerState
+
+[*] --> Idle
+
+state Idle : isMoving = false
+state Moving : isMoving = true\nupdate player X/Y
+state InteractingWithDoor : doorInFront = true\nopen = true
+
+Idle --> Moving : Arrow key is pressed
+Moving --> Idle : No arrow keys pressed
+
+Moving --> InteractingWithDoor : Arrow key is pressed\n[doorInFront]\n[key_collected]\nE pressed
+
+InteractingWithDoor --> Moving : Arrow key is pressed
+InteractingWithDoor --> Idle : No arrow keys pressed
+
+@enduml
