@@ -73,7 +73,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: game-${{ matrix.os }}
-        path: lwjgl3/build/libs/*-all.jar
+        path: lwjgl3/build/libs/*.jar
         retention-days: 7
 
   release:
