@@ -26,7 +26,7 @@ allprojects {
     toolVersion = '10.12.0' // Version compatible with Java 17
     configFile = rootProject.file("config/checkstyle/checkstyle.xml")
     ignoreFailures = true
-    }
+  }
 
   // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
   idea {
