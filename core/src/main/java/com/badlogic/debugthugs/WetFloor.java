@@ -74,7 +74,7 @@ public class WetFloor {
      */
 
     /**
-     * Create a DuoAuth instance for testing.
+     * Create a WetFloor instance for testing.
      * 
      * Doesn't initialise the sprite so that doesn't interfere with tests.
      * 
