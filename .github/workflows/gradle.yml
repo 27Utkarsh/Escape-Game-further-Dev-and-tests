@@ -46,6 +46,17 @@ jobs:
           ./gradlew build jacocoTestReport --no-daemon --info
         fi
 
+    - name: Upload Checkstyle report
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkstyle-report
+        path: |
+            core/build/reports/checkstyle/
+            headless/build/reports/checkstyle/
+            lwjgl3/build/reports/checkstyle/
+        retention-days: 7
+
     - name: Upload JaCoCo coverage report
       if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
@@ -73,29 +84,13 @@ jobs:
       contents: write
     
     steps:
-    - name: Download Ubuntu artifact
+    - name: Download all artifacts
       uses: actions/download-artifact@v4
-      with:
-        name: game-ubuntu-latest
-        path: ./artifacts/ubuntu
-
-    - name: Download Windows artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: game-windows-latest
-        path: ./artifacts/windows
-
-    - name: Download MacOS artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: game-macos-latest
-        path: ./artifacts/macos
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./artifacts/ubuntu/*.jar
-          ./artifacts/windows/*.jar
-          ./artifacts/macos/*.jar
-        body: |
+          game-ubuntu-latest.jar/*
+          game-windows-latest.jar/*
+          game-macos-latest.jar/*
