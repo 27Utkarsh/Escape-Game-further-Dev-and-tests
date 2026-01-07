@@ -16,6 +16,10 @@ https://docs.google.com/document/d/1jLoApnNJB3-ormqYDGYh3-WOV1HLaU_ZuzgMFFiD0Vk/
 
 https://docs.google.com/document/d/1SwAUDWvMys3Ymi6G8XzDZHtheWdm7a6JHDvf4jfB0zE/edit?usp=sharing
 
+# Final Change report
+
+https://docs.google.com/document/d/1eQe_Nrh2DwR3i76Lp_ObJevOpHRL7M5liQ6-8QnyiYk/edit?usp=sharing
+
 ## Testing
 
 ### Software Testing Report
