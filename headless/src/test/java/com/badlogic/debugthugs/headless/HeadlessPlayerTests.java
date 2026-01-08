@@ -196,4 +196,52 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         }
         assertEquals(player.playerX, 10f, 0.0001f);
     }
+
+    /**
+     * Checks that the player is teleported to a bus stop when interacting with a
+     * bus.
+     */
+    @Test
+    void testBusTeleportation() {
+        FakeInput input = new FakeInput();
+        Gdx.input = input;
+
+        // Setup objects
+        EnergyDrink drink = new EnergyDrink(100f, 100f, false);
+        Key key = new Key(false);
+        DuoAuth duoAuth = new DuoAuth(false, false);
+        WetFloor wetFloor = new WetFloor(false, false);
+
+        // Setup Bus at player location
+        Bus bus = new Bus(player.playerX, player.playerY);
+
+        // Setup BusStop at a different location
+        float stopX = 500f;
+        float stopY = 600f;
+        String stopName = "Destination";
+
+        BusStop busStop = new BusStop(false, stopName);
+
+        busStop.bounds.x = stopX;
+        busStop.bounds.y = stopY;
+
+        java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
+
+        // Verify initial position
+        assertEquals(10f, player.playerX, 0.001f);
+        assertEquals(20f, player.playerY, 0.001f);
+
+        // Press E to interact
+        input.press(Input.Keys.E);
+
+        // Run input logic
+        player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
+
+        // Verify teleportation
+        assertEquals(stopX, player.playerX, 0.001f, "X cords wrong");
+        assertEquals(stopY, player.playerY, 0.001f, "Y cords wrong");
+        assertTrue(player.needsBusMessage, "no bus message");
+        assertEquals("You took a bus to " + stopName, player.lastBusMessage, "wrong message");
+        assertTrue(player.canRideBus, "not able to ride bus");
+    }
 }
