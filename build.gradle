@@ -73,7 +73,7 @@ configure(subprojects) {
     }
   }
 
-  // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
+  // From [https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/](https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/)
   // The article can be helpful when using assets.txt in your project.
   tasks.register('generateAssetList') {
     inputs.dir("${project.rootDir}/assets/")
@@ -116,6 +116,7 @@ subprojects {
 // Task to create JaCoCo report across all subprojects
 tasks.register('jacocoRootReport', JacocoReport) {
   dependsOn(subprojects.test, subprojects.jacocoTestReport)
+  dependsOn(':headless:startScripts', ':lwjgl3:startScripts')
 
   executionData.setFrom(
     fileTree(project.rootDir) {
