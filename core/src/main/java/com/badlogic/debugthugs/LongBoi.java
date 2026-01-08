@@ -13,8 +13,8 @@ public class LongBoi {
     public boolean active = true;
     public float eventTime = 0f;
     public float longX, bushX, bushY;
+    private boolean testMode;
 
-    private boolean testMode = false;
 
     Animation<TextureRegion> longBush;
     // triggered is used to track if the player has triggered the event
@@ -68,13 +68,15 @@ public class LongBoi {
          *once eventTime >= 0.7 the bushAnimation is locked to its final frame 
          */
     }
+    public Boolean playerTouched(Player player){
+        return bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight));
+    }
 
     public void checkTriggered(Player player) {
-        if (testMode) return;
 
-        if (!triggered && bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+            if (!triggered && playerTouched(player)) {
             player.hiddenEvent += 1;
-            triggered = true;
+            trigger();
             eventTime = 0f;
             AchievementManager.get().unlock("Quack");
             /**
@@ -86,7 +88,21 @@ public class LongBoi {
     }
 
     public void update(float delta) {
-        if (testMode) return;
+        if (testMode) {
+            if (triggered) {
+                eventTime += delta;
+                if (eventTime >= 3f) {
+                    active = false;
+                    eventTime = 0f;
+                }
+
+            }
+            else if(!active){
+                eventTime += delta;
+            }
+            return;
+
+        }   
 
         if (triggered) {
             longBoiSprite.translateX(-40 * delta);
@@ -98,7 +114,10 @@ public class LongBoi {
         }
         else if(!active){
             eventTime += delta;
+            
         }
+        
+    
     }
     /**
      * @param delta is passed from the firstScreen and tracks the passing of time.
@@ -111,8 +130,18 @@ public class LongBoi {
     /**
      * Create a test instance for LongBoi.
      */
-    public LongBoi()
-    {
-        testMode = true;
+    public LongBoi(float x, float y, boolean triggered, boolean active) {
+      
+        this.testMode = true;
+        this.longX = x;
+        this.bushX = x - 120f;
+        this.triggered = triggered;
+        this.active = active;
+        bounds = new Rectangle(x, y, 1, 1);
+    
     }
+    void trigger(){
+        triggered = true;
+    }
+
 }    

@@ -265,7 +265,6 @@ public class FirstScreen implements Screen {
         this.enemy = new Enemy(enemyX, enemyY);
         this.exam = new Exam(game);
         this.duck = new Duck();
-        this.longBoi = new LongBoi();
         this.coin = null;
         this.helper = null;
         this.paused = false;
