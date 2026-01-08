@@ -38,7 +38,9 @@ test {
     finalizedBy jacocoTestReport
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: test) {
+jacocoTestReport {
+    dependsOn test 
+
     def coreProject = project(':core')
 
     additionalSourceDirs.from(coreProject.sourceSets.main.allSource.srcDirs)
