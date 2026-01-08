@@ -46,7 +46,7 @@ public class FirstScreenTest extends AbstractHeadlessTest {
         busStop = new BusStop(false, "Test");
         busStops = java.util.Collections.singletonList(busStop);
         duoAuth = new DuoAuth(false, false);
-        wetFloor = new WetFloor(false, false);
+        wetFloor = new WetFloor(0,0,false, false);
         bus = new Bus(0, 0);
     }
 
