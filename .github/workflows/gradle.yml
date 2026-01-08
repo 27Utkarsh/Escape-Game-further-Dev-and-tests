@@ -47,10 +47,9 @@ jobs:
         fi
 
     - name: Upload Checkstyle report
-      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: checkstyle-report
+        name: checkstyle-report-${{ matrix.os }}
         path: |
             core/build/reports/checkstyle/
             headless/build/reports/checkstyle/
@@ -58,10 +57,9 @@ jobs:
         retention-days: 7
 
     - name: Upload JaCoCo coverage report
-      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report
+        name: jacoco-report-${{ matrix.os }}
         path: headless/build/reports/jacoco/test/html/
         retention-days: 7
 
