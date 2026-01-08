@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.badlogic.debugthugs.Bus;
+import com.badlogic.debugthugs.BusStop;
 import com.badlogic.debugthugs.DuoAuth;
 import com.badlogic.debugthugs.EnergyDrink;
 import com.badlogic.debugthugs.Key;
 import com.badlogic.debugthugs.Player;
 import com.badlogic.debugthugs.Player.State;
-import com.badlogic.debugthugs.Bus;
-import com.badlogic.debugthugs.BusStop;
 import com.badlogic.debugthugs.WetFloor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -45,7 +45,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.speed, 128f, 0.0001f);
@@ -65,7 +65,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);
@@ -89,7 +89,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);
@@ -113,7 +113,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerY, 20f, 0.0001f);
@@ -137,7 +137,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerY, 20f, 0.0001f);
@@ -162,7 +162,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(true, true);
-        WetFloor wetFloor = new WetFloor(false, false);
+        WetFloor wetFloor = new WetFloor(0,0,false, false);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);
@@ -186,7 +186,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         BusStop busStop = new BusStop(false, "Test");
         java.util.List<BusStop> busStops = java.util.Collections.singletonList(busStop);
         DuoAuth duoAuth = new DuoAuth(false, false);
-        WetFloor wetFloor = new WetFloor(true, true);
+        WetFloor wetFloor = new WetFloor(0,0,true, true);
         Bus bus = new Bus(0, 0);
 
         assertEquals(player.playerX, 10f, 0.0001f);

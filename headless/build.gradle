@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'jacoco'
 }
 
 java.sourceCompatibility = 17
@@ -10,6 +9,7 @@ java.targetCompatibility = 17
 mainClassName = 'com.badlogic.debugthugs.headless.HeadlessLauncher'
 application.setMainClass(mainClassName)
 
+// Include assets
 sourceSets.test.resources.srcDirs += [ rootProject.file('assets').path ]
 
 dependencies {
@@ -29,29 +29,13 @@ tasks.withType(Test) {
     workingDir = project.rootDir
 }
 
+
 test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
         showStandardStreams = true
     }
-    finalizedBy jacocoTestReport
 }
 
-jacocoTestReport {
-    dependsOn test 
-
-    def coreProject = project(':core')
-
-    additionalSourceDirs.from(coreProject.sourceSets.main.allSource.srcDirs)
-    additionalClassDirs.from(coreProject.sourceSets.main.output)
-    
-    sourceDirectories.from(files(sourceSets.main.allSource.srcDirs))
-    classDirectories.from(files(sourceSets.main.output))
-    executionData.from(files("${buildDir}/jacoco/test.exec"))
-
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
+// TODO: Produce a runnable JAR

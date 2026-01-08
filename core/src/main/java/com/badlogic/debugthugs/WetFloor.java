@@ -12,7 +12,6 @@ public class WetFloor {
     public boolean triggered;
     public boolean active;
     public float timer = 0f;
-    private boolean testMode = false;
 
     /**
      * 
@@ -34,17 +33,18 @@ public class WetFloor {
             wetFloorSprite.draw(sb); 
         }
     }
+    public Boolean playerTouched(Player player){
+        return bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight));
+    }
 
     public void checkTriggered(Player player) {
-        if (testMode) return;
 
-        if (!triggered && bounds
-                .overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+        if (!triggered && playerTouched(player)) {
             player.badEvent += 1;
             player.playerFall();
-            triggered = true;
-            active = true;
+            trigger();
             timer = 1.1f;
+            activate(true);
         }
         /**
          * when player overlaps the bounds;
@@ -63,7 +63,7 @@ public class WetFloor {
             timer -= delta;
             if (timer <= 0) {
                 active = false;
-                AchievementManager.get().unlock("Watch Your Step");
+                AchievementManager.get().unlock("WATCH_YOUR_STEP");
             }
         }
     }
@@ -81,10 +81,20 @@ public class WetFloor {
      * @param triggered Initial value for triggered.
      * @param active Initial value for active.
      */
-    public WetFloor(boolean triggered, boolean active)
+    public WetFloor(float x, float y ,boolean triggered, boolean active)
     {
-        testMode = true;
         this.triggered = triggered;
         this.active = active;
+        bounds = new Rectangle(x, y, 8, 8);
     }
+
+    void trigger(){
+        triggered = true;
+    }
+
+
+    void activate(boolean bool){
+        active = bool;
+    }
+
 }
