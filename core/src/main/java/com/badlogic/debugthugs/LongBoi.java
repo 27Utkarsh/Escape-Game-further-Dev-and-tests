@@ -78,7 +78,7 @@ public class LongBoi {
             player.hiddenEvent += 1;
             trigger();
             eventTime = 0f;
-            AchievementManager.get().unlock("Quack");
+            AchievementManager.get().unlock("QUACK");
             /**
              * checks if the player has entered the bounds and changes triggered to true,
              * this prevents the event from incrementing hiddenEvent multiple times.

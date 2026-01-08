@@ -42,7 +42,7 @@ public class WetFloorTest extends AbstractHeadlessTest {
      */
     @Test
     public void WetFloorNotEncountered() {
-        WetFloor testWetFloor = new WetFloor(10,10,false,false);
+        WetFloor testWetFloor = new WetFloor(100,100,false,false);
         testWetFloor.checkTriggered(testPlayer);
 
         assertFalse(testWetFloor.triggered,"triggered == false");
@@ -100,6 +100,7 @@ public class WetFloorTest extends AbstractHeadlessTest {
 
         WetFloor testWetFloor = new WetFloor(0, 0, false,false);
         testWetFloor.checkTriggered(testPlayer);
+        testWetFloor.update(1.1f);
 
         assertTrue(testAchievementManager.isUnlocked("WATCH_YOUR_STEP"));
     }

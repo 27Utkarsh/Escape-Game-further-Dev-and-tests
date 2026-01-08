@@ -41,7 +41,7 @@ public class LongBoiTest extends AbstractHeadlessTest {
      */
     @Test
     public void LongBoiNotEncountered() {
-        LongBoi testLongBoi = new LongBoi(10,10,false,true);
+        LongBoi testLongBoi = new LongBoi(100,100,false,true);
         testLongBoi.checkTriggered(testPlayer);
 
         assertFalse(testLongBoi.triggered,"triggered == false");

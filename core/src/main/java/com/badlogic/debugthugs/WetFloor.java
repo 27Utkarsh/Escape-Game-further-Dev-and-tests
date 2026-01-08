@@ -63,7 +63,7 @@ public class WetFloor {
             timer -= delta;
             if (timer <= 0) {
                 active = false;
-                AchievementManager.get().unlock("Watch Your Step");
+                AchievementManager.get().unlock("WATCH_YOUR_STEP");
             }
         }
     }
