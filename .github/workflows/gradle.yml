@@ -41,28 +41,35 @@ jobs:
       run: |
         chmod +x gradlew
         if [ "$RUNNER_OS" == "Linux" ]; then
-          xvfb-run --auto-servernum ./gradlew build jacocoTestReport --no-daemon --info
+          xvfb-run --auto-servernum ./gradlew build jacocoTestReport jacocoRootReport --no-daemon --info
         else
-          ./gradlew build jacocoTestReport --no-daemon --info
+          ./gradlew build jacocoTestReport jacocoRootReport --no-daemon --info
         fi
 
     - name: Upload Checkstyle report
-      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
-        name: checkstyle-report
+        name: checkstyle-report-${{ matrix.os }}
         path: |
             core/build/reports/checkstyle/
             headless/build/reports/checkstyle/
             lwjgl3/build/reports/checkstyle/
         retention-days: 7
 
-    - name: Upload JaCoCo coverage report
-      if: runner.os == 'Linux'
+    - name: Upload JaCoCo coverage report (per module)
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report
-        path: headless/build/reports/jacoco/test/html/
+        name: jacoco-report-modules-${{ matrix.os }}
+        path: |
+          core/build/reports/jacoco/test/html/
+          headless/build/reports/jacoco/test/html/
+        retention-days: 7
+
+    - name: Upload JaCoCo combined coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-combined-${{ matrix.os }}
+        path: build/reports/jacoco/jacocoRootReport/html/
         retention-days: 7
 
     - name: Create distribution JAR
@@ -91,6 +98,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          game-ubuntu-latest.jar/*
-          game-windows-latest.jar/*
-          game-macos-latest.jar/*
+          game-ubuntu-latest/*
+          game-windows-latest/*
+          game-macos-latest/*

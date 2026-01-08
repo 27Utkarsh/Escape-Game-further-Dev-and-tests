@@ -31,7 +31,7 @@ public class AchievementManager {
         "TELEPORTED",
         "DUO_AUTHENTICATED",
         "WATCH_YOUR_STEP",
-	    "Quack",
+	    "QUACK",
         "DUCK_OF_RESETTING",
         "HELPER_FOUND"
     };

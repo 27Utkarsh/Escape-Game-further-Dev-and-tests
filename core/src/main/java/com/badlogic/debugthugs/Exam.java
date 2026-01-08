@@ -111,6 +111,27 @@ public class Exam {
         bounds = new Rectangle(1184, 1500, 50, 50);
         overlayTimer = 0f;
     }
+    
+    public Exam(float x, float y, float patrolDistance) 
+    {
+        testMode = true;
+        this.x = x;
+        this.y = y;
+        this.game = null;
+        this.examSprite = null;
+        this.overlayTexture = null;
+
+        this.bounds = new Rectangle(x, y, 50, 50);
+        this.patrolStartY = y;
+        this.patrolEndY = y + patrolDistance;
+
+        this.speed = 60f;
+        this.direction = 1;
+        this.examed = false;
+        this.overlayTimer = 0f;
+        this.testMode = false;
+    }
 }
+
 
 
