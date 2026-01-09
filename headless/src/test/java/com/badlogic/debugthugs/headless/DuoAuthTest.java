@@ -1,18 +1,16 @@
 package com.badlogic.debugthugs.headless;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.badlogic.debugthugs.AchievementManager;
 import com.badlogic.debugthugs.DuoAuth;
@@ -54,8 +52,8 @@ public class DuoAuthTest extends AbstractHeadlessTest {
     @Test
     public void testDuoAuthInitialization() {
         DuoAuth duoAuth = new DuoAuth(false, false);
-        assertFalse(duoAuth.triggered, "Should not be triggered initially");
-        assertFalse(duoAuth.active, "Should not be active initially");
+        assertFalse(duoAuth.triggered, "triggered initially");
+        assertFalse(duoAuth.active, "active initially");
         assertEquals(0f, duoAuth.timer, 0.001f, "Timer should start at 0");
     }
 
@@ -80,14 +78,12 @@ public class DuoAuthTest extends AbstractHeadlessTest {
         dummyPlayer.playerWidth = 32f;
         dummyPlayer.playerHeight = 32f;
 
-        // Act
         duoAuth.checkTriggered(dummyPlayer);
 
-        // Assert
         assertTrue(duoAuth.triggered, "Should be triggered after collision");
         assertTrue(duoAuth.active, "Should be active after collision");
-        assertEquals(10f, duoAuth.timer, 0.001f, "Timer should be set to 10s");
-        assertEquals(1, dummyPlayer.badEvent, "Player badEvent should be incremented");
+        assertEquals(10f, duoAuth.timer, 0.001f, "Timer not set to 10s");
+        assertEquals(1, dummyPlayer.badEvent, "Player badEvent not incremented");
     }
 
     @Test
@@ -107,11 +103,9 @@ public class DuoAuthTest extends AbstractHeadlessTest {
         dummyPlayer.playerX = 0f;
         dummyPlayer.playerY = 0f;
 
-        // Act
         duoAuth.checkTriggered(dummyPlayer);
 
-        // Assert
-        assertFalse(duoAuth.triggered, "Should not be triggered without collision");
+        assertFalse(duoAuth.triggered, "triggered without collision");
     }
 
     @Test
@@ -132,7 +126,7 @@ public class DuoAuthTest extends AbstractHeadlessTest {
 
         duoAuth.update(0.6f);
 
-        assertFalse(duoAuth.active, "Should deactivate when timer expires");
+        assertFalse(duoAuth.active, "didnt deactivate when timer expires");
         verify(mockAchievementManager, times(1)).unlock("DUO_AUTHENTICATED");
     }
 }
