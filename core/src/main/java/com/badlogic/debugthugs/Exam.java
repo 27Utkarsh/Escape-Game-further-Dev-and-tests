@@ -24,7 +24,7 @@ public class Exam {
     private boolean examed = false;
 
     private boolean testMode = false;
-    
+
 
     public Exam(Texture texture1, Texture texture2, float x, float y, float patrolDistance, Main game) {
 
@@ -32,14 +32,19 @@ public class Exam {
         this.y = y;
         this.game = game;
 
-        examSprite = new Sprite(texture1);
+        if (com.badlogic.gdx.Gdx.gl != null) {
+            examSprite = new Sprite(texture1);
+        } else {
+            examSprite = new Sprite();
+            examSprite.setSize(50f, 50f);
+        }
         examSprite.setPosition(x, y);
         examSprite.setSize(50, 50);
 
         overlayTexture = texture2;
 
         bounds = new Rectangle(1184, 1500, 50, 50);
-        
+
         // Patrol from y to y + patrolDistance
         patrolStartY = 1000;
         patrolEndY = 1000 + patrolDistance;
@@ -111,7 +116,7 @@ public class Exam {
         bounds = new Rectangle(1184, 1500, 50, 50);
         overlayTimer = 0f;
     }
-    
+
     public Exam(float x, float y, float patrolDistance) 
     {
         testMode = true;
@@ -132,6 +137,3 @@ public class Exam {
         this.testMode = false;
     }
 }
-
-
-
