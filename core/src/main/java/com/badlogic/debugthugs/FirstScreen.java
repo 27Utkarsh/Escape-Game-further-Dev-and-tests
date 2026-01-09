@@ -1,7 +1,8 @@
 package com.badlogic.debugthugs;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -287,6 +288,7 @@ public class FirstScreen implements Screen {
         this.coin = null;
         this.helper = null;
         this.paused = false;
+        this.longBoi = new LongBoi(700, 700, false, false);
 
         this.achievements = AchievementManager.get();
     }
