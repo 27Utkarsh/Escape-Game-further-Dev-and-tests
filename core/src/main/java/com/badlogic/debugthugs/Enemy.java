@@ -11,30 +11,27 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Enemy {
-
     public Sprite enemySprite;
     public Rectangle bounds;
     public int timesCaught;
-
-    float x;
-    float y;
-    float speed = 90f;
-    float cooldown = 0f;
-    float interval = 2f;
+    public float enemyX;
+    public float enemyY;
+    public float speed = 90f;
+    public float cooldown = 0f;
+    public float interval = 2f;
     Pathfinding pathfinder;
     List<Vector2> path = null;
     int pathIndex = 0;
     float repathTimer = 0f;
     float repathInterval = 0.5f;
-
     private ShapeRenderer shapeRenderer;
     Main game;
     private boolean testMode = false;
 
     public Enemy(Texture texture, float x, float y, Pathfinding pathfinder, Main game) {
         enemySprite = new Sprite(texture);
-        this.x = x;
-        this.y = y;
+        this.enemyX = x;
+        this.enemyY = y;
         this.pathfinder = pathfinder;
         enemySprite.setSize(32, 32);
         bounds = new Rectangle(x, y, 32, 32);
@@ -46,12 +43,12 @@ public class Enemy {
         if (testMode) {
             return;
         }
-        float delta = Gdx.graphics.getDeltaTime();
 
+        float delta = Gdx.graphics.getDeltaTime();
         repathTimer -= delta;
         if (repathTimer <= 0) {
             repathTimer = repathInterval;
-            path = pathfinder.findPath(x, y, player.playerX, player.playerY);
+            path = pathfinder.findPath(enemyX, enemyY, player.playerX, player.playerY);
             if (path != null && path.size() > 1) {
                 pathIndex = 1;
             } else {
@@ -68,13 +65,11 @@ public class Enemy {
         }
     }
 
-    /**
-     * Enemy uses A* pathfinding to follow the shortest path towards the player.
-     */
+    // Enemy uses A* pathfinding to follow the shortest path towards the player.
     private void movePathfinding(Player player, float delta) {
         Vector2 target = path.get(pathIndex);
-        float distX = target.x - x;
-        float distY = target.y - y;
+        float distX = target.x - enemyX;
+        float distY = target.y - enemyY;
         float distance = (float) Math.sqrt(distX * distX + distY * distY);
 
         if (distance < 2f) {
@@ -82,12 +77,13 @@ public class Enemy {
         } else {
             float nx = distX / distance;
             float ny = distY / distance;
-            float nextX = x + nx * speed * delta;
-            float nextY = y + ny * speed * delta;
-            x = nextX;
-            y = nextY;
-            enemySprite.setPosition(x, y);
-            bounds.setPosition(x, y);
+            float nextX = enemyX + nx * speed * delta;
+            float nextY = enemyY + ny * speed * delta;
+
+            enemyX = nextX;
+            enemyY = nextY;
+            enemySprite.setPosition(enemyX, enemyY);
+            bounds.setPosition(enemyX, enemyY);
         }
     }
 
@@ -103,6 +99,7 @@ public class Enemy {
         if (path == null) {
             return;
         }
+
         shapeRenderer.setProjectionMatrix(game.worldCamera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -124,8 +121,8 @@ public class Enemy {
             if (cooldown <= 0f) {
                 if (timesCaught < 5) {
                     timesCaught++;
-                    player.badEvent += 1;
                 }
+                player.badEvent += 1;
                 cooldown = interval;
                 AchievementManager.get().unlock("ENCOUTERED_DEAN");
                 return true;
@@ -143,15 +140,14 @@ public class Enemy {
     }
 
     /**
-     * Create an Enemy instance for testing.
-     * Doesn't initialise the sprite so that doesn't interfere with tests.
+     * Create an Enemy instance for testing. Doesnt initialise the sprite so that doesnt interfere with tests.
      * @param x the initial x position for the enemy.
      * @param y the initial y position for the enemy.
      */
     public Enemy(float x, float y) {
         this.testMode = true;
-        this.x = x;
-        this.y = y;
+        this.enemyX = x;
+        this.enemyY = y;
         this.speed = 0f;
         this.interval = 2f;
         this.cooldown = 0f;
