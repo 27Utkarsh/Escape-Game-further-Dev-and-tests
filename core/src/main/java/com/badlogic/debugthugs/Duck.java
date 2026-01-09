@@ -25,13 +25,18 @@ public class Duck {
         this.x = x;
         this.y = y;
 
-        duckSprite = new Sprite(texture);
+        if (com.badlogic.gdx.Gdx.gl != null) {
+            duckSprite = new Sprite(texture);
+        } else {
+            duckSprite = new Sprite();
+            duckSprite.setSize(50f, 55f);
+        }
         duckSprite.setPosition(x, y);
         duckSprite.setSize(50, 55);
 
         bounds = new Rectangle(680, 520, 50, 55);
-        
-        
+
+
         patrolStartX = 670;
         patrolEndX = 670 + patrolDistance;
     }
