@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
-
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -30,9 +29,9 @@ public class Pathfinding {
     /**
      * Node represents a tile in the A* graph.
      * x,y are tile coords.
-     * g cost: distance from start.
-     * h cost: estimate (heuristic) of how far the goal is.
-     * f cost = g + h: total estimated cost of traveling through this tile to the goal.
+     * g = cost/distance from start.
+     * h = cost estimate (heuristic) of how far the goal is.
+     * f = cost (g+h) = total estimated cost of traveling through this tile to the goal.
      * parent is used to reconstruct the path when the goal is reached.
      */
     private static class Node {
@@ -49,9 +48,10 @@ public class Pathfinding {
 
         /**
          * Returns the A* priority.
+         *
          * @return g (distance from start) + h (heuristic).
          */
-        public float f() {
+        public float getF() {
             return g + h;
         }
     }
@@ -59,6 +59,7 @@ public class Pathfinding {
     /**
      * Returns whether a tile is walkable (i.e. no collisionLayer tiles present).
      * Also checks whether the tile coords are within the bounds of the map.
+     *
      * @param tx x-pos of the tile position to check.
      * @param ty y-pos of the tile position to check.
      * @return whether tile is walkable
@@ -71,13 +72,14 @@ public class Pathfinding {
     }
 
     /**
-     * Returns the heuristic between two points, using the octile distance (to account for diagonals).
+     * Returns the heuristic between two points, using the octile distance to account for diagonals.
      */
     private float heuristic(int ax, int ay, int bx, int by) {
         float dx = Math.abs(ax - bx);
         float dy = Math.abs(ay - by);
         float min = Math.min(dx, dy);
         float max = Math.max(dx, dy);
+        // 1.41421356 is approx sqrt(2)
         return 1.41421356f * min + (max - min);
     }
 
@@ -88,13 +90,13 @@ public class Pathfinding {
         int goalX = (int) (tx / tileWidth);
         int goalY = (int) (ty / tileHeight);
 
-        //Checks whether there is a walkable tile at the goal.
+        // Checks whether there is a walkable tile at the goal.
         if (!isWalkable(goalX, goalY)) {
             return null;
         }
 
-        // Min-heap - nodes are ordered by f cost value.
-        PriorityQueue<Node> open = new PriorityQueue<>(Comparator.comparingDouble(Node::f));
+        // Min-heap - nodes are ordered by f-cost value.
+        PriorityQueue<Node> open = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
         boolean[][] closed = new boolean[mapCols][mapRows];
         Node[][] all = new Node[mapCols][mapRows];
 
@@ -105,10 +107,8 @@ public class Pathfinding {
         open.add(start);
 
         final int[][] dirs = {
-            { 1, 0}, {-1, 0},
-            { 0, 1}, { 0,-1},
-            { 1, 1}, { 1,-1},
-            {-1, 1}, {-1,-1}
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1}, // Orthogonal
+            {1, 1}, {1, -1}, {-1, 1}, {-1, -1} // Diagonal
         };
 
         while (!open.isEmpty()) {
@@ -135,9 +135,10 @@ public class Pathfinding {
                 int nx = current.x + d[0];
                 int ny = current.y + d[1];
 
-                if (d[0] != 0 && d[1] != 0) {
-                    // diagonal movement
-                    if (!isWalkable(current.x + d[0], current.y) || !isWalkable(current.x, current.y + d[1])) {
+                if (d[0] != 0 && d[1] != 0) { // diagonal movement
+                    // if either adjacent orthogonal tile is blocked,
+                    if (!isWalkable(current.x + d[0], current.y)
+                            || !isWalkable(current.x, current.y + d[1])) {
                         continue; // disallow diagonal movement as corner is blocked.
                     }
                 }
@@ -149,7 +150,7 @@ public class Pathfinding {
                     continue;
                 }
 
-                float moveCost = (d[0] == 0 || d[1] == 0) ? 1f : 1.41421356f;
+                float moveCost = (d[0] != 0 && d[1] != 0) ? 1.41421356f : 1f;
                 float tentativeG = current.g + moveCost;
 
                 Node neighbour = all[nx][ny];
@@ -169,6 +170,7 @@ public class Pathfinding {
                 }
             }
         }
+
         return null;
     }
 
@@ -181,8 +183,9 @@ public class Pathfinding {
             Vector2 first = path.get(0);
             float dx = first.x - sx;
             float dy = first.y - sy;
+
             // If path point closer than half a tile, remove it
-            if (dx * dx + dy * dy < (tileWidth * tileWidth) * 0.25f) {
+            if (dx * dx + dy * dy < (tileWidth * tileWidth * 0.25f)) {
                 path.remove(0);
             } else {
                 break;
