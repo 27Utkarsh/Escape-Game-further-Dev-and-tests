@@ -51,7 +51,7 @@ public class Exam {
             return;
         }
 
-        // Move horizontally according to current direction
+        // Move vertically according to current direction
         examY += speed * direction * delta;
 
         // Reverse direction at patrol bounds
@@ -66,8 +66,8 @@ public class Exam {
         // Apply position to sprite & bounds
         if (examSprite != null) {
             examSprite.setPosition(examX, examY);
-            bounds.setPosition(examX, examY);
         }
+        bounds.setPosition(examX, examY);
 
         overlayTimer -= delta;
     }
@@ -109,7 +109,6 @@ public class Exam {
     }
 
     public Exam(float startX, float startY, float patrolDistance) {
-        testMode = true;
         this.examX = startX;
         this.examY = startY;
         this.game = null;
