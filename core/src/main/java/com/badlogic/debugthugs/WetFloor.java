@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class WetFloor {
-    
     public Sprite wetFloorSprite;
     public Rectangle bounds;
     public boolean triggered;
@@ -14,48 +13,39 @@ public class WetFloor {
     public float timer = 0f;
 
     /**
-     * 
      * @param texture stores the texture that will be used for wetFloorSprite
-     * @param x stores the x coordinate that the sprite will be rendered at
-     * @param y stores the x coordinate that the sprite will be rendered at
-     * bounds is used to store a Rectangle which is used to trigger the event
+     * @param x       stores the x coordinate that the sprite will be rendered at
+     * @param y       stores the x coordinate that the sprite will be rendered at
+     *                bounds is used to store a Rectangle which is used to trigger the event
      */
-
     public WetFloor(Texture texture, float x, float y) {
         wetFloorSprite = new Sprite(texture);
         wetFloorSprite.setPosition(x, y);
         wetFloorSprite.setSize(32, 32);
         bounds = new Rectangle(x, y, 8, 8);
     }
- 
+
     public void render(SpriteBatch sb) {
         if (!triggered) {
-            wetFloorSprite.draw(sb); 
+            wetFloorSprite.draw(sb);
         }
     }
-    public Boolean playerTouched(Player player){
+
+    public Boolean playerTouched(Player player) {
         return bounds.overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight));
     }
 
     public void checkTriggered(Player player) {
-
         if (!triggered && playerTouched(player)) {
             player.badEvent += 1;
             player.playerFall();
             trigger();
             timer = 1.1f;
             activate(true);
+            // when player overlaps the bounds badEvent is incremented, playerFall is called to set playerAnimation
+            // State.FALL, triggered true to stop event from triggering multiple times, active true used for logic
+            // in update timer 1.1f is used to start to count down time passing
         }
-        /**
-         * when player overlaps the bounds;
-         *  badEvent is incremented,
-         *  playerFall() is called to set playerAnimation = State.FALL,
-         *  triggered = true (to stop event from triggering multiple times),
-         *  active = true used for logic in update()
-         *  timer = 1.1f is used to start to count down time passing
-         * 
-         * 
-         */
     }
 
     public void update(float delta) {
@@ -66,35 +56,27 @@ public class WetFloor {
                 AchievementManager.get().unlock("WATCH_YOUR_STEP");
             }
         }
+        // when active is set to true the timer counts down from 1.1f, active is then set to false
+        // this controls the time the player cannot move for
     }
-    /**
-     * when active is set to true the timer counts down from 1.1f,
-     * active is then set to false this controls the time the player
-     * cannot move for
-     */
 
     /**
-     * Create a WetFloor instance for testing.
-     * 
-     * Doesn't initialise the sprite so that doesn't interfere with tests.
-     * 
+     * Create a WetFloor instance for testing. Doesnt initialise the sprite so that doesnt interfere with tests.
+     *
      * @param triggered Initial value for triggered.
-     * @param active Initial value for active.
+     * @param active    Initial value for active.
      */
-    public WetFloor(float x, float y ,boolean triggered, boolean active)
-    {
+    public WetFloor(float x, float y, boolean triggered, boolean active) {
         this.triggered = triggered;
         this.active = active;
         bounds = new Rectangle(x, y, 8, 8);
     }
 
-    void trigger(){
+    void trigger() {
         triggered = true;
     }
 
-
-    void activate(boolean bool){
+    void activate(boolean bool) {
         active = bool;
     }
-
 }
