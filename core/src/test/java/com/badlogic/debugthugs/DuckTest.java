@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import org.junit.jupiter.api.BeforeAll;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DuckTest {
 
@@ -21,9 +19,8 @@ class DuckTest {
 
     //Test if duck is initialized with correct position and size
     @Test
-    void DuckInitialization() {
+    void duckInitialization() {
         Duck duck = new Duck();
-
         assertEquals(680f, duck.bounds.x, 0.0001f);
         assertEquals(520f, duck.bounds.y, 0.0001f);
         assertEquals(50f, duck.bounds.width, 0.0001f);
@@ -33,16 +30,11 @@ class DuckTest {
     //Test if encountering duck increments bad event counter by one
     //Test if encountering duck resets player's position
     @Test
-    void EncounteringDuck() {
-
-        Duck duck = new Duck(); 
+    void encounteringDuck() {
+        Duck duck = new Duck();
         duck.bounds.setPosition(680f, 520f);
-
-        Player dummyPlayer = new Player(
-                680f, 520f,   
-                null, null    
-        );
-
+        
+        Player dummyPlayer = new Player(680f, 520f, null, null);
         dummyPlayer.playerWidth = 50f;
         dummyPlayer.playerHeight = 55f;
         dummyPlayer.badEvent = 0;
