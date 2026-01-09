@@ -33,7 +33,8 @@ public class AchievementManager {
         "WATCH_YOUR_STEP",
 	    "QUACK",
         "DUCK_OF_RESETTING",
-        "HELPER_FOUND"
+        "HELPER_FOUND",
+        "EXAM"
     };
 
     private Queue<String> popupQueue = new ArrayDeque<>();
