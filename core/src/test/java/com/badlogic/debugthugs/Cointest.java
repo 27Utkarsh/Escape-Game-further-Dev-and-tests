@@ -1,14 +1,16 @@
 package com.badlogic.debugthugs;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class Cointest {
-
     private Coin coin;
 
+    /**
+     * Set up the coin instance before each test.
+     */
     @BeforeEach
     void setUp() {
         // Use the headless constructor
@@ -26,13 +28,13 @@ public class Cointest {
     @Test
     void testCollect() {
         coin.collect();
-        assertTrue(coin.collected, "Coin should be marked as collected after collect()");
+        assertTrue(coin.collected, "Coin should be marked as collected after collect");
     }
 
     @Test
     void testMultipleCollects() {
         coin.collect();
-        coin.collect(); 
-        assertTrue(coin.collected, "Coin should remain collected after multiple collect() calls");
+        coin.collect();
+        assertTrue(coin.collected, "Coin should remain collected after multiple collect calls");
     }
 }
