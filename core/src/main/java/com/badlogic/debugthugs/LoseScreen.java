@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class LoseScreen implements Screen {
+
     Texture backgroundTexture;
     Main game;
     Stage stage;
@@ -30,8 +31,9 @@ public class LoseScreen implements Screen {
     public void show() {
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        backgroundTexture = new Texture("Game_Over_Image.png");
+
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        backgroundTexture = new Texture("GameOverImage.png");
 
         Table root = new Table();
         root.setFillParent(true);
@@ -61,8 +63,11 @@ public class LoseScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
-        game.batch.draw(backgroundTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+        game.batch.draw(backgroundTexture, 0, 0,
+                        game.uiViewport.getWorldWidth(),
+                        game.uiViewport.getWorldHeight());
         game.batch.end();
+
         stage.act(delta);
         stage.draw();
     }
