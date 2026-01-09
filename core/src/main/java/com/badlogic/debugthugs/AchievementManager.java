@@ -39,7 +39,7 @@ public class AchievementManager {
     private Queue<String> popupQueue = new ArrayDeque<>();
     private float popupTimer = 0f;
     private String currentPopup = null;
-    private final BitmapFont popupFont = new BitmapFont();
+    private final BitmapFont popupFont = com.badlogic.gdx.Gdx.gl != null ? new BitmapFont() : null;
     private final Color popupColor = new Color(1f, 1f, 1f, 1f);
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -52,7 +52,7 @@ public class AchievementManager {
         prefs = Gdx.app.getPreferences("Achievements");
         initialiseAchievements();
 
-        popupFont.getData().setScale(1.2f);
+        if (popupFont != null) popupFont.getData().setScale(1.2f);
     }
 
     /**
@@ -197,19 +197,19 @@ public class AchievementManager {
     public void render(SpriteBatch batch, float xPos, float yPos)
     {
         if (currentPopup == null) return;
-        layout.setText(popupFont, currentPopup);
+        if (popupFont != null) layout.setText(popupFont, currentPopup);
         float textWidth = layout.width;
         float textHeight = layout.height;
 
         float drawX = xPos - textWidth / 2f;
         float drawY = yPos + textHeight / 2f;
 
-        popupFont.setColor(popupColor);
-        popupFont.draw(batch, currentPopup, drawX, drawY);
+        if (popupFont != null) popupFont.setColor(popupColor);
+        if (popupFont != null) popupFont.draw(batch, currentPopup, drawX, drawY);
     }
 
     public void dispose()
     {
-        popupFont.dispose();
+        if (popupFont != null) popupFont.dispose();
     }
 }
