@@ -1,23 +1,30 @@
 package com.badlogic.debugthugs;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ExamTest {
+public class ExamTest {
 
+    /**
+     * Initialize the headless backend for testing.
+     */
     @BeforeAll
     public static void init() {
         if (Gdx.files == null) {
             HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-            new HeadlessApplication(new com.badlogic.gdx.ApplicationAdapter() {}, config);
+            new HeadlessApplication(new com.badlogic.gdx.ApplicationAdapter() {
+            }, config);
         }
     }
 
-    //Test if exam is initialized with correct position and size
+    /**
+     * Test if exam is initialized with correct position and size.
+     */
     @Test
     void examInitialization() {
         Exam exam = new Exam(1184f, 1000f, 200f);
@@ -27,7 +34,9 @@ class ExamTest {
         assertEquals(50f, exam.bounds.height, 0.0001f);
     }
 
-    //Test if encountering Exam increments bad event by one
+    /**
+     * Test if encountering Exam increments bad event by one.
+     */
     @Test
     void increaseCounter() {
         Exam exam = new Exam(1184f, 1500f, 100f);
@@ -35,25 +44,31 @@ class ExamTest {
         player.playerWidth = 50f;
         player.playerHeight = 50f;
         player.badEvent = 0;
-        
+
         exam.checkCollided(player);
-        //Test if badEvent counter gets incremented
+
+        // Test if badEvent counter gets incremented
         assertEquals(1, player.badEvent, "badEvent should increment by 1 when player collides with exam");
-        
-        //Ensure exam only triggers once
+
+        // Ensure exam only triggers once
         exam.checkCollided(player);
         assertEquals(1, player.badEvent, "badEvent should not increment again once exam is completed");
     }
 
-    //Check if Exam object patrols correctly
+    /**
+     * Check if Exam object patrols correctly.
+     */
     @Test
     void examPatrols() {
         Exam exam = new Exam(1184f, 1000f, 100f);
+
         exam.update(2f);
         assertEquals(1100f, exam.bounds.y, 0.0001f);
+
         exam.update(1f);
         assertEquals(1040f, exam.bounds.y, 0.0001f);
-        exam.update(2f);
+
+        exam.update(2f); 
         assertEquals(1000f, exam.bounds.y, 0.0001f);
     }
 }
