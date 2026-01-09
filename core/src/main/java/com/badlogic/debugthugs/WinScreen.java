@@ -55,13 +55,14 @@ public class WinScreen implements Screen {
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
+
         score = calcScore();
 
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture("Win.png");
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         Table root = new Table();
         root.setFillParent(true);
@@ -75,7 +76,7 @@ public class WinScreen implements Screen {
         scoreLabel.setAlignment(Align.center);
 
         TextField userInput = new TextField("", skin);
-        userInput.setMessageText("Enter your name (1-8 characters):");
+        userInput.setMessageText("Enter your name (1-8 characters)");
         userInput.setMaxLength(8);
 
         TextButton againButton = new TextButton("Try Again", skin);
