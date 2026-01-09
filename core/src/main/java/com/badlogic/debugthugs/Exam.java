@@ -52,7 +52,9 @@ public class Exam {
 
     /** Call this every frame*/
     public void update(float delta) {
-        if (testMode) return;
+        if (testMode) {
+            return;
+        }
         // Move horizontally according to current direction
         y += speed * direction * delta;
 
@@ -77,10 +79,8 @@ public class Exam {
         }
     }
 
-    public void renderOverlay(SpriteBatch sb)
-    {
-        if (overlayTimer >= 0f) 
-        {   
+    public void renderOverlay(SpriteBatch sb) {
+        if (overlayTimer >= 0f) {   
             sb.draw(overlayTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
         }
     }
@@ -107,8 +107,7 @@ public class Exam {
      * 
      * @param game The main game instance.
      */
-    public Exam(Main game)
-    {
+    public Exam(Main game) {
 
         testMode = true;
         this.game = game;
@@ -117,8 +116,7 @@ public class Exam {
         overlayTimer = 0f;
     }
 
-    public Exam(float x, float y, float patrolDistance) 
-    {
+    public Exam(float x, float y, float patrolDistance) {
         testMode = true;
         this.x = x;
         this.y = y;
