@@ -35,23 +35,22 @@ public class LeaderBoardScreen extends ScreenAdapter {
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
         game.font.getData().setScale(2f);
-
         prefs = Gdx.app.getPreferences("GameScores");
         returnScores = getScores();
         sortScores(returnScores);
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(game.font, Color.WHITE);
-        Label l0 = new Label("Top 5 players score: ", labelStyle);
-        Label l1 = new Label("1: " + topNames[0] + ": " + topScores[0], labelStyle);
-        Label l2 = new Label("2: " + topNames[1] + ": " + topScores[1], labelStyle);
-        Label l3 = new Label("3: " + topNames[2] + ": " + topScores[2], labelStyle);
-        Label l4 = new Label("4: " + topNames[3] + ": " + topScores[3], labelStyle);
-        Label l5 = new Label("5: " + topNames[4] + ": " + topScores[4], labelStyle);
+        Label l0 = new Label("Top 5 players score ", labelStyle);
+        Label l1 = new Label("1) " + topNames[0] + " : " + topScores[0], labelStyle);
+        Label l2 = new Label("2) " + topNames[1] + " : " + topScores[1], labelStyle);
+        Label l3 = new Label("3) " + topNames[2] + " : " + topScores[2], labelStyle);
+        Label l4 = new Label("4) " + topNames[3] + " : " + topScores[3], labelStyle);
+        Label l5 = new Label("5) " + topNames[4] + " : " + topScores[4], labelStyle);
 
         TextButton exit = new TextButton("Exit", skin);
 
@@ -99,7 +98,7 @@ public class LeaderBoardScreen extends ScreenAdapter {
 
     public void sortScores(HashMap<String, Float> scores) {
         List<Map.Entry<String, Float>> scoresList = new ArrayList<>(scores.entrySet());
-        scoresList.sort((a, b) -> Float.compare(b.getValue(), a.getValue()));
+        scoresList.sort((a, b) -> -Float.compare(b.getValue(), a.getValue()));
 
         for (int i = 0; i < 5; i++) {
             if (i < scoresList.size()) {
@@ -117,6 +116,7 @@ public class LeaderBoardScreen extends ScreenAdapter {
         ScreenUtils.clear(0, 0, 0, 1);
         game.uiViewport.apply();
         game.batch.setProjectionMatrix(game.uiCamera.combined);
+
         stage.act(delta);
         stage.draw();
     }
