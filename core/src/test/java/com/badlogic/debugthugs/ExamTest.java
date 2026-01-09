@@ -1,8 +1,21 @@
 package com.badlogic.debugthugs;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExamTest {
+
+    @BeforeAll
+    public static void init() {
+        if (Gdx.files == null) {
+            HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
+            new HeadlessApplication(new com.badlogic.gdx.ApplicationAdapter() {}, config);
+        }
+    }
 
     //Test if exam is initialized with correct position and size
     @Test
