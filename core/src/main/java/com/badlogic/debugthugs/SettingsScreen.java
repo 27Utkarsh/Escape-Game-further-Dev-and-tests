@@ -23,6 +23,7 @@ public class SettingsScreen implements Screen {
 
     /**
      * Creates a SettingsScreen instance.
+     *
      * @param game Reference to the main game class to allow screen switching.
      */
     public SettingsScreen(Main game) {
@@ -31,13 +32,13 @@ public class SettingsScreen implements Screen {
 
     /**
      * the volume level is set to the default value of 0.5f if it has not been changed
+     *
      * @return the volume level
      */
     public static float getNoise() {
         if (volume < 0) {
             return 0.5f;
-        }
-        else {
+        } else {
             return volume;
         }
     }
@@ -49,7 +50,9 @@ public class SettingsScreen implements Screen {
         SettingsScreen.volume = volume;
     }
 
-    public void returnMain(Main game) {game.setScreen(new MenuScreen(game));}
+    public void returnMain(Main game) {
+        game.setScreen(new MenuScreen(game));
+    }
 
     /**
      * Initializes the settings screen
@@ -59,14 +62,14 @@ public class SettingsScreen implements Screen {
     public void show() {
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        Label volumeLabel = new Label("Volume:", skin);
+        Label volumeLabel = new Label("Volume", skin);
         final Slider volumeSlider = new Slider(0.01f, 1f, 0.01f, false, skin);
+
         if (volume < 0) {
             volumeSlider.setValue(initialVolume);
-        }
-        else {
+        } else {
             volumeSlider.setValue(volume);
         }
 
@@ -77,19 +80,17 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         TextButton menuButton = new TextButton("Back to Menu", skin);
-        menuButton.setPosition(20,20);
+        menuButton.setPosition(20, 20);
         menuButton.setSize(150, 40);
-
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 returnMain(game);
             }
         });
-
         stage.addActor(menuButton);
 
         Table table = new Table();
@@ -97,11 +98,13 @@ public class SettingsScreen implements Screen {
         table.center();
         table.add(volumeLabel).padBottom(10).row();
         table.add(volumeSlider).width(200);
+
         stage.addActor(table);
     }
 
     /**
      * Renders the screen every frame - clears screen and draws UI elements
+     *
      * @param delta The time in seconds since the last render.
      */
     @Override
@@ -114,23 +117,20 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
+
     /**
      * Releases assets and resources used by this screen
      * helps free memory
