@@ -85,7 +85,7 @@ public class LongBoi {
         if (testMode) {
             if (triggered) {
                 eventTime += delta;
-                if (eventTime > 3f) {
+                if (eventTime >= 3f) {
                     active = false;
                     eventTime = 0f;
                 }
@@ -98,7 +98,7 @@ public class LongBoi {
         if (triggered) {
             longBoiSprite.translateX(-40 * delta);
             eventTime += delta;
-            if (eventTime > 3f) {
+            if (eventTime >= 3f) {
                 active = false;
                 eventTime = 0f;
             }
