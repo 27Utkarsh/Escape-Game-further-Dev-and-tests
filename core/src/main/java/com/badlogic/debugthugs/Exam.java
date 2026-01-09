@@ -10,7 +10,7 @@ public class Exam {
     public Texture overlayTexture;
     public Rectangle bounds;
 
-    private float x, y;
+    private float examX, examY;
 
     private final Main game;
 
@@ -26,10 +26,10 @@ public class Exam {
     private boolean testMode = false;
 
 
-    public Exam(Texture texture1, Texture texture2, float x, float y, float patrolDistance, Main game) {
+    public Exam(Texture texture1, Texture texture2, float startX, float startY, float patrolDistance, Main game) {
 
-        this.x = x;
-        this.y = y;
+        this.examX = startX;
+        this.examY = startY;
         this.game = game;
 
         if (com.badlogic.gdx.Gdx.gl != null) {
@@ -38,7 +38,7 @@ public class Exam {
             examSprite = new Sprite();
             examSprite.setSize(50f, 50f);
         }
-        examSprite.setPosition(x, y);
+        examSprite.setPosition(examX, examY);
         examSprite.setSize(50, 50);
 
         overlayTexture = texture2;
@@ -56,20 +56,22 @@ public class Exam {
             return;
         }
         // Move horizontally according to current direction
-        y += speed * direction * delta;
+        examY += speed * direction * delta;
 
         // Reverse direction at patrol bounds
-        if (y < patrolStartY) {
-            y = patrolStartY;
+        if (examY < patrolStartY) {
+            examY = patrolStartY;
             direction = 1;
-        } else if (y > patrolEndY) {
-            y = patrolEndY;
+        } else if (examY > patrolEndY) {
+            examY = patrolEndY;
             direction = -1;
         }
 
         // Apply position to sprite & bounds
-        examSprite.setPosition(x, y);
-        bounds.setPosition(x, y);
+        if (examSprite != null) {
+            examSprite.setPosition(examX, examY);
+        }
+        bounds.setPosition(examX, examY);
         overlayTimer -= delta;
     }
 
@@ -116,17 +118,17 @@ public class Exam {
         overlayTimer = 0f;
     }
 
-    public Exam(float x, float y, float patrolDistance) {
+    public Exam(float startX, float startY, float patrolDistance) {
         testMode = true;
-        this.x = x;
-        this.y = y;
+        this.examX = startX;
+        this.examY = startY;
         this.game = null;
         this.examSprite = null;
         this.overlayTexture = null;
 
-        this.bounds = new Rectangle(x, y, 50, 50);
-        this.patrolStartY = y;
-        this.patrolEndY = y + patrolDistance;
+        this.bounds = new Rectangle(startX, startY, 50, 50);
+        this.patrolStartY = startY;
+        this.patrolEndY = startY + patrolDistance;
 
         this.speed = 60f;
         this.direction = 1;
