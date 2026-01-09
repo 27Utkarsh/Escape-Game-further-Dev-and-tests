@@ -1,27 +1,12 @@
-package com.badlogic.debugthugs;
+package com.badlogic.debugthugs.headless;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class DuckTest {
+import com.badlogic.debugthugs.Duck;
+import com.badlogic.debugthugs.Player;
 
-    /**
-     * Initialize the headless backend for testing.
-     */
-    @BeforeAll
-    public static void init() {
-        if (Gdx.files == null) {
-            HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-            new HeadlessApplication(new com.badlogic.gdx.ApplicationAdapter() {
-            }, config);
-        }
-    }
-
+public class DuckTest extends AbstractHeadlessTest {
     /**
      * Test if duck is initialized with correct position and size.
      */
