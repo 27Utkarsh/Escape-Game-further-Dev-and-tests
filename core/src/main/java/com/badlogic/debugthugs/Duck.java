@@ -43,7 +43,9 @@ public class Duck {
 
     /** Call this every frame*/
     public void update(float delta) {
-        if (testMode) return;
+        if (testMode) {
+            return;
+        }
 
         // Move horizontally according to current direction
         x += speed * direction * delta;
@@ -86,8 +88,7 @@ public class Duck {
     /**
      * Create an instance of Duck for testing.
      */
-    public Duck()
-    {
+    public Duck() {
         testMode = true;
         this.bounds = new Rectangle(680, 520, 50, 55);
     }
