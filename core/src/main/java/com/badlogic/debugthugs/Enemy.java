@@ -1,6 +1,7 @@
 package com.badlogic.debugthugs;
 
 import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -121,8 +122,9 @@ public class Enemy {
             if (cooldown <= 0f) {
                 if (timesCaught < 5) {
                     timesCaught++;
+                    player.badEvent += 1;
                 }
-                player.badEvent += 1;
+                
                 cooldown = interval;
                 AchievementManager.get().unlock("ENCOUTERED_DEAN");
                 return true;
