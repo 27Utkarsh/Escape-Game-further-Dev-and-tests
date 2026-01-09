@@ -6,6 +6,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,31 +16,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class MenuScreen extends ScreenAdapter {
-    //private static final int VIEWPORT_WIDTH = 1280;
-    //private static final int VIEWPORT_HEIGHT = 720;
+    private static final int VIEWPORT_WIDTH = 1280;
+    private static final int VIEWPORT_HEIGHT = 720;
 
     Main game;
-    //FitViewport viewport;
-    //SpriteBatch batch;
+    FitViewport viewport;
+    SpriteBatch batch;
     Stage stage;
-
-    //BitmapFont font;
+    BitmapFont font;
     Skin skin;
     Texture background;
     Music music;
 
     /**
      * Creates the main menu screen.
+     *
      * @param game reference to the main game instance for screen switching
      */
     public MenuScreen(Main game) {
         this.game = game;
     }
+
     /**
-     * Called when the main menu screen becomes the current screen (ie when the player first starts playing)
-     * handles buttons, background image, music, and input processing (player needs to interact with buttons)
+     * Called when the main menu screen becomes the current screen ie when the player
+     * first starts playing handles buttons, background image, music, and input
+     * processing player needs to interact with buttons
      */
     @Override
     public void show() {
@@ -47,7 +52,7 @@ public class MenuScreen extends ScreenAdapter {
 
         background = new Texture("Menu.png");
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("Menu_music.ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Menumusic.ogg"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();
@@ -55,14 +60,14 @@ public class MenuScreen extends ScreenAdapter {
         game.font.getData().setScale(2f);
         game.font.setColor(Color.WHITE);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
         stage.addActor(rootTable);
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(game.font, Color.WHITE);
-        Label titleLabel = new Label("University Escape [WIP Title]", titleStyle);
+        Label titleLabel = new Label("University Escape WIP Title", titleStyle);
         rootTable.add(titleLabel).padBottom(80f);
         rootTable.row();
 
@@ -104,16 +109,19 @@ public class MenuScreen extends ScreenAdapter {
 
     /**
      * Renders the menu screen each frame
+     *
      * @param delta The time in seconds since the last render.
      */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.DARK_GRAY);
-        //game.uiViewport.apply();
+        game.uiViewport.apply();
         game.batch.setProjectionMatrix(game.uiCamera.combined);
 
         game.batch.begin();
-        game.batch.draw(background, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+        game.batch.draw(background, 0, 0,
+                        game.uiViewport.getWorldWidth(),
+                        game.uiViewport.getWorldHeight());
         game.batch.end();
 
         stage.act(delta);
@@ -126,17 +134,14 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     /**
