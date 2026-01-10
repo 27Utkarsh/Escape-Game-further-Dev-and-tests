@@ -169,7 +169,7 @@ public class Player {
             needsInteractMessage = false;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)|| Gdx.input.isKeyPressed(Input.Keys.D)) {
             isMoving = true;
             playerAnimation = State.WALKR;
             playerX += distance;
@@ -177,7 +177,7 @@ public class Player {
                 playerX -= distance;
             }
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)|| Gdx.input.isKeyPressed(Input.Keys.A)) {
             isMoving = true;
             playerAnimation = State.WALKL;
             playerX -= distance;
@@ -185,7 +185,7 @@ public class Player {
                 playerX += distance;
             }
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)|| Gdx.input.isKeyPressed(Input.Keys.W)) {
             isMoving = true;
             playerAnimation = State.WALKUP;
             playerY += distance;
@@ -193,7 +193,7 @@ public class Player {
                 playerY -= distance;
             }
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)|| Gdx.input.isKeyPressed(Input.Keys.S)) {
             isMoving = true;
             playerAnimation = State.WALK;
             playerY -= distance;

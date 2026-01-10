@@ -52,7 +52,7 @@ public class MenuScreen extends ScreenAdapter {
 
         background = new Texture("Menu.png");
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("Menumusic.ogg"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Menu_music.ogg"));
         music.setLooping(true);
         music.setVolume(SettingsScreen.getNoise());
         music.play();

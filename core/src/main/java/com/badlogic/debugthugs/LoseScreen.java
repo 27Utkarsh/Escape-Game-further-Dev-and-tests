@@ -33,7 +33,7 @@ public class LoseScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        backgroundTexture = new Texture("GameOverImage.png");
+        backgroundTexture = new Texture("Game_Over_Image.png");
 
         Table root = new Table();
         root.setFillParent(true);
