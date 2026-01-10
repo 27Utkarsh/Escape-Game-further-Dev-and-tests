@@ -47,3 +47,7 @@ https://docs.google.com/document/d/1SMPUGydqr6wZhvSI9SdRX3hTRw42vcsKnCPg3V33rfA/
 #### Candidate 4:
 
 https://docs.google.com/document/d/13pZO8kffIrhPaTYC5PfJgkBcZ7BP5hTE7QbB98gB4XI/edit?usp=sharing
+
+# User Evaluation Document
+
+https://docs.google.com/document/d/1yah41-xLxlDau1i_MNFPwhpIexFEXUVUgOArcINL_3Q/edit?tab=t.0
