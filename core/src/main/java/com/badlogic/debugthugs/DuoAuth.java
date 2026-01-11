@@ -11,7 +11,6 @@ public class DuoAuth {
     public boolean triggered = false;
     public boolean active = false;
     public float timer = 0f;
-
     private boolean testMode = false;
 
     public DuoAuth(Texture texture, float x, float y) {
@@ -28,10 +27,11 @@ public class DuoAuth {
     }
 
     public void checkTriggered(Player player) {
-        if (testMode) return;
-
-        if (!triggered && bounds
-                .overlaps(new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
+        if (testMode) {
+            return;
+        }
+        if (!triggered && bounds.overlaps(
+            new Rectangle(player.playerX, player.playerY, player.playerWidth, player.playerHeight))) {
             player.badEvent += 1;
             triggered = true;
             active = true;
@@ -50,15 +50,12 @@ public class DuoAuth {
     }
 
     /**
-     * Create a DuoAuth instance for testing.
-     * 
-     * Doesn't initialise the sprite so that doesn't interfere with tests.
-     * 
+     * Create a DuoAuth instance for testing. Doesnt initialise the sprite so that doesnt interfere with tests.
+     *
      * @param triggered Initial value for triggered.
-     * @param active Initial value for active.
+     * @param active    Initial value for active.
      */
-    public DuoAuth(boolean triggered, boolean active)
-    {
+    public DuoAuth(boolean triggered, boolean active) {
         testMode = true;
         this.triggered = triggered;
         this.active = active;

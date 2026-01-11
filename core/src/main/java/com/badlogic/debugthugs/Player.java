@@ -11,27 +11,22 @@ import com.badlogic.gdx.math.Rectangle;
 public class Player {
 
     public enum State {
+        WALK, WALKL, WALKR, WALKUP, FALL
+    }
 
-        WALK,
-        WALK_L,
-        WALK_R,
-        WALK_UP,
-        FALL
-    } // used to store different possible animation states of the player
-
-    public String lastBusMessage = "";
+    // used to store different possible animation states of the player
+    public String lastBusMessage;
     public boolean needsBusMessage = false;
     public boolean canRideBus = false;
     private float busMessageTimer = 0f;
 
-    // initalizes the playerAnimation as the variable which stores player's State
+    // initalizes the playerAnimation as the variable which stores players State
     public State playerAnimation = State.WALK;
 
     public float playerX;
     public float playerY;
     public float playerWidth = 16;
     public float playerHeight = 16;
-
     public int goodEvent = 0;
     public int badEvent = 0;
     public int hiddenEvent = 0;
@@ -42,8 +37,8 @@ public class Player {
 
     public float speed = 128f;
 
-    // defines the different walking animations
-    // and a placeholder activeAnimation which stores the the animation in use
+    // defines the different walking animations and a placeholder activeAnimation
+    // which stores the the animation in use
     Animation<TextureRegion> walk;
     Animation<TextureRegion> walkL;
     Animation<TextureRegion> walkR;
@@ -65,10 +60,7 @@ public class Player {
      * @param wallLayer Layer on the tilemap where collide-able walls are
      * @param doorLayer Layer on the tilemap where doors are
      */
-    public Player(float startX, float startY,
-            TiledMapTileLayer wallLayer,
-            TiledMapTileLayer doorLayer) {
-
+    public Player(float startX, float startY, TiledMapTileLayer wallLayer, TiledMapTileLayer doorLayer) {
         this.playerX = startX;
         this.playerY = startY;
         this.playerAnimation = State.WALK;
@@ -77,14 +69,13 @@ public class Player {
     }
 
     /**
-     * Renders the player's current animation frame
-     * Retrieves the correct frame from the walking animation using state time
-     * and draws it at the player's current X and Y position using the SpriteBatch
+     * Renders the players current animation frame
+     * Retrieves the correct frame from the walking animation using state time and
+     * draws it at the players current X and Y position using the SpriteBatch
      *
      * @param batch the SpriteBatch used to draw the frame to the screen
      */
     public void render(SpriteBatch batch, float stateTime) {
-
         if (!isMoving) {
             stateTime = 0f;
         }
@@ -93,35 +84,28 @@ public class Player {
             case WALK:
                 activeAnimation = walk;
                 break;
-
-            case WALK_L:
+            case WALKL:
                 activeAnimation = walkL;
                 break;
-
-            case WALK_R:
+            case WALKR:
                 activeAnimation = walkR;
                 break;
-
-            case WALK_UP:
+            case WALKUP:
                 activeAnimation = walkUp;
                 break;
-
             case FALL:
                 activeAnimation = fall;
                 break;
-
             default:
                 activeAnimation = walk;
                 break;
-
         }
 
         TextureRegion frame = activeAnimation.getKeyFrame(stateTime, true);
         batch.draw(frame, playerX - 8, playerY - 10, 32, 48);
-
     }
 
-    // used to change playerAnimation to = State.FALL by events
+    // used to change playerAnimation to State.FALL by events
     public void playerFall() {
         playerAnimation = State.FALL;
     }
@@ -131,9 +115,7 @@ public class Player {
      * Specifically movement and the player interacting with doors
      */
     public void playerInput(Key key, EnergyDrink energyDrink, Bus bus, java.util.List<BusStop> busStops,
-            DuoAuth duoAuth,
-            WetFloor wetFloor, float delta) {
-
+                            DuoAuth duoAuth, WetFloor wetFloor, float delta) {
         if (energyDrink.drank) {
             speed = 160f;
         }
@@ -141,10 +123,10 @@ public class Player {
         if (duoAuth.active) {
             return;
         }
-
         if (wetFloor.active) {
             return;
         }
+
         float distance = speed * delta;
         isMoving = false;
 
@@ -189,7 +171,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             isMoving = true;
-            playerAnimation = State.WALK_R;
+            playerAnimation = State.WALKR;
             playerX += distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerX -= distance;
@@ -198,7 +180,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             isMoving = true;
-            playerAnimation = State.WALK_L;
+            playerAnimation = State.WALKL;
             playerX -= distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerX += distance;
@@ -207,7 +189,7 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             isMoving = true;
-            playerAnimation = State.WALK_UP;
+            playerAnimation = State.WALKUP;
             playerY += distance;
             if (Collision.collisionCheck(this) || Collision.door(this)) {
                 playerY -= distance;
@@ -229,19 +211,17 @@ public class Player {
      * list of bus stops can be found in the firstcreen.java
      */
     private void teleportToRandomStop(java.util.List<BusStop> busStops) {
-        if (busStops.isEmpty())
+        if (busStops.isEmpty()) {
             return;
-
+        }
         int index = com.badlogic.gdx.math.MathUtils.random(0, busStops.size() - 1);
         BusStop targetStop = busStops.get(index);
-
         playerX = targetStop.bounds.x;
         playerY = targetStop.bounds.y;
 
         lastBusMessage = "You took a bus to " + targetStop.name;
         needsBusMessage = true;
         busMessageTimer = 0f;
-
         hiddenEvent += 1;
         AchievementManager.get().unlock("TELEPORTED");
     }

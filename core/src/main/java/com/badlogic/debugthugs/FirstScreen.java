@@ -1,5 +1,8 @@
 package com.badlogic.debugthugs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -23,22 +26,35 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /**
  * First screen of the application. Displayed after the application is created.
  */
-
 public class FirstScreen implements Screen {
 
     float stateTime;
     Main game;
 
-    Texture keyTexture, energyTexture, busStopTexture, busTexture, pauseTexture;
-    Texture longBoiTexture, enemyTexture, duoTexture, wetFloorTexture;
-    Texture examTexture, pressureTexture, duckTexture, coinTexture, helperTexture;
+    Texture keyTexture;
+    Texture energyTexture;
+    Texture busStopTexture;
+    Texture busTexture;
+    Texture pauseTexture;
+    Texture longBoiTexture;
+    Texture enemyTexture;
+    Texture duoTexture;
+    Texture wetFloorTexture;
+    Texture examTexture;
+    Texture pressureTexture;
+    Texture duckTexture;
+    Texture coinTexture;
+    Texture helperTexture;
+
     Music music;
     Stage pauseStage;
     Skin skin;
-    TextButton menuButton, resumeButton;
+    TextButton menuButton;
+    TextButton resumeButton;
 
     public float timePassed = 300f;
-    int mins, seconds;
+    int mins;
+    int seconds;
     public boolean paused = false;
 
     OrthogonalTiledMapRenderer renderer;
@@ -46,7 +62,7 @@ public class FirstScreen implements Screen {
     Key key;
     EnergyDrink energyDrink;
     Bus bus;
-    java.util.List<BusStop> busStops;
+    List<BusStop> busStops;
     Enemy enemy;
     HelperCharacter helper;
     Coin coin;
@@ -73,8 +89,10 @@ public class FirstScreen implements Screen {
     Texture fallSheet = new Texture(Gdx.files.internal("FallAnimation.png"));
     Texture bushSheet = new Texture(Gdx.files.internal("LongBush.png"));
 
-    // function that takes a 2d TextureRegion and removes any empty frames and
-    // returns an Animation
+    /**
+     * function that takes a 2d TextureRegion and removes any empty frames and
+     * returns an Animation
+     */
     public static Animation<TextureRegion> frameTrimmer(TextureRegion[] array, int empty) {
         TextureRegion[] arrayOut = new TextureRegion[array.length - empty];
         for (int i = 0; i < (array.length - empty); i++) {
@@ -83,8 +101,10 @@ public class FirstScreen implements Screen {
         return new Animation<>(0.05f, arrayOut);
     }
 
-    // function that converts an 2d TextureRegion array to a linear TextureRegion
-    // array
+    /**
+     * function that converts an 2d TextureRegion array to a linear TextureRegion
+     * array
+     */
     public static TextureRegion[] texture2Array(Texture sheet, int row, int col) {
         TextureRegion[][] tmp = TextureRegion.split(sheet, 32, 32);
         TextureRegion[] arrayOut = new TextureRegion[row * col];
@@ -96,7 +116,6 @@ public class FirstScreen implements Screen {
             }
         }
         return arrayOut;
-
     }
 
     Animation<TextureRegion> walkAnimation = frameTrimmer(texture2Array(walkSheet, 3, 3), 1);
@@ -106,15 +125,14 @@ public class FirstScreen implements Screen {
     Animation<TextureRegion> fallAnimation = frameTrimmer(texture2Array(fallSheet, 4, 3), 0);
     Animation<TextureRegion> bushAnimation = frameTrimmer(texture2Array(bushSheet, 3, 3), 1);
 
+    public float maxScore = 500f;
+    public float playerScore = maxScore;
+
     /**
      * Creates a new FirstScreen instance for the game
      *
      * @param game the main LibGDX Game object used to manage screens and shared resources
      */
-
-    public float maxScore = 500f;
-    public float playerScore = maxScore;
-
     public FirstScreen(Main game) {
         this.game = game;
     }
@@ -124,7 +142,6 @@ public class FirstScreen implements Screen {
      * prepares the player's animation and starting position, initializes rendering tools (SpriteBatch, map renderer), starts background music, prepares font and timer rendering for the HUD.
      * Also sets up the coin and helper character.
      */
-
     @Override
     public void show() {
         game.worldCamera.zoom = 0.6f;
@@ -153,7 +170,7 @@ public class FirstScreen implements Screen {
         busTexture = new Texture("Bus.png");
         bus = new Bus(busTexture, 608, 512);
 
-        busStops = new java.util.ArrayList<>();
+        busStops = new ArrayList<>();
         busStops.add(new BusStop(busStopTexture, 992, 1856, "Stop A"));
         busStops.add(new BusStop(busStopTexture, 1184, 512, "Stop B"));
         busStops.add(new BusStop(busStopTexture, 1856, 480, "Stop C"));
@@ -194,7 +211,10 @@ public class FirstScreen implements Screen {
         game.font.setColor(Color.WHITE);
 
         playerChar = new Player(710, 1730, collisionLayer, doorLayer);
-        player = new Rectangle(playerChar.playerX, playerChar.playerY, playerChar.playerWidth, playerChar.playerHeight);
+        player = new Rectangle(playerChar.playerX,
+                               playerChar.playerY,
+                               playerChar.playerWidth,
+                               playerChar.playerHeight);
 
         stateTime = 0f;
         playerChar.walk = walkAnimation;
@@ -246,7 +266,8 @@ public class FirstScreen implements Screen {
      * Doesn't initialise graphics or audio.
      */
     public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus,
-            java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY) {
+                          List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor,
+                          float enemyX, float enemyY) {
         this.playerChar = player;
         this.key = key;
         this.energyDrink = energyDrink;
@@ -262,6 +283,7 @@ public class FirstScreen implements Screen {
         this.coin = null;
         this.helper = null;
         this.paused = false;
+        this.longBoi = new LongBoi(700, 700, false, false);
 
         this.achievements = AchievementManager.get();
     }
@@ -280,20 +302,25 @@ public class FirstScreen implements Screen {
         renderUI(delta);
     }
 
+    /**
+     * Handles game logic updates.
+     */
     public void logic(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused;
-            if (paused)
+            if (paused) {
                 Gdx.input.setInputProcessor(pauseStage);
-            else
+            } else {
                 Gdx.input.setInputProcessor(null);
+            }
         }
 
         float animSpeed = 0.5f;
-        if (playerChar.isMoving)
+        if (playerChar.isMoving) {
             stateTime += delta * animSpeed;
-        else
+        } else {
             stateTime = 0f;
+        }
 
         if (!paused) {
             playerChar.playerInput(key, energyDrink, bus, busStops, duoAuth, wetFloor, delta);
@@ -313,26 +340,32 @@ public class FirstScreen implements Screen {
 
             float decayRate = maxScore / 300f;
             playerScore -= decayRate * delta;
-            if (playerScore < 0)
+            if (playerScore < 0) {
                 playerScore = 0;
+            }
 
-            if (coin != null)
+            if (coin != null) {
                 coin.checkCollected(playerChar, this);
-            if (helper != null)
+            }
+            if (helper != null) {
                 helper.checkCollected(playerChar, this);
+            }
         }
 
         key.checkCollected(playerChar);
         energyDrink.checkDrank(playerChar);
 
-        if (enemy.checkCollided(playerChar))
+        if (enemy.checkCollided(playerChar)) {
             timePassed -= 30;
+        }
 
-        if (!paused)
+        if (!paused) {
             timePassed -= delta;
+        }
         if (timePassed <= 0) {
-            if (music != null)
+            if (music != null) {
                 music.stop();
+            }
             game.setScreen(new LoseScreen(game));
         }
 
@@ -342,12 +375,14 @@ public class FirstScreen implements Screen {
         achievements.update(delta);
 
         if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            if (music != null)
+            if (music != null) {
                 music.stop();
+            }
             game.setScreen(new WinScreen(game, playerScore));
             AchievementManager.get().unlock("ESCAPED");
-            if (playerChar.badEvent == 0)
+            if (playerChar.badEvent == 0) {
                 AchievementManager.get().unlock("FLAWLESS_RUN");
+            }
         }
     }
 
@@ -386,18 +421,21 @@ public class FirstScreen implements Screen {
         duck.render(game.batch);
         longBoi.render(game.batch);
 
-        if (coin != null)
+        if (coin != null) {
             coin.render(game.batch);
-        if (helper != null)
+        }
+        if (helper != null) {
             helper.render(game.batch);
+        }
 
         game.batch.end();
     }
 
     private void renderUI(float delta) {
         menuButton.setVisible(paused);
-        if (paused)
+        if (paused) {
             pauseStage.act(delta);
+        }
         resumeButton.setVisible(paused);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
@@ -409,22 +447,29 @@ public class FirstScreen implements Screen {
 
         game.font.draw(game.batch, "Score: " + (int) playerScore, 20, 550);
 
-        if (playerChar.needsKeyMessage)
+        if (playerChar.needsKeyMessage) {
             game.font.draw(game.batch, "You need to find the key first", 540, 300);
-        if (playerChar.needsInteractMessage)
+        }
+        if (playerChar.needsInteractMessage) {
             game.font.draw(game.batch, "Press 'E' to open the door", 540, 300);
-        if (playerChar.canRideBus)
+        }
+        if (playerChar.canRideBus) {
             game.font.draw(game.batch, "Press 'E' to ride the bus", 540, 300);
-        if (playerChar.needsBusMessage)
+        }
+        if (playerChar.needsBusMessage) {
             game.font.draw(game.batch, playerChar.lastBusMessage, 540, 300);
-        if (duoAuth.active)
+        }
+        if (duoAuth.active) {
             game.font.draw(game.batch, "Authenticating duo, Paused for 10s", 540, 300);
+        }
 
         exam.renderOverlay(game.batch);
 
         if (paused) {
             game.batch.setColor(0, 0, 0, 0.5f);
-            game.batch.draw(pauseTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+            game.batch.draw(pauseTexture, 0, 0,
+                            game.uiViewport.getWorldWidth(),
+                            game.uiViewport.getWorldHeight());
             game.batch.setColor(Color.WHITE);
             game.font.draw(game.batch, "Paused", 600, playerChar.playerY + 500);
         }
@@ -437,8 +482,9 @@ public class FirstScreen implements Screen {
         achievements.render(game.batch, 640, 200);
         game.batch.end();
 
-        if (paused)
+        if (paused) {
             pauseStage.draw();
+        }
     }
 
     @Override
@@ -463,48 +509,68 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
-        if (renderer != null)
+        if (renderer != null) {
             renderer.dispose();
-        if (map != null)
+        }
+        if (map != null) {
             map.dispose();
+        }
 
-        if (keyTexture != null)
+        if (keyTexture != null) {
             keyTexture.dispose();
-        if (energyTexture != null)
+        }
+        if (energyTexture != null) {
             energyTexture.dispose();
-        if (busStopTexture != null)
+        }
+        if (busStopTexture != null) {
             busStopTexture.dispose();
-        if (busTexture != null)
+        }
+        if (busTexture != null) {
             busTexture.dispose();
-        if (enemyTexture != null)
+        }
+        if (enemyTexture != null) {
             enemyTexture.dispose();
-        if (longBoiTexture != null)
+        }
+        if (longBoiTexture != null) {
             longBoiTexture.dispose();
-        if (duoTexture != null)
+        }
+        if (duoTexture != null) {
             duoTexture.dispose();
-        if (wetFloorTexture != null)
+        }
+        if (wetFloorTexture != null) {
             wetFloorTexture.dispose();
-        if (duckTexture != null)
+        }
+        if (duckTexture != null) {
             duckTexture.dispose();
-        if (examTexture != null)
+        }
+        if (examTexture != null) {
             examTexture.dispose();
-        if (pressureTexture != null)
+        }
+        if (pressureTexture != null) {
             pressureTexture.dispose();
-        if (pauseTexture != null)
+        }
+        if (pauseTexture != null) {
             pauseTexture.dispose();
+        }
 
-        if (coin != null && coin.sprite != null && coin.sprite.getTexture() != null)
+        if (coin != null && coin.sprite != null && coin.sprite.getTexture() != null) {
             coin.sprite.getTexture().dispose();
-        if (helper != null && helper.sprite != null && helper.sprite.getTexture() != null)
+        }
+        if (helper != null && helper.sprite != null && helper.sprite.getTexture() != null) {
             helper.sprite.getTexture().dispose();
+        }
 
-        if (music != null)
+        if (music != null) {
             music.dispose();
-        if (skin != null)
+        }
+        if (skin != null) {
             skin.dispose();
-        if (pauseStage != null)
+        }
+        if (pauseStage != null) {
             pauseStage.dispose();
-        if (achievements != null)
+        }
+        if (achievements != null) {
             achievements.dispose();
+        }
     }
 }

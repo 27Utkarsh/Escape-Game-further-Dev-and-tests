@@ -9,7 +9,8 @@ public class Duck {
     public Sprite duckSprite;
     public Rectangle bounds;
 
-    private float x, y;
+    private float duckX;
+    private float duckY;
 
     // Patrol data
     private float patrolStartX;
@@ -20,40 +21,47 @@ public class Duck {
     private boolean testMode = false;
 
 
-    public Duck(Texture texture, float x, float y, float patrolDistance) {
+    public Duck(Texture texture, float startX, float startY, float patrolDistance) {
 
-        this.x = x;
-        this.y = y;
+        this.duckX = startX;
+        this.duckY = startY;
 
-        duckSprite = new Sprite(texture);
-        duckSprite.setPosition(x, y);
+        if (com.badlogic.gdx.Gdx.gl != null) {
+            duckSprite = new Sprite(texture);
+        } else {
+            duckSprite = new Sprite();
+            duckSprite.setSize(50f, 55f);
+        }
+        duckSprite.setPosition(duckX, duckY);
         duckSprite.setSize(50, 55);
 
         bounds = new Rectangle(680, 520, 50, 55);
-        
-        
+
+
         patrolStartX = 670;
         patrolEndX = 670 + patrolDistance;
     }
 
     /** Call this every frame*/
     public void update(float delta) {
-        if (testMode) return;
+        if (testMode) {
+            return;
+        }
 
         // Move horizontally according to current direction
-        x += speed * direction * delta;
+        duckX += speed * direction * delta;
 
-        if (x < patrolStartX) {
-            x = patrolStartX;
+        if (duckX < patrolStartX) {
+            duckX = patrolStartX;
             direction = 1;
-        } else if (x > patrolEndX) {
-            x = patrolEndX;
+        } else if (duckX > patrolEndX) {
+            duckX = patrolEndX;
             direction = -1;
         }
 
         // Apply position to sprite & bounds
-        duckSprite.setPosition(x, y);
-        bounds.setPosition(x, y);
+        duckSprite.setPosition(duckX, duckY);
+        bounds.setPosition(duckX, duckY);
     }
 
     public void render(SpriteBatch sb) {
@@ -81,8 +89,7 @@ public class Duck {
     /**
      * Create an instance of Duck for testing.
      */
-    public Duck()
-    {
+    public Duck() {
         testMode = true;
         this.bounds = new Rectangle(680, 520, 50, 55);
     }

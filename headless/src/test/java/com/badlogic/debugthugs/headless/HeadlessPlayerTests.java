@@ -73,7 +73,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         for (int i = 0; i < 10; i++) {
             player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
-        assertSame(player.playerAnimation, State.WALK_R);
+        assertSame(player.playerAnimation, State.WALKR);
         assertTrue(player.playerX > 10f);
     }
 
@@ -97,7 +97,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         for (int i = 0; i < 10; i++) {
             player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
-        assertSame(player.playerAnimation, State.WALK_L);
+        assertSame(player.playerAnimation, State.WALKL);
         assertTrue(player.playerX < 10f);
     }
 
@@ -121,7 +121,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         for (int i = 0; i < 10; i++) {
             player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
         }
-        assertSame(player.playerAnimation, State.WALK_UP);
+        assertSame(player.playerAnimation, State.WALKUP);
         assertTrue(player.playerY > 20f);
     }
 
@@ -193,6 +193,7 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         input.press(Input.Keys.RIGHT);
         for (int i = 0; i < 10; i++) {
             player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
+            assertSame(player.playerAnimation, State.FALL);
         }
         assertEquals(player.playerX, 10f, 0.0001f);
     }

@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * preference file so that it can later be accessed for the leaderboard.
  */
 public class WinScreen implements Screen {
+
     Texture backgroundTexture;
     Main game;
     Stage stage;
@@ -82,12 +83,13 @@ public class WinScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture("Win.png");
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         Table root = new Table();
         root.setFillParent(true);
         root.setBackground(new TextureRegionDrawable(backgroundTexture));
         stage.addActor(root);
+
         root.align(Align.left | Align.center);
         root.padLeft(40);
 
@@ -95,7 +97,7 @@ public class WinScreen implements Screen {
         scoreLabel.setAlignment(Align.center);
 
         TextField userInput = new TextField("", skin);
-        userInput.setMessageText("Enter your name (1-8 characters):");
+        userInput.setMessageText("Enter your name (1-8 characters)");
         userInput.setMaxLength(8);
 
         TextButton againButton = new TextButton("Save And Exit", skin);

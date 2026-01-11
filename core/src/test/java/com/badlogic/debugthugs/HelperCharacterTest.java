@@ -1,11 +1,11 @@
 package com.badlogic.debugthugs;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class HelperCharacterTest {
-
     private HelperCharacter helper;
 
     @BeforeEach

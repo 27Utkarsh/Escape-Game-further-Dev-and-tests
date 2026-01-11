@@ -16,15 +16,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class LoseScreen implements Screen {
+
     Texture backgroundTexture;
     Main game;
     Stage stage;
     Skin skin;
     Music music;
-    /**
-     * Creates a new LoseScreen.
-     * @param game reference to the main game instance for screen switching
-     */
+
     public LoseScreen(Main game) {
         this.game = game;
     }
@@ -37,15 +35,13 @@ public class LoseScreen implements Screen {
         stage = new Stage(game.uiViewport);
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         backgroundTexture = new Texture("Game_Over_Image.png");
-        
+
         Table root = new Table();
         root.setFillParent(true);
 
         TextButton againButton = new TextButton("Try Again", skin);
-
         againButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -56,7 +52,6 @@ public class LoseScreen implements Screen {
 
         root.add(againButton).width(300).height(80).padBottom(80);
         root.align(Align.bottom);
-
         root.setBackground(new TextureRegionDrawable(backgroundTexture));
         stage.addActor(root);
 
@@ -66,17 +61,14 @@ public class LoseScreen implements Screen {
         music.play();
     }
 
-    /**
-     * Renders the screen every frame.
-     * @param delta The time in seconds since the last render.
-     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
-        game.batch.draw(backgroundTexture,0,0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
+        game.batch.draw(backgroundTexture, 0, 0,
+                        game.uiViewport.getWorldWidth(),
+                        game.uiViewport.getWorldHeight());
         game.batch.end();
 
         stage.act(delta);
@@ -90,17 +82,14 @@ public class LoseScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
     /**
      * Releases assets and resources used by this screen helps free memory

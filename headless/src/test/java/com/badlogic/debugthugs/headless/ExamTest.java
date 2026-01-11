@@ -1,34 +1,32 @@
 package com.badlogic.debugthugs.headless;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
 import com.badlogic.debugthugs.Exam;
 import com.badlogic.debugthugs.Player;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ExamTest extends AbstractHeadlessTest {
+public class ExamTest extends AbstractHeadlessTest {
 
-    // Test if exam is initialized with correct position and size
+    /**
+     * Test if exam is initialized with correct position and size.
+     */
     @Test
-    void ExamInitialization() {
-
+    void examInitialization() {
         Exam exam = new Exam(1184f, 1000f, 200f);
-
         assertEquals(1184f, exam.bounds.x, 0.0001f);
         assertEquals(1000f, exam.bounds.y, 0.0001f);
         assertEquals(50f, exam.bounds.width, 0.0001f);
         assertEquals(50f, exam.bounds.height, 0.0001f);
     }
 
-    // Test if encountering Exam increments bad event by one
+    /**
+     * Test if encountering Exam increments bad event by one.
+     */
     @Test
-    void IncreaseCounter() {
-
+    void increaseCounter() {
         Exam exam = new Exam(1184f, 1500f, 100f);
-
-        Player player = new Player(
-                1184f, 1500f,
-                null, null);
-
+        Player player = new Player(1184f, 1500f, null, null);
         player.playerWidth = 50f;
         player.playerHeight = 50f;
         player.badEvent = 0;

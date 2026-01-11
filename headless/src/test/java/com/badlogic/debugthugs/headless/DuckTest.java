@@ -1,36 +1,33 @@
 package com.badlogic.debugthugs.headless;
 
-import com.badlogic.debugthugs.Duck;
-import com.badlogic.debugthugs.Player;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.badlogic.debugthugs.Duck;
+import com.badlogic.debugthugs.Player;
 
-class DuckTest extends AbstractHeadlessTest {
-
-    // Test if duck is initialized with correct position and size
+public class DuckTest extends AbstractHeadlessTest {
+    /**
+     * Test if duck is initialized with correct position and size.
+     */
     @Test
-    void DuckInitialization() {
+    void duckInitialization() {
         Duck duck = new Duck();
-
         assertEquals(680f, duck.bounds.x, 0.0001f);
         assertEquals(520f, duck.bounds.y, 0.0001f);
         assertEquals(50f, duck.bounds.width, 0.0001f);
         assertEquals(55f, duck.bounds.height, 0.0001f);
     }
 
-    // Test if encountering duck increments bad event counter by one
-    // Test if encountering duck resets player's position
+    /**
+     * Test if encountering duck increments bad event counter by one
+     * and resets players position.
+     */
     @Test
-    void EncounteringDuck() {
-
+    void encounteringDuck() {
         Duck duck = new Duck();
         duck.bounds.setPosition(680f, 520f);
-
-        Player dummyPlayer = new Player(
-                680f, 520f,
-                null, null);
-
+        Player dummyPlayer = new Player(680f, 520f, null, null);
         dummyPlayer.playerWidth = 50f;
         dummyPlayer.playerHeight = 55f;
         dummyPlayer.badEvent = 0;
