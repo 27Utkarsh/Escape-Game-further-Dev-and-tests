@@ -5,8 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 
 
-/** Used as a replacement for the default LibGDX input system to allow for simulated button 
- * presses in testing. */
+/** Used as a replacement for the default LibGDX input system to allow for simulated button presses in testing. */
 public class FakeInput implements Input {
     private final boolean[] pressedKeys = new boolean[256];
     private InputProcessor processor;

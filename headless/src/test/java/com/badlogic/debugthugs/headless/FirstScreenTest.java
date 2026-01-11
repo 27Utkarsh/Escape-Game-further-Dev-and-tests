@@ -92,8 +92,7 @@ public class FirstScreenTest extends AbstractHeadlessTest {
     }
 
     /**
-     * Checks that when the player overlaps with the exit area, the game will change screen to the 
-     * winscreen.
+     * Checks that when the player overlaps with the exit area, the game will change screen to the winscreen.
      */
     @Test
     void winOnExitReached()

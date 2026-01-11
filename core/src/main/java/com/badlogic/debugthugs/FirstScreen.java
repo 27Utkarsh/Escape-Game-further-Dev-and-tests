@@ -109,8 +109,7 @@ public class FirstScreen implements Screen {
     /**
      * Creates a new FirstScreen instance for the game
      *
-     * @param game the main LibGDX Game object used to manage screens and shared
-     *             resources
+     * @param game the main LibGDX Game object used to manage screens and shared resources
      */
 
     public float maxScore = 500f;
@@ -121,11 +120,8 @@ public class FirstScreen implements Screen {
     }
 
     /**
-     * Sets up the camera and viewport. loads the tiled map and its collision
-     * layers,
-     * prepares the player's animation and starting position, initializes rendering
-     * tools (SpriteBatch, map renderer), starts background music, prepares font and
-     * timer rendering for the HUD.
+     * Sets up the camera and viewport. loads the tiled map and its collision layers,
+     * prepares the player's animation and starting position, initializes rendering tools (SpriteBatch, map renderer), starts background music, prepares font and timer rendering for the HUD.
      * Also sets up the coin and helper character.
      */
 
@@ -245,10 +241,8 @@ public class FirstScreen implements Screen {
     }
 
     /**
-     * Allows initialisation of objects and variables required for the game logic to
-     * be used in testing.
-     * These objects must be passed in as parameters.
-     *
+     * Allows initialisation of objects and variables required for the game logic to be used in testing.
+     * These objects must be passed in as parameters
      * Doesn't initialise graphics or audio.
      */
     public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus,
@@ -274,14 +268,10 @@ public class FirstScreen implements Screen {
 
     /**
      * Updates and renders the game state for the current frame.
-     * Handles player movement and animation timing, updates the camera to follow
-     * the player, renders the tile map and player sprite, updates and displays the
-     * countdown
-     * timer, checks if the player has won or lost.
+     * Handles player movement and animation timing, updates the camera to follow the player, renders the tile map and player sprite, updates and displays the countdown timer, checks if the player has won or lost.
      * Also checks coin and helper collection.
      *
-     * @param delta time passed since the last frame (used for animation timing and
-     *              timer)
+     * @param delta time passed since the last frame (used for animation timing and timer)
      */
     @Override
     public void render(float delta) {

@@ -1,12 +1,15 @@
 package com.badlogic.debugthugs.headless;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+
+import com.badlogic.debugthugs.AchievementManager;
 import com.badlogic.debugthugs.Enemy;
 import com.badlogic.debugthugs.Player;
-import com.badlogic.debugthugs.AchievementManager;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /**
  * This testing class is used to test the primary logic of the enemy class and ensures
@@ -48,8 +51,7 @@ public class EnemyTest extends AbstractHeadlessTest {
     }
 
     /**
-     * Checks that player being caught is registered and updates the negative events
-     * counter.
+     * Checks that player being caught is registered and updates the negative events counter.
      */
     @Test
     public void checkPlayerCaught() {
@@ -62,8 +64,7 @@ public class EnemyTest extends AbstractHeadlessTest {
     }
 
     /**
-     * Checks that when the player is immediately caught twice, the second time should
-     * not be registered.
+     * Checks that when the player is immediately caught twice, the second time should not be registered.
      */
     @Test
     public void cooldownWorks() {
@@ -80,8 +81,7 @@ public class EnemyTest extends AbstractHeadlessTest {
     }
 
     /**
-     * Checks that when the player has waited after the cooldown, they will be caught
-     * again, and that the negative events counter only reach a maximum of 5.
+     * Checks that when the player has waited after the cooldown, they will be caught again, and that the negative events counter only reach a maximum of 5.
      */
     @Test
     public void negativeEventsCapped() {

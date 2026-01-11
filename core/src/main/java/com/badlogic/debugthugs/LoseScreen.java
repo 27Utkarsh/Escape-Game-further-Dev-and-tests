@@ -30,8 +30,7 @@ public class LoseScreen implements Screen {
     }
 
     /**
-     * Called when the lose screen becomes the current screen
-     * initialises the game over image, music and waits for the player to press the try again button
+     * Called when the lose screen becomes the current screen initialises the game over image, music and waits for the player to press the try again button
      */
     @Override
     public void show() {
@@ -104,8 +103,7 @@ public class LoseScreen implements Screen {
 
     }
     /**
-     * Releases assets and resources used by this screen
-     * helps free memory
+     * Releases assets and resources used by this screen helps free memory
      */
     @Override
     public void dispose() {

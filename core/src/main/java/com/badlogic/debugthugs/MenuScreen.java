@@ -39,10 +39,8 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     /**
-     * Called when the main menu screen becomes the current screen (ie when the
-     * player first starts playing)
-     * handles buttons, background image, music, and input processing (player needs
-     * to interact with buttons)
+     * Called when the main menu screen becomes the current screen (ie when the player first starts playing)
+     * handles buttons, background image, music, and input processing (player needs to interact with buttons)
      */
     @Override
     public void show() {
@@ -166,8 +164,7 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     /**
-     * Releases assets and resources used by this screen
-     * helps free memory
+     * Releases assets and resources used by this screen helps free memory
      */
     @Override
     public void dispose() {

@@ -21,10 +21,8 @@ public class TutorialTest extends AbstractHeadlessTest {
 
     @Test
     public void testReturnToMenu() {
-        // Act
         tutorialScreen.returnToMenu();
 
-        // Assert
         assertNotNull(testGame.lastScreen);
         assertInstanceOf(MenuScreen.class, testGame.lastScreen, "Should navigate back to MenuScreen");
     }
