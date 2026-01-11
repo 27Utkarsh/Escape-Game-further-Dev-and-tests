@@ -79,7 +79,7 @@ public class DoorTest extends AbstractHeadlessTest {
         dummyBus = new Bus(-100, -100);
         dummyBusStops = new ArrayList<>();
         dummyDuoAuth = new DuoAuth(false, false);
-        dummyWetFloor = new WetFloor(false, false);
+        dummyWetFloor = new WetFloor(0, 0, false, false);
 
         when(mockWallLayer.getCell(anyInt(), anyInt())).thenReturn(null);
     }

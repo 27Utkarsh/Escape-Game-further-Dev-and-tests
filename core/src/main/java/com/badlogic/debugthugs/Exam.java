@@ -24,7 +24,6 @@ public class Exam {
     private boolean examed = false;
 
     private boolean testMode = false;
-    
 
     public Exam(Texture texture1, Texture texture2, float x, float y, float patrolDistance, Main game) {
 
@@ -39,7 +38,7 @@ public class Exam {
         overlayTexture = texture2;
 
         bounds = new Rectangle(1184, 1500, 50, 50);
-        
+
         // Patrol from y to y + patrolDistance
         patrolStartY = 1000;
         patrolEndY = 1000 + patrolDistance;
@@ -61,7 +60,8 @@ public class Exam {
         }
 
         // Apply position to sprite & bounds
-        examSprite.setPosition(x, y);
+        if (examSprite != null)
+            examSprite.setPosition(x, y);
         bounds.setPosition(x, y);
         overlayTimer -= delta;
     }
@@ -72,10 +72,8 @@ public class Exam {
         }
     }
 
-    public void renderOverlay(SpriteBatch sb)
-    {
-        if (overlayTimer >= 0f) 
-        {   
+    public void renderOverlay(SpriteBatch sb) {
+        if (overlayTimer >= 0f) {
             sb.draw(overlayTexture, 0, 0, game.uiViewport.getWorldWidth(), game.uiViewport.getWorldHeight());
         }
     }
@@ -85,8 +83,7 @@ public class Exam {
                 player.playerX,
                 player.playerY,
                 player.playerWidth,
-                player.playerHeight
-        );
+                player.playerHeight);
 
         if (!examed && bounds.overlaps(playerBounds)) {
             // Trigger event
@@ -102,8 +99,7 @@ public class Exam {
      * 
      * @param game The main game instance.
      */
-    public Exam(Main game)
-    {
+    public Exam(Main game) {
 
         testMode = true;
         this.game = game;
@@ -111,10 +107,8 @@ public class Exam {
         bounds = new Rectangle(1184, 1500, 50, 50);
         overlayTimer = 0f;
     }
-    
-    public Exam(float x, float y, float patrolDistance) 
-    {
-        testMode = true;
+
+    public Exam(float x, float y, float patrolDistance) {
         this.x = x;
         this.y = y;
         this.game = null;
@@ -129,9 +123,5 @@ public class Exam {
         this.direction = 1;
         this.examed = false;
         this.overlayTimer = 0f;
-        this.testMode = false;
     }
 }
-
-
-

@@ -16,29 +16,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MenuScreen extends ScreenAdapter {
-    //private static final int VIEWPORT_WIDTH = 1280;
-    //private static final int VIEWPORT_HEIGHT = 720;
+    // private static final int VIEWPORT_WIDTH = 1280;
+    // private static final int VIEWPORT_HEIGHT = 720;
 
     Main game;
-    //FitViewport viewport;
-    //SpriteBatch batch;
+    // FitViewport viewport;
+    // SpriteBatch batch;
     Stage stage;
 
-    //BitmapFont font;
+    // BitmapFont font;
     Skin skin;
     Texture background;
     Music music;
 
     /**
      * Creates the main menu screen.
+     * 
      * @param game reference to the main game instance for screen switching
      */
     public MenuScreen(Main game) {
         this.game = game;
     }
+
     /**
-     * Called when the main menu screen becomes the current screen (ie when the player first starts playing)
-     * handles buttons, background image, music, and input processing (player needs to interact with buttons)
+     * Called when the main menu screen becomes the current screen (ie when the
+     * player first starts playing)
+     * handles buttons, background image, music, and input processing (player needs
+     * to interact with buttons)
      */
     @Override
     public void show() {
@@ -62,12 +66,16 @@ public class MenuScreen extends ScreenAdapter {
         stage.addActor(rootTable);
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(game.font, Color.WHITE);
-        Label titleLabel = new Label("University Escape [WIP Title]", titleStyle);
+        Label titleLabel = new Label("University Escape", titleStyle);
         rootTable.add(titleLabel).padBottom(80f);
         rootTable.row();
 
         TextButton startButton = new TextButton("Start", skin);
         rootTable.add(startButton).width(300).height(80).padBottom(40);
+        rootTable.row();
+
+        TextButton tutorialButton = new TextButton("Tutorial", skin);
+        rootTable.add(tutorialButton).width(300).height(80).padBottom(40);
         rootTable.row();
 
         TextButton settingsButton = new TextButton("Settings", skin);
@@ -82,6 +90,14 @@ public class MenuScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 music.stop();
                 game.setScreen(new FirstScreen(game));
+            }
+        });
+
+        tutorialButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                game.setScreen(new Tutorial(game));
             }
         });
 
@@ -103,13 +119,23 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     /**
+     * Navigates to the tutorial screen.
+     * Public for testing purposes.
+     */
+    public void goToTutorial() {
+        music.stop();
+        game.setScreen(new Tutorial(game));
+    }
+
+    /**
      * Renders the menu screen each frame
+     * 
      * @param delta The time in seconds since the last render.
      */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.DARK_GRAY);
-        //game.uiViewport.apply();
+        // game.uiViewport.apply();
         game.batch.setProjectionMatrix(game.uiCamera.combined);
 
         game.batch.begin();

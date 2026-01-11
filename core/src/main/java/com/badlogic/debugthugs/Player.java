@@ -187,7 +187,7 @@ public class Player {
             needsInteractMessage = false;
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             isMoving = true;
             playerAnimation = State.WALK_R;
             playerX += distance;
@@ -196,7 +196,7 @@ public class Player {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             isMoving = true;
             playerAnimation = State.WALK_L;
             playerX -= distance;
@@ -205,7 +205,7 @@ public class Player {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             isMoving = true;
             playerAnimation = State.WALK_UP;
             playerY += distance;
@@ -214,7 +214,7 @@ public class Player {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             isMoving = true;
             playerAnimation = State.WALK;
             playerY -= distance;
@@ -225,10 +225,8 @@ public class Player {
     }
 
     /**
-     * Teleports the player to a random position on the map
-     *
-     * @param randomX X-coordinate for where the player teleports to
-     * @param randomY Y-coordinate for where the player teleports to
+     * Teleports the player to a random bus stop
+     * list of bus stops can be found in the firstcreen.java
      */
     private void teleportToRandomStop(java.util.List<BusStop> busStops) {
         if (busStops.isEmpty())

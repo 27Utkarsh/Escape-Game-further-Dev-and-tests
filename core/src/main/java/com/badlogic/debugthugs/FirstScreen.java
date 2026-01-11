@@ -245,14 +245,14 @@ public class FirstScreen implements Screen {
     }
 
     /**
-     * Allows initialisation of objects and variables required for the game logic to be used in testing.
+     * Allows initialisation of objects and variables required for the game logic to
+     * be used in testing.
      * These objects must be passed in as parameters.
      *
      * Doesn't initialise graphics or audio.
      */
     public void initLogic(Player player, Key key, EnergyDrink energyDrink, Bus bus,
-                          java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY)
-    {
+            java.util.List<BusStop> busStops, DuoAuth duoAuth, WetFloor wetFloor, float enemyX, float enemyY) {
         this.playerChar = player;
         this.key = key;
         this.energyDrink = energyDrink;
@@ -316,8 +316,10 @@ public class FirstScreen implements Screen {
             exam.checkCollided(playerChar);
             duck.update(delta);
             duck.checkCollided(playerChar);
-            longBoi.checkTriggered(playerChar);
-            longBoi.update(delta);
+            if (longBoi != null) {
+                longBoi.checkTriggered(playerChar);
+                longBoi.update(delta);
+            }
 
             float decayRate = maxScore / 300f;
             playerScore -= decayRate * delta;
@@ -339,7 +341,8 @@ public class FirstScreen implements Screen {
         if (!paused)
             timePassed -= delta;
         if (timePassed <= 0) {
-            if (music != null) music.stop();
+            if (music != null)
+                music.stop();
             game.setScreen(new LoseScreen(game));
         }
 
@@ -349,7 +352,8 @@ public class FirstScreen implements Screen {
         achievements.update(delta);
 
         if (player.overlaps(exitArea) || Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            if (music != null) music.stop();
+            if (music != null)
+                music.stop();
             game.setScreen(new WinScreen(game, playerScore));
             AchievementManager.get().unlock("ESCAPED");
             if (playerChar.badEvent == 0)
@@ -360,8 +364,7 @@ public class FirstScreen implements Screen {
     /**
      * Returns whether the player is overlapping the exit area.
      */
-    public boolean isPlayerOverlappingExit()
-    {
+    public boolean isPlayerOverlappingExit() {
         return player.overlaps(exitArea);
     }
 
@@ -370,7 +373,7 @@ public class FirstScreen implements Screen {
         game.worldViewport.apply();
 
         game.worldCamera.position.set(playerChar.playerX + playerChar.playerWidth / 2f,
-            playerChar.playerY + playerChar.playerHeight / 2f, 0);
+                playerChar.playerY + playerChar.playerHeight / 2f, 0);
         game.worldCamera.update();
 
         renderer.setView(game.worldCamera);
@@ -403,15 +406,16 @@ public class FirstScreen implements Screen {
 
     private void renderUI(float delta) {
         menuButton.setVisible(paused);
-        if (paused) pauseStage.act(delta);
+        if (paused)
+            pauseStage.act(delta);
         resumeButton.setVisible(paused);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
         game.font.draw(game.batch,
-            "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
-                + playerChar.hiddenEvent,
-            540, 650);
+                "EVENTS ~ GOOD: " + playerChar.goodEvent + " BAD: " + playerChar.badEvent + " HIDDEN: "
+                        + playerChar.hiddenEvent,
+                540, 650);
 
         game.font.draw(game.batch, "Score: " + (int) playerScore, 20, 550);
 

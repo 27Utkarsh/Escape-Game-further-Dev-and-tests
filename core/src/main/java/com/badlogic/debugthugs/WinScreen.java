@@ -20,9 +20,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /**
- * This class displays the win screen once a player has successfully escaped, it has
- * another functionality, where before the player is able to exit to the menu they must first
- * enter their name. Upon exiting to the menu their name and score will then be saved to a
+ * This class displays the win screen once a player has successfully escaped, it
+ * has
+ * another functionality, where before the player is able to exit to the menu
+ * they must first
+ * enter their name. Upon exiting to the menu their name and score will then be
+ * saved to a
  * preference file so that it can later be accessed for the leaderboard.
  */
 public class WinScreen implements Screen {
@@ -43,8 +46,9 @@ public class WinScreen implements Screen {
     /**
      * This function adds an entry to the GameScore preferences file in order to be
      * later used in the leaderboard.
+     * 
      * @param userName of the player for this run.
-     * @param score of the player obtained in this run.
+     * @param score    of the player obtained in this run.
      */
     public void addScore(String userName, Float score) {
         prefs = Gdx.app.getPreferences("GameScores");
@@ -55,7 +59,8 @@ public class WinScreen implements Screen {
         }
     }
 
-    /** Calculates the overall player score
+    /**
+     * Calculates the overall player score
      *
      * @return final score as a float
      */
@@ -93,13 +98,13 @@ public class WinScreen implements Screen {
         userInput.setMessageText("Enter your name (1-8 characters):");
         userInput.setMaxLength(8);
 
-        TextButton againButton = new TextButton("Try Again", skin);
+        TextButton againButton = new TextButton("Save And Exit", skin);
         againButton.setDisabled(true);
 
         userInput.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                String userName =  userInput.getText();
+                String userName = userInput.getText();
                 againButton.setDisabled(userName.isEmpty());
             }
         });
@@ -107,7 +112,7 @@ public class WinScreen implements Screen {
         againButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String userName =  userInput.getText();
+                String userName = userInput.getText();
                 if (!userName.isEmpty()) {
                     addScore(userName, score);
                     music.stop();
@@ -136,9 +141,17 @@ public class WinScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
