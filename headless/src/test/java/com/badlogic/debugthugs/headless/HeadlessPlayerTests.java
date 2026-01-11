@@ -193,7 +193,9 @@ public class HeadlessPlayerTests extends AbstractHeadlessTest {
         input.press(Input.Keys.RIGHT);
         for (int i = 0; i < 10; i++) {
             player.playerInput(key, drink, bus, busStops, duoAuth, wetFloor, 0.1f);
+            assertSame(player.playerAnimation, State.FALL);
         }
         assertEquals(player.playerX, 10f, 0.0001f);
+        assertSame(player.playerAnimation, State.WALK);
     }
 }
